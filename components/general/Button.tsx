@@ -3,7 +3,7 @@ import { Button as ShadecnButton } from "@/components/ui/button";
 
 interface ButtonProps {
   children?: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e?: any) => void;
   asChild?: boolean;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
