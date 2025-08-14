@@ -1,20 +1,20 @@
+"use client";
+
 import React from "react";
 import Button from "@/components/general/Button";
 import Input from "@/components/general/Input";
 import Image from "next/image";
 import Link from "next/link";
 import { BsApple, BsGoogle } from "react-icons/bs";
-// import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const SignInPage = () => {
-  //   const router = useRouter();
-
-  //   const handleSignIn = (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     // Handle sign-in logic here
-  //     console.log("Sign in form submitted");
-  //     router.push("/dashboard"); // Redirect to dashboard after sign-in
-  //   };
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle sign-in logic here
+    console.log("Sign in form submitted");
+    redirect("/dashboard"); // Redirect to dashboard after sign-in
+  };
 
   return (
     <div className="absolute inset-0 z-2 flex flex-col items-center justify-center gap-9">
@@ -39,10 +39,10 @@ const SignInPage = () => {
               href="/forgot-password"
               className="text-(--accent-color) text-sm hover:brightness-125"
             >
-              Forgot Password?
+              Forgot password?
             </Link>
           </div>
-          <Button type="submit" className="mt-6" variant="success">
+          <Button type="submit" className="mt-6" variant="success" onClick={handleSignIn}>
             Sign in
           </Button>
         </form>

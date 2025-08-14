@@ -9,11 +9,23 @@ interface InputProps {
   placeholder?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  preIcon?: React.ReactNode;
   postIcon?: React.ReactNode;
+  className?: string;
 }
 
-const Input = ({ type, placeholder, value, onChange, postIcon, name }: InputProps) => {
+const Input = ({
+  type,
+  placeholder,
+  value,
+  onChange,
+  postIcon,
+  name,
+  className,
+  preIcon,
+}: InputProps) => {
   const addExtraRightPadding = type === "email" || type === "password";
+  const addExtraLeftPadding = !!preIcon;
   const [showPassword, setShowPassword] = useState(false);
 
   const getPostIcon = () => {
@@ -37,11 +49,14 @@ const Input = ({ type, placeholder, value, onChange, postIcon, name }: InputProp
   };
 
   return (
-    <div className="relative flex items-center">
+    <div className="relative flex items-center w-full">
+      <div className="absolute left-3">{preIcon && preIcon}</div>
       <input
         type={showPassword ? "text" : type}
         placeholder={placeholder || "Enter text..."}
-        className={`input ${addExtraRightPadding && "pr-10"}`}
+        className={`input ${addExtraRightPadding && "pr-10"} ${
+          addExtraLeftPadding && "pl-12"
+        } ${className}`}
         value={value}
         onChange={onChange}
         data-rr-is-password={type === "password" ? "true" : "false"}
