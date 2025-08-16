@@ -4,8 +4,8 @@ import { Search, Bell, CircleUser, ChevronDown } from "lucide-react";
 
 const Header = () => {
   return (
-    <nav className="border-b-2 border-(--secondary-color) py-3 px-5 flex items-center">
-      <div className="flex items-center gap-15 flex-1">
+    <nav className="border-b-2 border-(--secondary-color) py-3 px-10 flex items-center">
+      <div className="flex items-center gap-10 flex-1">
         <p className="font-black text-2xl tracking-tighter">StockPulse</p>
         <Input
           type="text"
@@ -16,7 +16,7 @@ const Header = () => {
       </div>
       <div className="flex items-center gap-6">
         <Bell color="var(--secondary-text-color)" className="cursor-pointer" />
-        <div className="flex items-center gap-2 cursor-pointer">
+        <div className="flex items-center gap-2 cursor-pointer font-bold">
           <CircleUser color="var(--secondary-text-color)" className="cursor-pointer" />
           <p>Norman Cade</p>
           <ChevronDown color="var(--secondary-text-color)" className="cursor-pointer" />
