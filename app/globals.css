@@ -143,6 +143,7 @@
   --accent-color: #2187fe;
   --success-color: #3ba66b;
   --danger-color: #ff4d4f;
+  --warning-color: #ff9800;
   --sidebar: #0e1116;
   --sidebar-foreground: hsl(240 5.3% 26.1%);
   --sidebar-primary: hsl(240 5.9% 10%);
@@ -204,8 +205,8 @@ body {
     @apply border-(--secondary-text-color) border-t flex-grow;
   }
 
-  .quick-chart {
-    @apply w-full h-[100px] bg-(--secondary-color) rounded-lg p-4 flex items-center;
+  .card {
+    @apply w-full bg-(--secondary-color) rounded-lg p-4 flex items-center;
   }
 }
 
@@ -216,6 +217,10 @@ body {
 
   .sign-in-socials {
     @apply w-full flex items-center justify-center flex-[1.5] py-7 font-semibold;
+  }
+
+  .watchlist-card-link {
+    @apply text-(--secondary-text-color) text-sm flex items-center hover:brightness-125 transition-all duration-200;
   }
 }
 

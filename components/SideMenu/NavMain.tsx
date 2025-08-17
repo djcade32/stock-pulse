@@ -34,7 +34,7 @@ export const NavMain = ({ items }: { items: SidebarItem[] }) => {
   return (
     <SidebarGroup>
       <SidebarGroupContent>
-        <SidebarMenu className="gap-10 mt-3">
+        <SidebarMenu className="gap-7 mt-3">
           {items.map((item) => (
             <SidebarMenuItem key={item.title} className="flex items-center justify-center">
               <SidebarMenuButton

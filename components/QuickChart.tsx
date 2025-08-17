@@ -37,7 +37,7 @@ const QuickChart = ({ stock }: QuickChartProps) => {
   const lineColor = stock.change >= 0 ? "var(--success-color)" : "var(--danger-color)";
 
   return (
-    <div className="quick-chart">
+    <div className="card h-[100px]">
       <div className="flex flex-col items-start justify-center gap-[0.5]">
         <p className="text-(--secondary-text-color) font-semibold">{stock.ticker}</p>
         <h2 className="text-2xl font-bold">{stock.price}</h2>

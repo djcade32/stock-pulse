@@ -1,17 +1,12 @@
 import Button from "@/components/general/Button";
-import QuickChart from "@/components/QuickChart";
+import QuickChartsSection from "@/sections/dashboard/QuickChartsSection";
+import WatchlistSection from "@/sections/dashboard/WatchlistSection";
 import React from "react";
 import { FaFilter, FaPlus } from "react-icons/fa6";
 
-const DUMMY_STOCK_DATA = [
-  { ticker: "S&P 500", price: 4587.64, change: 1.2 },
-  { ticker: "NASDAQ", price: 14567.89, change: -0.5 },
-  { ticker: "VIX", price: 18.27, change: 3.3 },
-];
-
 const DashboardPage = () => {
   return (
-    <div className="py-1 px-10">
+    <div className="py-1 px-10 flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Dashboard</h1>
@@ -28,11 +23,8 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        {DUMMY_STOCK_DATA.map((stock) => (
-          <QuickChart stock={stock} />
-        ))}
-      </div>
+      <QuickChartsSection />
+      <WatchlistSection />
     </div>
   );
 };
