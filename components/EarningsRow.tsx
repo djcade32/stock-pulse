@@ -17,8 +17,8 @@ interface EarningsRowProps {
 
 const EarningsRow = async ({ earnings }: EarningsRowProps) => {
   const { date, ticker, name, quarter, insights, aiTags, overallSentiment } = earnings;
-  const logoUrl = await fetchCompanyLogo(ticker);
-  //   const logoUrl = null; // Placeholder for now, since fetching is async and we can't use hooks here
+  //   const logoUrl = await fetchCompanyLogo(ticker);
+  const logoUrl = null; // Placeholder for now, since fetching is async and we can't use hooks here
 
   const getSentiment = (sentiment: string): "Positive" | "Neutral" | "Negative" => {
     switch (sentiment) {
@@ -34,7 +34,7 @@ const EarningsRow = async ({ earnings }: EarningsRowProps) => {
   };
 
   return (
-    <div className="p-4 flex flex-col gap-4">
+    <div className="py-4 flex flex-col gap-4">
       <div className="flex justify-between">
         <div className="flex gap-2">
           <Link href={`/stocks/${ticker}`}>

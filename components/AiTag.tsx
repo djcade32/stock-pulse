@@ -6,15 +6,17 @@ interface AiTagProps {
     sentiment: "Positive" | "Negative" | "Neutral";
     tag: string;
   };
+  className?: string;
 }
-const AiTag = ({ tag }: AiTagProps) => {
+const AiTag = ({ tag, className }: AiTagProps) => {
   return (
     <span
       className={cn(
         "inline-block text-xs px-2 py-1 rounded-full text-center font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis",
         tag.sentiment === "Positive" && "bg-(--success-color)/30 text-(--success-color)",
         tag.sentiment === "Negative" && "bg-(--danger-color)/30 text-(--danger-color)",
-        tag.sentiment === "Neutral" && "bg-(--warning-color)/30 text-(--warning-color)"
+        tag.sentiment === "Neutral" && "bg-(--warning-color)/30 text-(--warning-color)",
+        className
       )}
     >
       {tag.tag}
