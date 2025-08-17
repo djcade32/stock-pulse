@@ -23,17 +23,6 @@ export async function fetchCompanyLogo(ticker: string): Promise<string> {
   const response = await fetch(
     `https://img.logo.dev/ticker/${ticker}.com?token=${apiKey}&format=png`
   );
-  // const response = await fetch(`https://img.logo.dev/microsoft.com`, {
-  //   headers: {
-  //     Authorization: `Bearer ${apiKey}`,
-  //   },
-  // });
-
-  // const response = await fetch(`https://logo.clearbit.com/${ticker.toLowerCase()}.com?size=80`, {
-  //   headers: {
-  //     Authorization: `Bearer ${apiKey}`,
-  //   },
-  // });
 
   if (!response.ok) {
     throw new Error(`Failed to fetch logo for ${ticker}: ${response.statusText}`);

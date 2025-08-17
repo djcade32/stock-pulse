@@ -2,6 +2,7 @@ import { cn, fetchCompanyLogo } from "@/lib/utils";
 import Link from "next/link";
 import { FaNewspaper } from "react-icons/fa6";
 import { FaMicrophoneAlt } from "react-icons/fa";
+import AiTag from "./AiTag";
 
 interface WatchlistCardProps {
   stock: {
@@ -13,7 +14,7 @@ interface WatchlistCardProps {
     sentimentScore: number;
     numOfNews: number;
     aiTags?: {
-      sentiment: string;
+      sentiment: "Positive" | "Negative" | "Neutral";
       tag: string;
     }[];
     sentimentSummary: string;
@@ -119,24 +120,11 @@ export const WatchlistCard = async ({ stock }: WatchlistCardProps) => {
         </div>
 
         <div className="flex items-center mt-4 gap-1">
-          {aiTags.length > 0 &&
-            aiTags.map((tag, index) => (
-              <span
-                key={index}
-                className={cn(
-                  "inline-block text-xs px-2 py-1 rounded-full text-center font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis",
-                  tag.sentiment === "Positive" && "bg-(--success-color)/30 text-(--success-color)",
-                  tag.sentiment === "Negative" && "bg-(--danger-color)/30 text-(--danger-color)",
-                  tag.sentiment === "Neutral" && "bg-(--warning-color)/30 text-(--warning-color)"
-                )}
-              >
-                {tag.tag}
-              </span>
-            ))}
+          {aiTags.length > 0 && aiTags.map((tag, index) => <AiTag key={index} tag={tag} />)}
         </div>
 
         <div>
-          <p className="text-sm text-(--secondary-text-color) mt-4">
+          <p className="text-sm text-(--secondary-text-color) mt-4 leading-tight">
             {sentimentSummary.length > 100
               ? `${sentimentSummary.slice(0, 100)}...`
               : sentimentSummary}

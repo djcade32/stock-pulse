@@ -3,7 +3,17 @@ import WatchlistCard from "@/components/WatchlistCard";
 import React from "react";
 import { ArrowDownWideNarrow, Grid2x2 } from "lucide-react";
 
-const DUMMY_STOCK_DATA = [
+const DUMMY_STOCK_DATA: {
+  name: string;
+  ticker: string;
+  price: number;
+  percentChange: number;
+  dollarChange: string;
+  sentimentScore: number;
+  numOfNews: number;
+  aiTags?: { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[];
+  sentimentSummary: string;
+}[] = [
   {
     name: "Tesla, Inc.",
     ticker: "TSLA",

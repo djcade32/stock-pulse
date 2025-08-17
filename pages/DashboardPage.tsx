@@ -1,4 +1,5 @@
 import Button from "@/components/general/Button";
+import EarningsSection from "@/sections/dashboard/EarningsSection";
 import QuickChartsSection from "@/sections/dashboard/QuickChartsSection";
 import WatchlistSection from "@/sections/dashboard/WatchlistSection";
 import React from "react";
@@ -6,7 +7,7 @@ import { FaFilter, FaPlus } from "react-icons/fa6";
 
 const DashboardPage = () => {
   return (
-    <div className="py-1 px-10 flex flex-col gap-6">
+    <div className="py-1 px-10 flex flex-col gap-7">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Dashboard</h1>
@@ -25,6 +26,7 @@ const DashboardPage = () => {
 
       <QuickChartsSection />
       <WatchlistSection />
+      <EarningsSection />
     </div>
   );
 };
