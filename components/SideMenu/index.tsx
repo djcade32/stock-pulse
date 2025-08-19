@@ -32,8 +32,8 @@ const data = {
       icon: BiSolidHome,
     },
     {
-      title: "Watch Lists",
-      url: "/watch-lists",
+      title: "Watch List",
+      url: "/watch-list",
       icon: FaEye,
     },
     {

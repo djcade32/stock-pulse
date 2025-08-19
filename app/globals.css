@@ -211,6 +211,18 @@ body {
 }
 
 @layer utilities {
+  .page {
+    @apply py-1 px-10 flex flex-col gap-7 pb-4;
+  }
+
+  .page-header-text {
+    @apply text-2xl font-semibold;
+  }
+
+  .page-subheader-text {
+    @apply text-xl font-bold;
+  }
+
   .auth-card {
     @apply bg-white dark:bg-(--secondary-color) rounded-lg shadow-lg p-6 w-[400px];
   }
@@ -221,6 +233,10 @@ body {
 
   .watchlist-card-link {
     @apply text-(--secondary-text-color) text-sm flex items-center hover:brightness-125 transition-all duration-200;
+  }
+
+  .watchlist-summary-card {
+    @apply bg-(--secondary-color) rounded-lg p-4 flex flex-col gap-1;
   }
 }
 

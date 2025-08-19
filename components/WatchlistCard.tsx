@@ -3,6 +3,7 @@ import Link from "next/link";
 import { FaNewspaper } from "react-icons/fa6";
 import { FaMicrophoneAlt } from "react-icons/fa";
 import AiTag from "./AiTag";
+import Button from "./general/Button";
 
 interface WatchlistCardProps {
   stock: {
@@ -19,9 +20,10 @@ interface WatchlistCardProps {
     }[];
     sentimentSummary: string;
   };
+  fullDetails?: boolean;
 }
 
-export const WatchlistCard = async ({ stock }: WatchlistCardProps) => {
+export const WatchlistCard = async ({ stock, fullDetails = true }: WatchlistCardProps) => {
   const {
     name,
     ticker,
@@ -138,16 +140,24 @@ export const WatchlistCard = async ({ stock }: WatchlistCardProps) => {
         </div>
       </div>
 
-      <div className="flex justify-between mt-4 w-full">
-        <Link href={`/news/${ticker}`} className="watchlist-card-link">
-          <FaNewspaper size={15} className="mr-1" />
-          News ({numOfNews})
-        </Link>
-        <Link href={`/news/${ticker}`} className="watchlist-card-link">
-          <FaMicrophoneAlt size={15} className="mr-1" />
-          Earnings
-        </Link>
-      </div>
+      {fullDetails ? (
+        <div className="flex justify-between mt-4 w-full">
+          <Link href={`/news/${ticker}`} className="watchlist-card-link">
+            <FaNewspaper size={15} className="mr-1" />
+            News ({numOfNews})
+          </Link>
+          <Link href={`/news/${ticker}`} className="watchlist-card-link">
+            <FaMicrophoneAlt size={15} className="mr-1" />
+            Earnings
+          </Link>
+        </div>
+      ) : (
+        <Button className="mt-4">
+          <Link href={`/stocks/${ticker}`} className="flex items-center justify-center gap-2">
+            Learn More
+          </Link>
+        </Button>
+      )}
     </div>
   );
 };
