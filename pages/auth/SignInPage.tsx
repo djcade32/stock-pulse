@@ -5,7 +5,7 @@ import Button from "@/components/general/Button";
 import Input from "@/components/general/Input";
 import Image from "next/image";
 import Link from "next/link";
-import { BsApple, BsGoogle } from "react-icons/bs";
+import { BsGoogle, BsTwitterX } from "react-icons/bs";
 import { redirect } from "next/navigation";
 
 const SignInPage = () => {
@@ -58,8 +58,7 @@ const SignInPage = () => {
             Google
           </Button>
           <Button variant="outline" className="sign-in-socials">
-            <BsApple />
-            Apple
+            <BsTwitterX />X
           </Button>
         </div>
         <div>

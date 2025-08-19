@@ -17,9 +17,9 @@ export default function RootLayout({
   return (
     <SidebarProvider defaultOpen={false}>
       <SideMenu />
-      <div className="w-full">
+      <div className="w-full relative">
         <Header />
-        {children}
+        <div className="pt-[68px]">{children}</div>
       </div>
     </SidebarProvider>
   );
