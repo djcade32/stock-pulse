@@ -265,6 +265,32 @@ body {
   } /* because we render the items twice */
 }
 
+/* --- LOADING DOTS --- */
+.loading-dots {
+  width: 10px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: loading-dots 1s infinite linear alternate;
+}
+@keyframes loading-dots {
+  0% {
+    box-shadow: 20px 0 var(--foreground), -20px 0 #0002;
+    background: var(--foreground);
+  }
+  33% {
+    box-shadow: 20px 0 var(--foreground), -20px 0 #0002;
+    background: #0002;
+  }
+  66% {
+    box-shadow: 20px 0 #0002, -20px 0 var(--foreground);
+    background: #0002;
+  }
+  100% {
+    box-shadow: 20px 0 #0002, -20px 0 var(--foreground);
+    background: var(--foreground);
+  }
+}
+
 /* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .ticker__track {

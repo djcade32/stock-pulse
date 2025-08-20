@@ -1,6 +1,7 @@
 "use server";
 
 import { db, auth } from "@/firebase/admin";
+import { SignInParams, SignUpParams, User } from "@/types";
 import { cookies } from "next/headers";
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -17,7 +18,7 @@ export async function signUp(params: SignUpParams) {
       };
     }
 
-    await db.collection("users").doc(uid).set({ name, email });
+    await db.collection("users").doc(uid).set({ _id: uid, name, email });
     return {
       success: true,
       message: "Account created successfully. Please sign in.",

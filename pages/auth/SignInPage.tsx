@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BsGoogle, BsTwitterX } from "react-icons/bs";
 import { redirect } from "next/navigation";
+import AuthForm from "@/components/AuthForm";
 
 const SignInPage = () => {
   const handleSignIn = (e: React.FormEvent) => {
@@ -18,34 +19,16 @@ const SignInPage = () => {
 
   return (
     <div className="absolute inset-0 z-2 flex flex-col items-center justify-center gap-9">
-      <Image src={"/stock_pulse_logo.png"} alt="Stock Pulse Logo" width={200} height={200} />
+      <Image
+        src={"/stock_pulse_logo.png"}
+        alt="Stock Pulse Logo"
+        width={200}
+        height={200}
+        priority
+      />
       <div className="auth-card">
         <p className="text-xl font-semibold text-center my-4">Sign in to your account</p>
-        <form className="flex flex-col">
-          <div className="flex flex-col gap-2 mb-4">
-            <label htmlFor="email" className="text-(--secondary-text-color)">
-              Email
-            </label>
-            <Input name="email" type="email" placeholder="name@company.com" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="password" className="text-(--secondary-text-color)">
-              Password
-            </label>
-            <Input name="password" type="password" placeholder="••••••••" />
-          </div>
-          <div className="flex justify-end mt-2">
-            <Link
-              href="/forgot-password"
-              className="text-(--accent-color) text-sm hover:brightness-125"
-            >
-              Forgot password?
-            </Link>
-          </div>
-          <Button type="submit" className="mt-6" variant="success" onClick={handleSignIn}>
-            Sign in
-          </Button>
-        </form>
+        <AuthForm show="sign-in" />
 
         <div className="flex items-center my-6">
           <div className="divider" />

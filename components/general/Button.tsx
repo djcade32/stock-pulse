@@ -9,6 +9,7 @@ interface ButtonProps {
   disabled?: boolean;
   variant?: "default" | "danger" | "success" | "outline" | "ghost" | "link";
   className?: string;
+  showLoading?: boolean;
 }
 
 const Button = ({
@@ -19,6 +20,7 @@ const Button = ({
   disabled,
   variant = "default",
   className: customClassName,
+  showLoading = false,
 }: ButtonProps) => {
   // Handle different button variants if needed
   const buttonVariants = {
@@ -31,6 +33,14 @@ const Button = ({
   };
   const className = buttonVariants[variant] || buttonVariants.default;
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (disabled || showLoading) {
+      e.preventDefault();
+      return;
+    }
+    onClick?.(e);
+  };
+
   return (
     <ShadecnButton
       type={type}
@@ -39,9 +49,9 @@ const Button = ({
         variant === "outline" ? "hover:bg-(--secondary-color)" : "hover:brightness-125"
       } ${className} ${customClassName}`}
       asChild={asChild}
-      onClick={onClick}
+      onClick={handleClick}
     >
-      {children}
+      {showLoading ? <div className="loading-dots" /> : children}
     </ShadecnButton>
   );
 };
