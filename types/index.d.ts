@@ -16,6 +16,11 @@ interface SignUpParams {
   password: string;
 }
 
+// type SignInResult = { success: true } | { success: false; message: string };
+type SignInResult =
+  | { success: true }
+  | { success: false; code?: "ID_TOKEN_EXPIRED" | "INVALID_ID_TOKEN"; message: string };
+
 export type FormInputType = {
   type: "text" | "email" | "password";
   placeholder?: string;

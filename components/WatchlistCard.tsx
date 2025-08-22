@@ -152,11 +152,11 @@ export const WatchlistCard = async ({ stock, fullDetails = true }: WatchlistCard
           </Link>
         </div>
       ) : (
-        <Button className="mt-4">
-          <Link href={`/stocks/${ticker}`} className="flex items-center justify-center gap-2">
-            Learn More
-          </Link>
-        </Button>
+        // <Button className="mt-4">
+        <Link href={`/stocks/${ticker}`} className="flex items-center justify-center gap-2">
+          Learn More
+        </Link>
+        // </Button>
       )}
     </div>
   );

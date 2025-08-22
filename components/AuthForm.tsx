@@ -5,8 +5,8 @@ import { CircleUser } from "lucide-react";
 import Form from "./general/Form";
 import { FormInputType } from "@/types";
 import { useForm, FormProvider } from "react-hook-form";
-import { signUp } from "@/lib/actions/auth.server.action";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signIn, signUp } from "@/lib/actions/auth.server.action";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -125,9 +125,51 @@ const AuthForm = ({ show }: AuthFormProps) => {
     const { name, email, password } = data;
     try {
       if (show === "sign-in") {
-        // Handle sign-in logic here
-        console.log("Signing in with:", getValues());
-        // await signIn()
+        // const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+        // const idToken = await userCredentials.user.getIdToken();
+        // if (!idToken) {
+        //   toast.error("Sign in failed. Please try again.");
+        //   return;
+        // }
+        // const result = await signIn({
+        //   email,
+        //   idToken,
+        // });
+        // if (!result?.success) {
+        //   toast.error(result?.message || "Error signing in, please try again.");
+        //   return;
+        // }
+        // toast.success("Signed in successfully!");
+        // router.push("/dashboard");
+        try {
+          console.log("Signing in with email:", email);
+          const cred = await signInWithEmailAndPassword(auth, email, password);
+
+          // 1) Get a fresh token up front
+          let idToken = await cred.user.getIdToken(/* forceRefresh */ true);
+
+          // 2) Ask server to mint the session cookie
+          let result = await signIn({ email, idToken });
+
+          // 3) If server says token was expired/invalid, refresh and try once more
+          if (!result?.success && result.code === "ID_TOKEN_EXPIRED") {
+            console.log("ID token expired, refreshing...");
+            idToken = await cred.user.getIdToken(true);
+            result = await signIn({ email, idToken });
+          }
+
+          if (!result?.success) {
+            console.error("Sign in failed:", result?.message);
+            toast.error(result?.message || "Error signing in, please try again.");
+            return;
+          }
+
+          toast.success("Signed in successfully!");
+          router.push("/dashboard");
+        } catch (e) {
+          console.error(e);
+          toast.error("Sign in failed. Please try again.");
+        }
       } else if (show === "sign-up") {
         const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
         const result = await signUp({

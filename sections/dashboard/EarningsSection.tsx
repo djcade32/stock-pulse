@@ -1,3 +1,5 @@
+"use client";
+
 import Button from "@/components/general/Button";
 import React from "react";
 import { RefreshCcw } from "lucide-react";

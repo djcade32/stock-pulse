@@ -4,12 +4,12 @@ import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "stockpulse-ce1db.firebaseapp.com",
-  projectId: "stockpulse-ce1db",
-  storageBucket: "stockpulse-ce1db.firebasestorage.app",
-  messagingSenderId: "830880698904",
-  appId: "1:830880698904:web:73006d43f1bd0fd53ca96d",
-  measurementId: "G-K72F44DGY4",
+  authDomain: "stockpulse-c3f61.firebaseapp.com",
+  projectId: "stockpulse-c3f61",
+  storageBucket: "stockpulse-c3f61.firebasestorage.app",
+  messagingSenderId: "424542187155",
+  appId: "1:424542187155:web:98de5259a7ee1ea360a766",
+  measurementId: "G-2785KB9MMS",
 };
 
 // Initialize Firebase

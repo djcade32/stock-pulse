@@ -1,3 +1,5 @@
+"use client";
+
 import Button from "@/components/general/Button";
 import WatchlistCard from "@/components/WatchlistCard";
 import React from "react";
