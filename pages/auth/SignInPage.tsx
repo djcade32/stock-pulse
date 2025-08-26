@@ -33,11 +33,11 @@ const SignInPage = () => {
       } else {
         console.error("Server sign-in failed:", signInResult);
         toast.error(signInResult.message || "Error signing in, please try again.");
+        setIsSigningIn(false);
       }
     } catch (error) {
       console.error("Google sign-in error:", error);
       toast.error("Error signing in with Google. Please try again.");
-    } finally {
       setIsSigningIn(false);
     }
   };
