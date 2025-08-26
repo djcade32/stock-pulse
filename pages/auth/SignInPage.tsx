@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Button from "@/components/general/Button";
 import Image from "next/image";
 import Link from "next/link";
 import { BsGoogle, BsTwitterX } from "react-icons/bs";
 import AuthForm from "@/components/AuthForm";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, TwitterAuthProvider } from "firebase/auth";
 import { auth } from "@/firebase/client";
 import { addUserToDBIfNotExists, signIn } from "@/lib/actions/auth.server.action";
 import { useRouter } from "next/navigation";
@@ -14,10 +14,13 @@ import { toast } from "sonner";
 
 const SignInPage = () => {
   const router = useRouter();
-  const provider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
+  const twitterProvider = new TwitterAuthProvider();
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
-  const handleSignInWithGoogle = async () => {
+  const handleOauthSignin = async (provider: any) => {
     try {
+      setIsSigningIn(true);
       const result = await signInWithPopup(auth, provider);
 
       const idToken = await result.user.getIdToken(true); // force fresh
@@ -34,6 +37,8 @@ const SignInPage = () => {
     } catch (error) {
       console.error("Google sign-in error:", error);
       toast.error("Error signing in with Google. Please try again.");
+    } finally {
+      setIsSigningIn(false);
     }
   };
 
@@ -59,12 +64,18 @@ const SignInPage = () => {
           <Button
             variant="outline"
             className="sign-in-socials"
-            onClick={async () => handleSignInWithGoogle()}
+            onClick={async () => handleOauthSignin(googleProvider)}
+            disabled={isSigningIn}
           >
             <BsGoogle />
             Google
           </Button>
-          <Button variant="outline" className="sign-in-socials">
+          <Button
+            variant="outline"
+            className="sign-in-socials"
+            onClick={async () => handleOauthSignin(twitterProvider)}
+            disabled={isSigningIn}
+          >
             <BsTwitterX />X
           </Button>
         </div>
