@@ -6,10 +6,15 @@ import Form from "./general/Form";
 import { FormInputType } from "@/types";
 import { useForm, FormProvider } from "react-hook-form";
 import { signIn, signUp } from "@/lib/actions/auth.server.action";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "@/firebase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -121,26 +126,18 @@ const AuthForm = ({ show }: AuthFormProps) => {
     return "Submit";
   };
 
+  const customSlot = (
+    <div className="flex justify-end mt-[-10px]">
+      <Link href="/forgot-password" className="text-(--accent-color) text-sm hover:brightness-125">
+        Forgot Password?
+      </Link>
+    </div>
+  );
+
   const submitForm = async (data: any) => {
     const { name, email, password } = data;
     try {
       if (show === "sign-in") {
-        // const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-        // const idToken = await userCredentials.user.getIdToken();
-        // if (!idToken) {
-        //   toast.error("Sign in failed. Please try again.");
-        //   return;
-        // }
-        // const result = await signIn({
-        //   email,
-        //   idToken,
-        // });
-        // if (!result?.success) {
-        //   toast.error(result?.message || "Error signing in, please try again.");
-        //   return;
-        // }
-        // toast.success("Signed in successfully!");
-        // router.push("/dashboard");
         try {
           console.log("Signing in with email:", email);
           const cred = await signInWithEmailAndPassword(auth, email, password);
@@ -149,13 +146,13 @@ const AuthForm = ({ show }: AuthFormProps) => {
           let idToken = await cred.user.getIdToken(/* forceRefresh */ true);
 
           // 2) Ask server to mint the session cookie
-          let result = await signIn({ email, idToken });
+          let result = await signIn({ idToken });
 
           // 3) If server says token was expired/invalid, refresh and try once more
           if (!result?.success && result.code === "ID_TOKEN_EXPIRED") {
             console.log("ID token expired, refreshing...");
             idToken = await cred.user.getIdToken(true);
-            result = await signIn({ email, idToken });
+            result = await signIn({ idToken });
           }
 
           if (!result?.success) {
@@ -185,9 +182,15 @@ const AuthForm = ({ show }: AuthFormProps) => {
         toast.success("Account created successfully! Please sign in.");
         router.push("/sign-in");
       } else if (show === "forgot-password") {
-        // Handle forgot password logic here
-        console.log("Resetting password for:", getValues().email);
-        // await resetPassword()
+        try {
+          await sendPasswordResetEmail(auth, email);
+          toast.success("Password reset email sent! Please check your email.");
+          router.push("/sign-in");
+        } catch (error: any) {
+          if (error.code === "auth/user-not-found") return;
+          console.error("Error sending password reset email:", error);
+          toast.error("Error sending password reset email. Please try again.");
+        }
       }
     } catch (error) {
       console.error("Error during sign up:", error);
@@ -200,7 +203,8 @@ const AuthForm = ({ show }: AuthFormProps) => {
       <Form
         inputsArray={inputsArray}
         submitButtonText={getSubmitButtonText()}
-        onSubmit={(data) => submitForm(data)}
+        onSubmit={async (data) => await submitForm(data)}
+        slot={show === "sign-in" && customSlot}
       />
     </FormProvider>
   );

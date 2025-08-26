@@ -1,8 +1,11 @@
+"use client";
+
 import React from "react";
 import Button from "@/components/general/Button";
 import Input from "@/components/general/Input";
 import Image from "next/image";
 import Link from "next/link";
+import AuthForm from "@/components/AuthForm";
 
 const ForgotPasswordPage = () => {
   return (
@@ -10,17 +13,7 @@ const ForgotPasswordPage = () => {
       <Image src={"/stock_pulse_logo.png"} alt="Stock Pulse Logo" width={200} height={200} />
       <div className="auth-card">
         <p className="text-xl font-semibold text-center my-4">Forgot Password?</p>
-        <form className="flex flex-col">
-          <div className="flex flex-col gap-2 mb-4">
-            <label htmlFor="email" className="text-(--secondary-text-color)">
-              Email
-            </label>
-            <Input name="email" type="email" placeholder="name@company.com" />
-          </div>
-          <Button type="submit" className="mt-6" variant="success">
-            Reset Password
-          </Button>
-        </form>
+        <AuthForm show="forgot-password" />
 
         <div>
           <p className="text-center text-(--secondary-text-color) mt-6">

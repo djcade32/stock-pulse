@@ -11,9 +11,16 @@ interface FormProps {
   className?: string;
   onSubmit?: (data: Record<string, string | {}>) => void;
   submitButtonText?: string;
+  slot?: React.ReactNode; // Allow custom elements like links or checkboxes below the form
 }
 
-const Form = ({ inputsArray, className, onSubmit, submitButtonText = "Submit" }: FormProps) => {
+const Form = ({
+  inputsArray,
+  className,
+  onSubmit,
+  submitButtonText = "Submit",
+  slot,
+}: FormProps) => {
   const [inputValues, setInputValues] = useState<Record<string, string | {}>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,8 +102,8 @@ const Form = ({ inputsArray, className, onSubmit, submitButtonText = "Submit" }:
   const inputHasError = (name: string) => Boolean(formErrors[name] && formErrors[name] !== "");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    setIsSubmitting(true);
     e.preventDefault();
+    setIsSubmitting(true);
     if (!validateForm()) return setIsSubmitting(false);
     onSubmit?.(inputValues);
   };
@@ -131,6 +138,7 @@ const Form = ({ inputsArray, className, onSubmit, submitButtonText = "Submit" }:
           </div>
         );
       })}
+      {slot}
       <Button
         type="submit"
         className="mt-7"

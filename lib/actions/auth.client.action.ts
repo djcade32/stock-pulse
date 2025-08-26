@@ -1,4 +1,5 @@
 "use client";
+
 import { auth } from "@/firebase/client";
 import { signOut as firebaseSignOut } from "firebase/auth";
 import { deleteSessionCookie } from "./auth.server.action";

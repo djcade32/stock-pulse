@@ -43,16 +43,19 @@ export async function signUp(params: SignUpParams) {
 }
 
 export async function signIn(params: SignInParams): Promise<SignInResult> {
-  const { email, idToken } = params;
+  const { idToken } = params;
   try {
     // Verify first so we can return precise reasons
+    console.log("Verifying ID token...");
     await auth.verifyIdToken(idToken);
 
     const sessionCookie = await auth.createSessionCookie(idToken, {
       expiresIn: ONE_WEEK_MS,
     });
 
-    const jar = await cookies(); // no await
+    console.log("Setting session cookie...");
+
+    const jar = await cookies();
     jar.set("session", sessionCookie, {
       maxAge: ONE_WEEK_SEC, // seconds
       httpOnly: true,
@@ -60,7 +63,7 @@ export async function signIn(params: SignInParams): Promise<SignInResult> {
       path: "/",
       sameSite: "lax",
     });
-
+    console.log("Session cookie set successfully.");
     return { success: true };
   } catch (e: any) {
     // Common Admin codes: 'auth/id-token-expired', 'auth/argument-error', 'auth/invalid-id-token'
@@ -125,4 +128,31 @@ export async function getCurrentUser(): Promise<{ user: User | null; invalidSess
 export async function isAuthenticated(): Promise<boolean> {
   const { user } = await getCurrentUser();
   return !!user;
+}
+
+export async function deleteSessionCookie() {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete("session");
+  } catch (error) {
+    console.error("Error deleting session cookie:", error);
+    throw new Error("Error deleting session cookie");
+  }
+}
+
+export async function addUserToDBIfNotExists(idToken: string) {
+  try {
+    const decoded = await auth.verifyIdToken(idToken);
+    const ref = db.collection("users").doc(decoded.uid);
+    const doc = await ref.get();
+    if (!doc.exists) {
+      await ref.set({
+        email: decoded.email ?? "",
+        name: decoded.name ?? "",
+        _id: decoded.uid,
+      });
+    }
+  } catch (error) {
+    console.error("Error adding user to DB:", error);
+  }
 }

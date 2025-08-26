@@ -5,7 +5,6 @@ interface User {
 }
 
 interface SignInParams {
-  email: string;
   idToken: string;
 }
 

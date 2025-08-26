@@ -1,6 +1,21 @@
 import React from "react";
 import Input from "./general/Input";
-import { Search, Bell, CircleUser, ChevronDown } from "lucide-react";
+import { Search, Bell, CircleUser, Settings, LogOut } from "lucide-react";
+import DropdownMenu from "./general/DropdownMenu";
+import { signOut } from "@/lib/actions/auth.client.action";
+// import { useRouter } from "next/navigation";
+
+const signOutAction = async () => {
+  // const router = useRouter();
+  await signOut();
+  // router.replace("/sign-in");
+};
+
+const DROPDOWN_ITEMS = [
+  { label: "Profile", icon: <CircleUser size={16} /> },
+  { label: "Settings", icon: <Settings size={16} /> },
+  { label: "Logout", icon: <LogOut size={16} />, onClick: signOut },
+];
 
 const Header = () => {
   return (
@@ -14,13 +29,11 @@ const Header = () => {
           className="bg-(--secondary-color) max-w-[300px] border-(--gray-accent-color) py-2"
         />
       </div>
-      <div className="flex items-center gap-6">
-        <Bell color="var(--secondary-text-color)" className="cursor-pointer" />
-        <div className="flex items-center gap-2 cursor-pointer font-bold">
-          <CircleUser color="var(--secondary-text-color)" className="cursor-pointer" />
-          <p>Norman Cade</p>
-          <ChevronDown color="var(--secondary-text-color)" className="cursor-pointer" />
+      <div className="flex items-center gap-2">
+        <div className="hover:bg-(--color-sidebar-accent) transition-colors duration-200 p-2 rounded-lg cursor-pointer">
+          <Bell color="var(--secondary-text-color)" className="cursor-pointer" />
         </div>
+        <DropdownMenu items={DROPDOWN_ITEMS} sideOffset={20} />
       </div>
     </nav>
   );

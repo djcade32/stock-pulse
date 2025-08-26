@@ -2,19 +2,39 @@
 
 import React from "react";
 import Button from "@/components/general/Button";
-import Input from "@/components/general/Input";
 import Image from "next/image";
 import Link from "next/link";
 import { BsGoogle, BsTwitterX } from "react-icons/bs";
-import { redirect } from "next/navigation";
 import AuthForm from "@/components/AuthForm";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "@/firebase/client";
+import { addUserToDBIfNotExists, signIn } from "@/lib/actions/auth.server.action";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const SignInPage = () => {
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle sign-in logic here
-    console.log("Sign in form submitted");
-    redirect("/dashboard"); // Redirect to dashboard after sign-in
+  const router = useRouter();
+  const provider = new GoogleAuthProvider();
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+
+      const idToken = await result.user.getIdToken(true); // force fresh
+      await addUserToDBIfNotExists(idToken);
+      const signInResult = await signIn({ idToken });
+
+      if (signInResult.success) {
+        router.push("/dashboard");
+        toast.success("Signed in successfully!");
+      } else {
+        console.error("Server sign-in failed:", signInResult);
+        toast.error(signInResult.message || "Error signing in, please try again.");
+      }
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      toast.error("Error signing in with Google. Please try again.");
+    }
   };
 
   return (
@@ -36,7 +56,11 @@ const SignInPage = () => {
           <div className="divider" />
         </div>
         <div className="flex gap-4 my-7">
-          <Button variant="outline" className="sign-in-socials">
+          <Button
+            variant="outline"
+            className="sign-in-socials"
+            onClick={async () => handleSignInWithGoogle()}
+          >
             <BsGoogle />
             Google
           </Button>
