@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import Button from "@/components/general/Button";
 import React from "react";
 import { FaFilter, FaPlus } from "react-icons/fa6";
 
