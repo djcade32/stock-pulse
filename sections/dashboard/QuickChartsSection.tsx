@@ -3,8 +3,10 @@
 import QuickChart from "@/components/QuickChart";
 import React from "react";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
+import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 
-const DUMMY_STOCK_DATA = ["AAPL", "GOOGL", "MSFT"];
+// const DUMMY_STOCK_DATA = ["AAPL", "GOOGL", "MSFT"];
+const DUMMY_STOCK_DATA = ["NVDA", "AMZN", "IBIT", "SPY"];
 // const DUMMY_STOCK_DATA = [
 //   { ticker: "S&P 500", price: 4587.64, change: 1.2 },
 //   { ticker: "NASDAQ", price: 14567.89, change: -0.5 },
@@ -16,6 +18,8 @@ const QuickChartsSection = () => {
     DUMMY_STOCK_DATA,
     { enabled: true }
   );
+
+  useQuoteStreamPatcher(DUMMY_STOCK_DATA);
 
   if (isLoading)
     return (
@@ -37,8 +41,8 @@ const QuickChartsSection = () => {
 
         const stock = {
           ticker: symbol,
-          price: quote.c,
-          change: Number(quote.dp.toFixed(2)),
+          price: Number(quote.c.toFixed(2)) || 0,
+          change: Number(quote.dp.toFixed(2)) || 0, // use change percentage if available
         };
         return <QuickChart key={symbol} stock={stock} />;
       })}

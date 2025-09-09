@@ -23,7 +23,7 @@ interface WatchlistCardProps {
   fullDetails?: boolean;
 }
 
-export const WatchlistCard = async ({ stock, fullDetails = true }: WatchlistCardProps) => {
+export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps) => {
   const {
     name,
     ticker,

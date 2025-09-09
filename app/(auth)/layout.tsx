@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import "../globals.css";
 import Ticker, { Item } from "@/components/Ticker";
 import { isAuthenticated } from "@/lib/actions/auth.server.action";
@@ -96,12 +95,7 @@ export default async function AuthLayout({
   if (isUserAuthenticated) {
     redirect("/dashboard");
   }
-  // else {
-  //   const cookieStore = await cookies();
-  //   if (cookieStore.get("session")) {
-  //     redirect("/api/clear-session");
-  //   }
-  // }
+
   return (
     <div className="min-h-screen w-full bg-background relative">
       <div

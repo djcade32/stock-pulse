@@ -4,6 +4,8 @@ import Button from "@/components/general/Button";
 import WatchlistCard from "@/components/WatchlistCard";
 import React from "react";
 import { ArrowDownWideNarrow, Grid2x2 } from "lucide-react";
+import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
+import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 
 const DUMMY_STOCK_DATA: {
   name: string;
@@ -115,6 +117,21 @@ const DUMMY_STOCK_DATA: {
 ];
 
 const WatchlistSection = () => {
+  const STOCK_TICKERS = DUMMY_STOCK_DATA.map((s) => s.ticker);
+  const { quotesBySymbol, isLoading, isFetching, errorsBySymbol } = useBatchQuotes(STOCK_TICKERS, {
+    enabled: true,
+  });
+
+  useQuoteStreamPatcher(STOCK_TICKERS);
+
+  if (isLoading)
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+        {DUMMY_STOCK_DATA.map((stock) => (
+          <div key={stock.ticker} className="card h-[247px] animate-pulse" />
+        ))}
+      </div>
+    );
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -131,9 +148,18 @@ const WatchlistSection = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {DUMMY_STOCK_DATA.map((stock) => (
-          <WatchlistCard key={stock.ticker} stock={stock} />
-        ))}
+        {DUMMY_STOCK_DATA.map((stock) => {
+          const quote = quotesBySymbol[stock.ticker];
+          const error = errorsBySymbol[stock.ticker];
+          if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
+          if (!quote) console.warn(`No quote data for ${stock.ticker}`);
+          if (!quote || error) return null;
+
+          stock.price = Number(quote.c.toFixed(2)) || 0;
+          stock.dollarChange = `$${(quote.c - quote.pc).toFixed(2)}` || stock.dollarChange;
+          stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
+          return <WatchlistCard key={stock.ticker} stock={stock} />;
+        })}
       </div>
     </div>
   );

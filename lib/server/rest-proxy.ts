@@ -71,12 +71,39 @@ async function fetchQuoteFromProvider(symbol: string): Promise<unknown> {
   });
 }
 
+async function fetchStockSymbolFromProvider(): Promise<unknown> {
+  const providerUrl = new URL(`${FINNHUB_BASE_URL}/stock/symbol?`);
+  providerUrl.searchParams.set("exchange", "US");
+  providerUrl.searchParams.set("token", FINNHUB_API_KEY as string);
+
+  return providerLimiter.schedule(async () => {
+    const providerResponse = await fetch(providerUrl);
+    if (!providerResponse.ok) {
+      const bodyText = await providerResponse.text().catch(() => "");
+      throw new Error(
+        `Finnhub quote failed: ${providerResponse.status} ${providerResponse.statusText} ${bodyText}`
+      );
+    }
+    return providerResponse.json();
+  });
+}
+
 async function getQuoteWithCache(symbol: string): Promise<{ data: unknown; fromCache: boolean }> {
   const cacheKey = `quote:${symbol}`;
   const cached = getCache<unknown>(cacheKey);
   if (cached) return { data: cached, fromCache: true };
 
   const fresh = await fetchQuoteFromProvider(symbol);
+  setCache(cacheKey, fresh, QUOTE_CACHE_TTL_MS);
+  return { data: fresh, fromCache: false };
+}
+
+async function getStockSymbolWithCache(): Promise<{ data: any; fromCache: boolean }> {
+  const cacheKey = "all_stocks";
+  const cached = getCache<unknown>(cacheKey);
+  if (cached) return { data: cached, fromCache: true };
+
+  const fresh = await fetchStockSymbolFromProvider();
   setCache(cacheKey, fresh, QUOTE_CACHE_TTL_MS);
   return { data: fresh, fromCache: false };
 }
@@ -105,6 +132,45 @@ app.get("/api/quote/:symbol", async (request: Request, response: Response, next:
 
     const { data, fromCache } = await getQuoteWithCache(symbol);
     response.json({ data, cached: fromCache, symbol });
+  } catch (error) {
+    next(error);
+  }
+});
+
+async function filterStocks(data: any[], q: any): Promise<any[]> {
+  if (!q) return data;
+  const qLower = q.toLowerCase();
+  return data.filter(
+    (stock) =>
+      stock.symbol.toLowerCase().includes(qLower) ||
+      (stock.description && stock.description.toLowerCase().includes(qLower))
+  );
+}
+
+/**
+ * GET /api/stocks/:symbol
+ * Example: /api/stocks?q=AAPL&limit=50&cursor=MSFT
+ * - Supports optional "q" param to filter by symbol or description (case-insensitive, substring).
+ * - Supports optional "limit" param to cap results (default 100, max 200).
+ * - Supports optional "cursor" param for pagination (the last symbol from previous page).
+ * - Returns { data: [...], nextCursor: "MSFT" } if more data is available.
+ */
+app.get("/api/stocks", async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const { data, fromCache } = await getStockSymbolWithCache();
+    const { searchParams } = new URL(`${FINNHUB_BASE_URL}${request.url}`);
+    const q: unknown = searchParams.get("q") || "";
+    const limit = Math.min(200, Number(searchParams.get("limit") || 100));
+    const cursor = searchParams.get("cursor") || ""; // last symbol returned previously
+
+    const filtered = await filterStocks(data, q as string);
+    // cursor = last symbol; find its index
+    const start = cursor ? Math.max(0, filtered.findIndex((r: any) => r.symbol === cursor) + 1) : 0;
+
+    const slice = filtered.slice(start, start + limit);
+    const nextCursor = slice.length === limit ? slice[limit - 1].symbol : null;
+
+    response.json({ data: slice, cached: fromCache, nextCursor });
   } catch (error) {
     next(error);
   }
@@ -175,6 +241,63 @@ app.get("/api/quotes", async (request: Request, response: Response, next: NextFu
       symbols: uniqueSymbols,
       quotes: bySymbol,
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// === CANDLES: GET /api/candles?symbol=AAPL&resolution=1&from=unix&to=unix ===
+// Finnhub docs: /stock/candle (resolution: 1, 5, 15, 30, 60, D, W, M)
+app.get("/api/candles", async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const rawSymbol = String(request.query.symbol || "");
+    const rawResolution = String(request.query.resolution || "1"); // "1" | "5" | "15" | "60" | "D" ...
+    const rawFrom = String(request.query.from || "");
+    const rawTo = String(request.query.to || "");
+
+    const symbol = normalizeSymbol(rawSymbol);
+    if (!isValidSymbol(symbol)) {
+      response.status(400).json({ error: "Invalid or missing 'symbol'." });
+      return;
+    }
+    if (!rawFrom || !rawTo) {
+      response
+        .status(400)
+        .json({ error: "Query params 'from' and 'to' (unix seconds) are required." });
+      return;
+    }
+
+    // Choose a TTL: intraday gets shorter cache; daily can be longer
+    const isDaily = rawResolution.toUpperCase() === "D";
+    const ttlMs = isDaily ? 60 * 60 * 1000 : 30 * 1000; // daily 1h, intraday 30s
+
+    const cacheKey = `candles:${symbol}:${rawResolution}:${rawFrom}:${rawTo}`;
+    const cached = getCache<unknown>(cacheKey);
+    if (cached) {
+      response.json({ data: cached, cached: true, symbol, resolution: rawResolution });
+      return;
+    }
+
+    const providerUrl = new URL(`${FINNHUB_BASE_URL}/stock/candle`);
+    providerUrl.searchParams.set("symbol", symbol);
+    providerUrl.searchParams.set("resolution", rawResolution);
+    providerUrl.searchParams.set("from", rawFrom);
+    providerUrl.searchParams.set("to", rawTo);
+    providerUrl.searchParams.set("token", FINNHUB_API_KEY as string);
+
+    const providerResult = await providerLimiter.schedule(async () => {
+      const providerResponse = await fetch(providerUrl);
+      if (!providerResponse.ok) {
+        const text = await providerResponse.text().catch(() => "");
+        throw new Error(
+          `Finnhub candles failed: ${providerResponse.status} ${providerResponse.statusText} ${text}`
+        );
+      }
+      return providerResponse.json();
+    });
+
+    setCache(cacheKey, providerResult, ttlMs);
+    response.json({ data: providerResult, cached: false, symbol, resolution: rawResolution });
   } catch (error) {
     next(error);
   }

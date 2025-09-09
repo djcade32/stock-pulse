@@ -2,6 +2,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Run Rest Proxy
+
+```
+npx tsx lib/server/rest-proxy.ts
+```
+
+Run Quote Fanout
+
+```
+npx tsx lib/server/quote-fanout.ts
+```
+
 First, run the development server:
 
 ```bash

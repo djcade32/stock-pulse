@@ -54,3 +54,31 @@ type FormRulesType = {
     message?: string;
   }[];
 };
+
+export interface ModalActionButtons {
+  confirm?: {
+    label?: string;
+    onClick: () => void | Promise<void>;
+    disabled?: boolean;
+  };
+  cancel?: {
+    label?: string;
+    onClick?: () => void | Promise<void>;
+    variant?: "ghost" | "danger";
+  };
+  slotRight?: () => React.ReactNode;
+  slotLeft?: () => React.ReactNode;
+}
+
+export interface Stock {
+  currency: string;
+  description: string;
+  displaySymbol: string;
+  figi: string;
+  isin: unknown;
+  mic: string;
+  shareClassFIGI: string;
+  symbol: string;
+  symbol2: string;
+  type: string;
+}

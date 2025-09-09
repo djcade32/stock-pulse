@@ -5,6 +5,7 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { ChartConfig, ChartContainer } from "./ui/chart";
 import { ComposedChart, Line, Area } from "recharts";
 import { toKebabCase } from "@/lib/utils";
+import { useCandles } from "@/lib/client/hooks/useCandles";
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
