@@ -6,6 +6,7 @@ export interface WatchlistState {
     description: string;
   }[];
   addToWatchlist: (stock: { symbol: string; description: string }) => void;
+  existInWatchlist: (symbol: string) => boolean;
 }
 
 const useWatchlistStore = create<WatchlistState>((set, get) => ({
@@ -16,6 +17,10 @@ const useWatchlistStore = create<WatchlistState>((set, get) => ({
     if (!currentWatchlist.find((s) => s.symbol === stock.symbol)) {
       set({ watchlist: [...currentWatchlist, stock] });
     }
+  },
+
+  existInWatchlist: (symbol: string) => {
+    return get().watchlist.some((s) => s.symbol === symbol);
   },
 }));
 

@@ -1,30 +1,39 @@
 "use client";
 
 import QuickChart from "@/components/QuickChart";
-import React from "react";
+import React, { useEffect } from "react";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
-
-// const DUMMY_STOCK_DATA = ["AAPL", "GOOGL", "MSFT"];
-const DUMMY_STOCK_DATA = ["NVDA", "AMZN", "IBIT", "SPY"];
-// const DUMMY_STOCK_DATA = [
-//   { ticker: "S&P 500", price: 4587.64, change: 1.2 },
-//   { ticker: "NASDAQ", price: 14567.89, change: -0.5 },
-//   { ticker: "VIX", price: 18.27, change: 3.3 },
-// ];
+import useQuickChartStore from "@/stores/quick-chart-store";
+import { useQuery } from "@tanstack/react-query";
+import { useUid } from "@/hooks/useUid";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/client";
 
 const QuickChartsSection = () => {
-  const { quotesBySymbol, isLoading, isFetching, errorsBySymbol } = useBatchQuotes(
-    DUMMY_STOCK_DATA,
+  const { uid, loading } = useUid();
+  const { quickChartList, setQuickChartList } = useQuickChartStore();
+  const { isPending } = useQuery({
+    queryKey: ["quickChartList", uid], // include uid in key so it refetches per user
+    queryFn: async () => {
+      const quickChartDoc = doc(db, `quickCharts/${uid}`);
+      const fetchedDoc = await getDoc(quickChartDoc);
+      setQuickChartList(fetchedDoc.exists() ? fetchedDoc.data().symbols : []);
+      return true;
+    },
+    enabled: !!uid && !loading, // prevent running before uid is ready
+  });
+
+  const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(
+    quickChartList.length ? quickChartList : ["AAPL", "GOOGL", "SPY"],
     { enabled: true }
   );
+  useQuoteStreamPatcher(quickChartList.length ? quickChartList : ["AAPL", "GOOGL", "SPY"]);
 
-  useQuoteStreamPatcher(DUMMY_STOCK_DATA);
-
-  if (isLoading)
+  if (isLoading || loading || isPending)
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-        {DUMMY_STOCK_DATA.map((symbol) => (
+        {["AAPL", "GOOGL", "SPY"].map((symbol) => (
           <div key={symbol} className="card h-[100px] animate-pulse" />
         ))}
       </div>
@@ -32,7 +41,7 @@ const QuickChartsSection = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-      {DUMMY_STOCK_DATA.map((symbol) => {
+      {quickChartList.map((symbol) => {
         const quote = quotesBySymbol[symbol];
         const error = errorsBySymbol[symbol];
         if (error) console.error(`Error loading quote for ${symbol}: ${error}`);

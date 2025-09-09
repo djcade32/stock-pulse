@@ -9,9 +9,9 @@ import { useStockSymbols } from "@/lib/client/hooks/useStockSymbols";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import useWatchlistStore from "@/stores/watchlist-store";
 import { ModalActionButtons, Stock } from "@/types";
-import { addDoc, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { Search, ChartLine } from "lucide-react";
-import React, { useState, useEffect, useMemo, use } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FaBookmark } from "react-icons/fa6";
 
 interface AddStockModalProps {
@@ -32,8 +32,8 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
   const [debounceSearchTerm, setDebounceSearchTerm] = useState(searchTerm);
   const [filteredStocks, setFilteredStocks] = useState<Stock[]>([]);
   const { stocks, isLoading, isFetching } = useStockSymbols(debounceSearchTerm);
-  const { addToWatchlist, watchlist } = useWatchlistStore();
-  const { addToQuickChartList, quickChartList } = useQuickChartStore();
+  const { addToWatchlist, watchlist, existInWatchlist } = useWatchlistStore();
+  const { addToQuickChartList, quickChartList, existInQuickChartList } = useQuickChartStore();
 
   useMemo(() => {
     setFilteredStocks(stocks.data);
@@ -79,7 +79,10 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
         return;
       }
       if (addWatchlist) {
-        selected.forEach((stock) => addToWatchlist(stock));
+        selected.forEach((stock) => {
+          if (existInWatchlist(stock.symbol)) return;
+          addToWatchlist(stock);
+        });
         const watchlistDocRef = doc(db, "watchlists", uid);
         await setDoc(
           watchlistDocRef,
@@ -91,7 +94,10 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
         );
       }
       if (addQuickChart) {
-        selected.forEach(({ symbol }) => addToQuickChartList(symbol));
+        selected.forEach(({ symbol }) => {
+          if (existInQuickChartList(symbol)) return;
+          addToQuickChartList(symbol);
+        });
         const quickChartDocRef = doc(db, "quickCharts", uid);
         await setDoc(
           quickChartDocRef,
@@ -104,6 +110,8 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
       }
     } catch (error) {}
   };
+
+  const showRow = (symbol: string) => !isSelected(symbol);
 
   const modalActionButtons: ModalActionButtons = {
     confirm: {
@@ -140,7 +148,7 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
             ))}
           {filteredStocks?.map(
             ({ symbol, description }) =>
-              !isSelected(symbol) && (
+              showRow(symbol) && (
                 <SearchStockRow
                   key={symbol}
                   stock={{

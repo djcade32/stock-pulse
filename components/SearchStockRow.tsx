@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
+import useWatchlistStore from "@/stores/watchlist-store";
+import useQuickChartStore from "@/stores/quick-chart-store";
+import { FaBookmark } from "react-icons/fa6";
+import { ChartLine } from "lucide-react";
 
 interface SearchStockRowProps {
   stock: { symbol: string; name: string };
@@ -9,6 +13,8 @@ interface SearchStockRowProps {
 }
 
 const SearchStockRow = ({ stock, onSelect, isSelected }: SearchStockRowProps) => {
+  const { existInWatchlist } = useWatchlistStore();
+  const { existInQuickChartList } = useQuickChartStore();
   const [selected, setSelected] = useState(isSelected);
   const toggleSelected = () => {
     setSelected(!selected);
@@ -30,13 +36,21 @@ const SearchStockRow = ({ stock, onSelect, isSelected }: SearchStockRowProps) =>
       <p className="font-semibold">
         {stock.symbol} - <span className="font-normal">{stock.name}</span>
       </p>
-      <div
-        className={cn(
-          "h-6 w-6 border-2 border-(--gray-accent-color) rounded-full opacity-0 group-hover:opacity-100",
-          selected && "bg-(--success-color)",
-          selected && "opacity-100"
-        )}
-      />
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+          {existInWatchlist(stock.symbol) && <FaBookmark size={18} color="var(--accent-color)" />}
+          {existInQuickChartList(stock.symbol) && (
+            <ChartLine size={18} color="var(--success-color)" />
+          )}
+        </div>
+        <div
+          className={cn(
+            "h-6 w-6 border-2 border-(--gray-accent-color) rounded-full opacity-0 group-hover:opacity-100",
+            selected && "bg-(--success-color)",
+            selected && "opacity-100"
+          )}
+        />
+      </div>
     </Button>
   );
 };
