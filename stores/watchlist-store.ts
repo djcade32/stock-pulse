@@ -5,12 +5,15 @@ export interface WatchlistState {
     symbol: string;
     description: string;
   }[];
+  setWatchlist: (list: { symbol: string; description: string }[]) => void;
   addToWatchlist: (stock: { symbol: string; description: string }) => void;
   existInWatchlist: (symbol: string) => boolean;
 }
 
 const useWatchlistStore = create<WatchlistState>((set, get) => ({
   watchlist: [],
+
+  setWatchlist: (list) => set({ watchlist: list }),
 
   addToWatchlist: (stock: { symbol: string; description: string }) => {
     const currentWatchlist = get().watchlist;

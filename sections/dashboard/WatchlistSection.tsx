@@ -6,6 +6,11 @@ import React from "react";
 import { ArrowDownWideNarrow, Grid2x2 } from "lucide-react";
 import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
+import { useUid } from "@/hooks/useUid";
+import useWatchlistStore from "@/stores/watchlist-store";
+import { useQuery } from "@tanstack/react-query";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/client";
 
 const DUMMY_STOCK_DATA: {
   name: string;
@@ -118,6 +123,18 @@ const DUMMY_STOCK_DATA: {
 
 const WatchlistSection = () => {
   const STOCK_TICKERS = DUMMY_STOCK_DATA.map((s) => s.ticker);
+  const { uid, loading } = useUid();
+  const { setWatchlist } = useWatchlistStore();
+  const { isPending } = useQuery({
+    queryKey: ["watchlist", uid], // include uid in key so it refetches per user
+    queryFn: async () => {
+      const watchlisttDoc = doc(db, `watchlists/${uid}`);
+      const fetchedDoc = await getDoc(watchlisttDoc);
+      setWatchlist(fetchedDoc.exists() ? fetchedDoc.data().stocks : []);
+      return true;
+    },
+    enabled: !!uid && !loading, // prevent running before uid is ready
+  });
   const { quotesBySymbol, isLoading, isFetching, errorsBySymbol } = useBatchQuotes(STOCK_TICKERS, {
     enabled: true,
   });
