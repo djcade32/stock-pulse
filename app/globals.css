@@ -206,7 +206,7 @@ body {
   }
 
   .card {
-    @apply w-full bg-(--secondary-color) rounded-lg p-4 flex items-center;
+    @apply w-full bg-(--secondary-color) rounded-lg p-4 flex items-center overflow-hidden;
   }
 
   .modal-backdrop {

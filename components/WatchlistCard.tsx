@@ -3,7 +3,6 @@ import Link from "next/link";
 import { FaNewspaper } from "react-icons/fa6";
 import { FaMicrophoneAlt } from "react-icons/fa";
 import AiTag from "./AiTag";
-import Button from "./general/Button";
 
 interface WatchlistCardProps {
   stock: {
@@ -50,7 +49,7 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
     <div className="card flex-col justify-between">
       <div className="flex flex-col w-full">
         <div className="flex justify-between w-full">
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full">
             <Link href={`/stocks/${ticker}`}>
               {logoUrl ? (
                 <img
@@ -65,18 +64,20 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
                 </div>
               )}
             </Link>
-            <div className="flex flex-col justify-between">
+            <div className="flex flex-col justify-between w-full">
               <Link
                 href={`/stocks/${ticker}`}
                 className="hover:brightness-75 transition-all duration-200"
               >
                 <h3 className="font-bold">{ticker}</h3>
               </Link>
-              <p className="text-xs text-(--secondary-text-color) font-medium">{name}</p>
+              <p className="text-xs text-(--secondary-text-color) font-medium text-ellipsis w-[90%] overflow-hidden text-nowrap">
+                {name}
+              </p>
             </div>
           </div>
 
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-end flex-shrink-0">
             <h3 className="font-bold">${price}</h3>
 
             <div
