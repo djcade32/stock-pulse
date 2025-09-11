@@ -1,9 +1,7 @@
 "use client";
 
-import Button from "@/components/general/Button";
 import WatchlistCard from "@/components/WatchlistCard";
 import React from "react";
-import { ArrowDownWideNarrow, Grid2x2 } from "lucide-react";
 import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 import { useUid } from "@/hooks/useUid";
@@ -160,60 +158,45 @@ const WatchlistSection = () => {
       </div>
     );
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Watchlist Sentiment</h2>
-        <div className="flex items-center gap-4">
-          <Button className="!bg-(--secondary-color) flex-1/2 font-bold">
-            <ArrowDownWideNarrow />
-            Sort
-          </Button>
-          <Button className="!bg-(--secondary-color) flex-1/2 font-bold">
-            <Grid2x2 />
-            View
-          </Button>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {watchlist.map(({ symbol, description }) => {
-          const stock = {
-            name: description,
-            ticker: symbol,
-            price: 0,
-            percentChange: 0,
-            dollarChange: "",
-            sentimentScore: 50,
-            numOfNews: 0,
-            sentimentSummary: "Loading sentiment…",
-            aiTags: [] as { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[],
-          };
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {watchlist.map(({ symbol, description }) => {
+        const stock = {
+          name: description,
+          ticker: symbol,
+          price: 0,
+          percentChange: 0,
+          dollarChange: "",
+          sentimentScore: 50,
+          numOfNews: 0,
+          sentimentSummary: "Loading sentiment…",
+          aiTags: [] as { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[],
+        };
 
-          const quote = quotesBySymbol[stock.ticker];
-          const error = errorsBySymbol[stock.ticker];
-          if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
-          if (!quote) console.warn(`No quote data for ${stock.ticker}`);
-          if (!quote || error) return null;
+        const quote = quotesBySymbol[stock.ticker];
+        const error = errorsBySymbol[stock.ticker];
+        if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
+        if (!quote) console.warn(`No quote data for ${stock.ticker}`);
+        if (!quote || error) return null;
 
-          stock.price = Number(quote.c.toFixed(2)) || 0;
-          stock.dollarChange =
-            `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
-          stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
-          const s = sentimentByTicker[stock.ticker];
-          if (s) {
-            stock.sentimentScore = s.score;
-            stock.numOfNews = s.numOfNews;
-            stock.sentimentSummary = s.summary;
-            stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, tag: t.tag }));
-          } else {
-            // fallback while loading
-            stock.sentimentScore = 50;
-            stock.numOfNews = 0;
-            stock.sentimentSummary = "Loading sentiment…";
-            stock.aiTags = [];
-          }
-          return <WatchlistCard key={stock.ticker} stock={stock} />;
-        })}
-      </div>
+        stock.price = Number(quote.c.toFixed(2)) || 0;
+        stock.dollarChange =
+          `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
+        stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
+        const s = sentimentByTicker[stock.ticker];
+        if (s) {
+          stock.sentimentScore = s.score;
+          stock.numOfNews = s.numOfNews;
+          stock.sentimentSummary = s.summary;
+          stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, tag: t.tag }));
+        } else {
+          // fallback while loading
+          stock.sentimentScore = 50;
+          stock.numOfNews = 0;
+          stock.sentimentSummary = "Loading sentiment…";
+          stock.aiTags = [];
+        }
+        return <WatchlistCard key={stock.ticker} stock={stock} />;
+      })}
     </div>
   );
 };
