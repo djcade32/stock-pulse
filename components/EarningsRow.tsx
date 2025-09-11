@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import AiTag from "./AiTag";
-import { fetchCompanyLogo } from "@/lib/utils";
+import { useCompanyLogo } from "@/lib/client/hooks/useCompanyLogo";
 
 interface EarningsRowProps {
   earnings: {
@@ -15,10 +15,9 @@ interface EarningsRowProps {
   };
 }
 
-const EarningsRow = async ({ earnings }: EarningsRowProps) => {
+const EarningsRow = ({ earnings }: EarningsRowProps) => {
   const { date, ticker, name, quarter, insights, aiTags, overallSentiment } = earnings;
-  //   const logoUrl = await fetchCompanyLogo(ticker);
-  const logoUrl = null; // Placeholder for now, since fetching is async and we can't use hooks here
+  const { url: logoUrl } = useCompanyLogo(ticker);
 
   const getSentiment = (sentiment: string): "Positive" | "Neutral" | "Negative" => {
     switch (sentiment) {
@@ -38,8 +37,12 @@ const EarningsRow = async ({ earnings }: EarningsRowProps) => {
       <div className="flex justify-between">
         <div className="flex gap-2">
           <Link href={`/stocks/${ticker}`}>
-            {logoUrl ? (
-              <img src={logoUrl} alt={`${ticker} logo`} className="w-10 h-10 rounded-lg bg-white" />
+            {logoUrl.data ? (
+              <img
+                src={logoUrl.data}
+                alt={`${ticker} logo`}
+                className="w-10 h-10 rounded-lg bg-white"
+              />
             ) : (
               //   <div className="w-10 h-10 rounded-lg bg-gray-200 animate-pulse" />
               <div className="w-10 h-10 rounded-lg bg-(--secondary-text-color) text-foreground font-bold flex items-center justify-center">

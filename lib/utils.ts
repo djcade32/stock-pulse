@@ -13,19 +13,28 @@ export function toKebabCase(str: string): string {
     .toLowerCase(); // Convert to lowercase
 }
 
+export function getApiBaseUrl(): string {
+  // Prefer env var so production can point to Railway/Fly/etc.
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
+  }
+  // Dev fallback
+  return "http://localhost:8080";
+}
+
 // Fetch brand logo
-export async function fetchCompanyLogo(ticker: string): Promise<string> {
-  const apiKey = process.env.LOGO_DEV_API_KEY;
-  if (!apiKey) {
-    throw new Error("LOGO_DEV_API_KEY is not defined in environment variables.");
-  }
-
-  const response = await fetch(
-    `https://img.logo.dev/ticker/${ticker}.com?token=${apiKey}&format=png`
-  );
-
+export async function fetchCompanyLogo(
+  stock: string,
+  signal?: AbortSignal
+): Promise<{ data: string | null; cached: boolean }> {
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}/api/stock/logo/${stock}`;
+  const response = await fetch(url, { signal });
   if (!response.ok) {
-    throw new Error(`Failed to fetch logo for ${ticker}: ${response.statusText}`);
+    const text = await response.text().catch(() => "");
+    throw new Error(
+      `Company logo request failed: ${response.status} ${response.statusText} ${text}`
+    );
   }
-  return response.url; // Return the URL of the logo
+  return response.json();
 }

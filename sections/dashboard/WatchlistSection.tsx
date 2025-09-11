@@ -2,7 +2,7 @@
 
 import Button from "@/components/general/Button";
 import WatchlistCard from "@/components/WatchlistCard";
-import React, { useEffect } from "react";
+import React from "react";
 import { ArrowDownWideNarrow, Grid2x2 } from "lucide-react";
 import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
@@ -135,7 +135,7 @@ const WatchlistSection = () => {
     },
     enabled: !!uid && !loading, // prevent running before uid is ready
   });
-  const { quotesBySymbol, isLoading, isFetching, errorsBySymbol, raw } = useBatchQuotes(
+  const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(
     watchlist.map((s) => s.symbol),
     {
       enabled: true,
@@ -151,7 +151,7 @@ const WatchlistSection = () => {
   );
   const sentimentByTicker = Object.fromEntries(sentiments.map((s) => [s.ticker, s]));
 
-  if (isLoading || isPending || isSentFetching)
+  if (isLoading || isPending)
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
         {(watchlist.length ? watchlist : [1, 2, 3, 4, 5, 6]).map((_, index) => (

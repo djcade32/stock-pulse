@@ -1,3 +1,4 @@
+import { getApiBaseUrl } from "@/lib/utils";
 import { Stock } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -8,14 +9,6 @@ type StockSymbolsResponse = {
 };
 
 /** Resolve the base URL of your REST proxy. */
-function getApiBaseUrl(): string {
-  // Prefer env var so production can point to Railway/Fly/etc.
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
-  }
-  // Dev fallback
-  return "http://localhost:8080";
-}
 
 /** Small fetch helper with abort + errors surfaced nicely. */
 async function fetchStockSymbols(

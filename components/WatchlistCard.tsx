@@ -1,8 +1,17 @@
-import { cn, fetchCompanyLogo } from "@/lib/utils";
+"use client";
+
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FaNewspaper } from "react-icons/fa6";
 import { FaMicrophoneAlt } from "react-icons/fa";
+import { Ellipsis, Trash2 } from "lucide-react";
 import AiTag from "./AiTag";
+import { useCompanyLogo } from "@/lib/client/hooks/useCompanyLogo";
+import DropdownMenu from "./general/DropdownMenu";
+import useWatchlistStore from "@/stores/watchlist-store";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/firebase/client";
+import { useUid } from "@/hooks/useUid";
 
 interface WatchlistCardProps {
   stock: {
@@ -35,8 +44,10 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
     sentimentSummary,
   } = stock;
 
-  //   const logoUrl = await fetchCompanyLogo(ticker);
-  const logoUrl = null; // Placeholder for now, since fetching is async and we can't use hooks here
+  const { url: logoUrl } = useCompanyLogo(ticker);
+  const { removeFromWatchlist, watchlist } = useWatchlistStore();
+  const { uid } = useUid();
+
   const isPositiveChange = percentChange >= 0;
 
   const getSentiment = (score: number) => {
@@ -45,17 +56,34 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
     return "Bearish";
   };
 
+  const handleRemove = async () => {
+    // Implement the logic to remove the stock from the watchlist
+    console.log(`Removing ${ticker} from watchlist`);
+    removeFromWatchlist(ticker);
+    // Remove from firebase as well
+    const ref = doc(db, "watchlists", uid!);
+    await setDoc(
+      ref,
+      {
+        uid,
+        stocks: watchlist.filter((s) => s.symbol !== ticker),
+      },
+      { merge: true }
+    );
+  };
+
   return (
-    <div className="card flex-col justify-between">
+    <div className="group card flex-col justify-between">
+      <Ellipsis className="absolute top-0 right-4 text-(--secondary-text-color) opacity-0 group-hover:opacity-100 hover:brightness-125 cursor-pointer smooth-animation" />
       <div className="flex flex-col w-full">
         <div className="flex justify-between w-full">
           <div className="flex gap-2 w-full">
-            <Link href={`/stocks/${ticker}`}>
-              {logoUrl ? (
+            <Link href={`/stocks/${ticker}`} className="flex-shrink-0">
+              {logoUrl.data ? (
                 <img
-                  src={logoUrl}
+                  src={logoUrl.data}
                   alt={`${ticker} logo`}
-                  className="w-10 h-10 rounded-lg bg-white"
+                  className="!w-10 h-10 rounded-lg bg-white bg-cover"
                 />
               ) : (
                 //   <div className="w-10 h-10 rounded-lg bg-gray-200 animate-pulse" />
@@ -140,6 +168,21 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
           </div>
         </div>
       </div>
+
+      <DropdownMenu
+        className="w-10 bg-(--secondary-color) shadow-lg border border-(--gray-accent-color)"
+        renderTrigger={
+          <Ellipsis className="absolute top-0 right-4 text-(--secondary-text-color) opacity-0 group-hover:opacity-100 hover:brightness-125 cursor-pointer smooth-animation" />
+        }
+        items={[
+          {
+            icon: <Trash2 size={12} color="var(--danger-color" />,
+            label: "Remove",
+            onClick: handleRemove,
+          },
+        ]}
+        side="right"
+      />
 
       {fullDetails ? (
         <div className="flex justify-between mt-4 w-full">

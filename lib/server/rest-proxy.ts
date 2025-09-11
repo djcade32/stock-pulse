@@ -88,6 +88,21 @@ async function fetchStockSymbolFromProvider(): Promise<unknown> {
   });
 }
 
+async function fetchCompanyLogo(ticker: string): Promise<string> {
+  const apiKey = process.env.LOGO_DEV_API_KEY;
+  if (!apiKey) {
+    throw new Error("LOGO_DEV_API_KEY is not defined in environment variables.");
+  }
+  const response = await fetch(
+    `https://img.logo.dev/ticker/${ticker}.com?token=${apiKey}&format=png`
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch logo for ${ticker}: ${response.statusText}`);
+  }
+  return response.url; // Return the URL of the logo
+}
+
 async function getQuoteWithCache(symbol: string): Promise<{ data: unknown; fromCache: boolean }> {
   const cacheKey = `quote:${symbol}`;
   const cached = getCache<unknown>(cacheKey);
@@ -104,6 +119,16 @@ async function getStockSymbolWithCache(): Promise<{ data: any; fromCache: boolea
   if (cached) return { data: cached, fromCache: true };
 
   const fresh = await fetchStockSymbolFromProvider();
+  setCache(cacheKey, fresh, QUOTE_CACHE_TTL_MS);
+  return { data: fresh, fromCache: false };
+}
+
+async function getCompanyLogoWithCache(ticker: string): Promise<{ data: any; fromCache: boolean }> {
+  const cacheKey = `company_logo:${ticker}`;
+  const cached = getCache<unknown>(cacheKey);
+  if (cached) return { data: cached, fromCache: true };
+
+  const fresh = await fetchCompanyLogo(ticker);
   setCache(cacheKey, fresh, QUOTE_CACHE_TTL_MS);
   return { data: fresh, fromCache: false };
 }
@@ -175,6 +200,24 @@ app.get("/api/stocks", async (request: Request, response: Response, next: NextFu
     next(error);
   }
 });
+
+app.get(
+  "/api/stock/logo/:ticker",
+  async (request: Request, response: Response, next: NextFunction) => {
+    try {
+      const symbol = normalizeSymbol(request.params.ticker);
+      if (!isValidSymbol(symbol)) {
+        response.status(400).json({ error: "Invalid symbol format." });
+        return;
+      }
+
+      const { data, fromCache } = await getCompanyLogoWithCache(symbol);
+      response.json({ data, cached: fromCache, symbol });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 /**
  * GET /api/quotes?symbols=AAPL,MSFT,TSLA
