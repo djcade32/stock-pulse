@@ -1,11 +1,16 @@
 "use client";
 
 import React from "react";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, Ellipsis, Trash2 } from "lucide-react";
 import { ChartConfig, ChartContainer } from "./ui/chart";
 import { ComposedChart, Line, Area } from "recharts";
 import { toKebabCase } from "@/lib/utils";
 import { useCandles } from "@/lib/client/hooks/useCandles";
+import DropdownMenu from "./general/DropdownMenu";
+import useQuickChartStore from "@/stores/quick-chart-store";
+import { db } from "@/firebase/client";
+import { doc, setDoc } from "firebase/firestore";
+import { useUid } from "@/hooks/useUid";
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -34,11 +39,44 @@ interface QuickChartProps {
 }
 
 const QuickChart = ({ stock }: QuickChartProps) => {
+  const { removeFromQuickChartList, quickChartList } = useQuickChartStore();
+  const { uid } = useUid();
   const chartId = `quick-chart-${toKebabCase(stock.ticker)}`;
   const lineColor = stock.change >= 0 ? "var(--success-color)" : "var(--danger-color)";
 
+  const handleRemove = async () => {
+    const { ticker } = stock;
+    // Implement the logic to remove the stock from the quick chart
+    console.log(`Removing ${ticker} from quick chart`);
+    removeFromQuickChartList(ticker);
+    // Remove from firebase as well
+    const ref = doc(db, "quickCharts", uid!);
+    await setDoc(
+      ref,
+      {
+        uid,
+        stocks: quickChartList.filter((s) => s !== ticker),
+      },
+      { merge: true }
+    );
+  };
+
   return (
-    <div className="card h-[100px]">
+    <div className="group card h-[100px]">
+      <DropdownMenu
+        className="w-10 bg-(--secondary-color) shadow-lg border border-(--gray-accent-color)"
+        renderTrigger={
+          <Ellipsis className="absolute top-0 right-4 text-(--secondary-text-color) opacity-0 group-hover:opacity-100 hover:brightness-125 cursor-pointer smooth-animation" />
+        }
+        items={[
+          {
+            icon: <Trash2 size={12} color="var(--danger-color" />,
+            label: "Remove",
+            onClick: handleRemove,
+          },
+        ]}
+        side="right"
+      />
       <div className="flex flex-col items-start justify-center gap-[0.5]">
         <p className="text-(--secondary-text-color) font-semibold">{stock.ticker}</p>
         <h2 className="text-2xl font-bold">{stock.price}</h2>
