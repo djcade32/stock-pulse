@@ -82,3 +82,14 @@ export interface Stock {
   symbol2: string;
   type: string;
 }
+
+export type ReportRowDTO = {
+  date: string; // filing date e.g. "Sep 10, 2025"
+  ticker: string;
+  name: string;
+  quarter: string; // "10-Q Q2 2025" or "10-K 2024"
+  insights: string;
+  aiTags: { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[];
+  overallSentiment: "Bullish" | "Neutral" | "Bearish";
+  url: string;
+};

@@ -2,21 +2,14 @@ import Link from "next/link";
 import React from "react";
 import AiTag from "./AiTag";
 import { useCompanyLogo } from "@/lib/client/hooks/useCompanyLogo";
+import { ReportRowDTO } from "@/types";
 
 interface EarningsRowProps {
-  earnings: {
-    date: string;
-    ticker: string;
-    name: string;
-    quarter: string;
-    insights: string;
-    aiTags: { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[];
-    overallSentiment: string;
-  };
+  earnings: ReportRowDTO;
 }
 
 const EarningsRow = ({ earnings }: EarningsRowProps) => {
-  const { date, ticker, name, quarter, insights, aiTags, overallSentiment } = earnings;
+  const { date, ticker, name, quarter, insights, aiTags, overallSentiment, url } = earnings;
   const { url: logoUrl } = useCompanyLogo(ticker);
 
   const getSentiment = (sentiment: string): "Positive" | "Neutral" | "Negative" => {
@@ -57,7 +50,16 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
             >
               <h3 className="font-bold">{`${name} (${ticker})`}</h3>
             </Link>
-            <p className="text-xs text-(--secondary-text-color) font-bold">{`${quarter} Earnings Call • ${date}`}</p>
+            {url ? (
+              <Link
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-(--secondary-text-color) font-bold hover:brightness-75"
+              >{`${quarter} Report • ${date}`}</Link>
+            ) : (
+              <p className="text-xs text-(--secondary-text-color) font-bold">{`${quarter} Report • ${date}`}</p>
+            )}
           </div>
         </div>
         <div>
@@ -66,7 +68,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
       </div>
 
       <div>
-        <p className="leading-tight text-sm">{insights}</p>
+        <p className="leading-relax text-sm">{insights}</p>
       </div>
 
       <div>
