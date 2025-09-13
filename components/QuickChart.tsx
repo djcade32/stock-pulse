@@ -55,7 +55,7 @@ const QuickChart = ({ stock }: QuickChartProps) => {
       ref,
       {
         uid,
-        stocks: quickChartList.filter((s) => s !== ticker),
+        symbols: quickChartList.filter((s) => s !== ticker),
       },
       { merge: true }
     );

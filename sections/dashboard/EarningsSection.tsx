@@ -35,11 +35,15 @@ export default function EarningsSection() {
       {/* <AnalyzeLatestButton /> */}
       {/* <AnalyzeFromUrlAdvanced /> */}
 
-      <div className="bg-(--secondary-color) rounded-lg px-4 mt-4 divide-y divide-(--gray-accent-color)">
+      <div
+        className={`bg-(--secondary-color) rounded-lg px-4 mt-4 divide-y divide-(--gray-accent-color) ${
+          isLoading && "animate-pulse"
+        }`}
+      >
         {isLoading && (
           <>
             {[1].map((_, index) => (
-              <div key={index} className="py-4 h-[209px] animate-pulse" />
+              <div key={index} className="py-4 h-[209px]" />
             ))}
           </>
         )}
@@ -49,7 +53,7 @@ export default function EarningsSection() {
         {!isLoading && !isError && (!data || data.length === 0) && (
           <div className="py-6 text-(--muted-foreground)">No analyzed filings yet.</div>
         )}
-        {data?.map((row) => (
+        {data?.slice(0, 3)?.map((row) => (
           <EarningsRow key={`${row.ticker}-${row.date}`} earnings={row} />
         ))}
       </div>

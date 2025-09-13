@@ -6,12 +6,13 @@ import SearchStockRow from "@/components/SearchStockRow";
 import { Switch } from "@/components/ui/switch";
 import { auth, db } from "@/firebase/client";
 import { useStockSymbols } from "@/lib/client/hooks/useStockSymbols";
+import { useAddToWatchlistAndAnalyze } from "@/lib/client/mutations/useAddToWatchlistAndAnalyze";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import useWatchlistStore from "@/stores/watchlist-store";
 import { ModalActionButtons, Stock } from "@/types";
 import { doc, setDoc } from "firebase/firestore";
 import { Search, ChartLine } from "lucide-react";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { FaBookmark } from "react-icons/fa6";
 
 interface AddStockModalProps {
@@ -20,6 +21,7 @@ interface AddStockModalProps {
 }
 
 const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<
     {
       symbol: string;
@@ -32,8 +34,9 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
   const [debounceSearchTerm, setDebounceSearchTerm] = useState(searchTerm);
   const [filteredStocks, setFilteredStocks] = useState<Stock[]>([]);
   const { stocks, isLoading, isFetching } = useStockSymbols(debounceSearchTerm);
-  const { addToWatchlist, watchlist, existInWatchlist } = useWatchlistStore();
+  const { addToWatchlist, existInWatchlist } = useWatchlistStore();
   const { addToQuickChartList, quickChartList, existInQuickChartList } = useQuickChartStore();
+  const addMany = useAddToWatchlistAndAnalyze();
 
   useMemo(() => {
     setFilteredStocks(stocks.data);
@@ -51,6 +54,7 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
   }, [searchTerm]);
 
   useEffect(() => {
+    open && inputRef.current?.focus();
     setSelected([]);
     setAddWatchlist(true);
     setAddQuickChart(false);
@@ -78,20 +82,14 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
         console.error("User not authenticated");
         return;
       }
-      if (addWatchlist) {
+      if (addWatchlist && selected.length) {
         selected.forEach((stock) => {
           if (existInWatchlist(stock.symbol)) return;
           addToWatchlist(stock);
         });
-        const watchlistDocRef = doc(db, "watchlists", uid);
-        await setDoc(
-          watchlistDocRef,
-          {
-            uid,
-            stocks: [...selected, ...watchlist],
-          },
-          { merge: true }
-        );
+
+        // If user adds >5 at once, you can chunk on client (optional).
+        await addMany.mutateAsync(selected);
       }
       if (addQuickChart) {
         selected.forEach(({ symbol }) => {
@@ -108,7 +106,9 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
           { merge: true }
         );
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error adding stocks:", error);
+    }
   };
 
   const showRow = (symbol: string) => !isSelected(symbol);
@@ -126,6 +126,7 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
     <Modal header="Add Stock" actionButtons={modalActionButtons} open={open} setOpen={setOpen}>
       <div>
         <Input
+          ref={inputRef}
           type="text"
           placeholder="Search for stocks (e.g. AAPL, Apple Inc.)"
           preIcon={<Search color="var(--secondary-text-color)" size={20} />}
@@ -134,32 +135,17 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <div className="mt-4 flex flex-col gap-2 overflow-y-auto h-[200px]">
-          {!searchTerm &&
-            selected?.map(({ symbol, description }) => (
-              <SearchStockRow
-                key={symbol}
-                stock={{
-                  symbol,
-                  name: description,
-                }}
-                onSelect={onSelect}
-                isSelected={isSelected(symbol)}
-              />
-            ))}
-          {filteredStocks?.map(
-            ({ symbol, description }) =>
-              showRow(symbol) && (
-                <SearchStockRow
-                  key={symbol}
-                  stock={{
-                    symbol,
-                    name: description,
-                  }}
-                  onSelect={onSelect}
-                  isSelected={isSelected(symbol)}
-                />
-              )
-          )}
+          {filteredStocks?.map(({ symbol, description }) => (
+            <SearchStockRow
+              key={symbol}
+              stock={{
+                symbol,
+                name: description,
+              }}
+              onSelect={onSelect}
+              isSelected={isSelected(symbol)}
+            />
+          ))}
         </div>
         <div className="mt-6 border-t-2 border-(--secondary-color) pt-4 flex flex-col gap-4">
           <p>Add {!!selected.length && selected.length} stock(s) to:</p>

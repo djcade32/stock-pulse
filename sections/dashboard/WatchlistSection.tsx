@@ -149,7 +149,7 @@ const WatchlistSection = () => {
   );
   const sentimentByTicker = Object.fromEntries(sentiments.map((s) => [s.ticker, s]));
 
-  if (isLoading || isPending)
+  if (isLoading || isPending || isSentFetching)
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
         {(watchlist.length ? watchlist : [1, 2, 3, 4, 5, 6]).map((_, index) => (

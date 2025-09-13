@@ -4,6 +4,7 @@ import { Eye, Mail, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 
 interface InputProps {
+  ref?: React.Ref<HTMLInputElement>;
   name?: string;
   type?: React.HTMLInputTypeAttribute;
   placeholder?: string;
@@ -15,6 +16,7 @@ interface InputProps {
 }
 
 const Input = ({
+  ref,
   type,
   placeholder,
   value,
@@ -61,6 +63,7 @@ const Input = ({
         onChange={onChange}
         data-rr-is-password={type === "password" ? "true" : "false"}
         name={name}
+        ref={ref}
       />
       <div className="absolute right-3">{postIcon ? postIcon : getPostIcon()}</div>
     </div>

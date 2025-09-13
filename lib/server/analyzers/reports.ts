@@ -45,10 +45,11 @@ Filing: ${params.formLabel}
 
 Goals:
 - Summarize MD&A and overall performance drivers in 4–6 bullets.
-- Extract explicit KPIs (revenue, EPS, gross margin, operating margin, FCF, cash, debt, segment revenue, backlog) if stated; put null for deltas if not stated.
-- Identify major themes (demand, pricing, margins, AI, capex, competition, supply chain, regulatory) with sentiment between -1..1.
+- Extract explicit KPIs throughout the report such as, (revenue, EPS, gross margin, operating margin, FCF, cash, debt, segment revenue, backlog) if stated; put null for deltas if not stated.
+- Identify major themes throughout the report using simple phrases or single words. For example (Ad Revenue, Increased Spending, demand, pricing, margins, AI, capex, competition, supply chain, regulatory). Identify with sentiment between -1..1.
 - List top risks (legal, supply, customer concentration, leverage, macro).
 - Flags: mark guidanceChange if guidance was raised/lowered/introduced; liquidityConcern if cash burn, covenant risks, going concern; marginInflection if gross/operating margin materially turned.
+- The words I provided in parentheses are examples only. Use what you see fit according to the actual report.
 
 ${xbrlHint}
 
