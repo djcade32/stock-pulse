@@ -33,7 +33,7 @@ const data = {
     },
     {
       title: "Watch List",
-      url: "/watch-list",
+      url: "/watchlist",
       icon: FaEye,
     },
     {

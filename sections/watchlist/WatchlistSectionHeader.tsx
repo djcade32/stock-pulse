@@ -1,8 +1,9 @@
 "use client";
 
 import Button from "@/components/general/Button";
-import { ArrowDownWideNarrow, Grid2x2 } from "lucide-react";
+import { ArrowDownWideNarrow, GalleryVerticalEnd } from "lucide-react";
 import React from "react";
+import Link from "next/link";
 
 const WatchlistSectionHeader = () => {
   return (
@@ -13,9 +14,11 @@ const WatchlistSectionHeader = () => {
           <ArrowDownWideNarrow />
           Sort
         </Button>
-        <Button className="!bg-(--secondary-color) flex-1/2 font-bold">
-          <Grid2x2 />
-          View
+        <Button className="!bg-(--secondary-color) flex-1/2 font-bold" asChild>
+          <Link href="/watchlist">
+            <GalleryVerticalEnd />
+            View All
+          </Link>
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/general/Button";
+import { Button as RootButton } from "@/components/ui/button";
 import React, { useState } from "react";
 import { FaFilter } from "react-icons/fa6";
 import { RefreshCcw } from "lucide-react";
@@ -55,13 +56,15 @@ const NewsSection = () => {
         {data?.slice(0, 3).map((news, index) => (
           <NewsRow key={index} news={news} />
         ))}
-        <div>
-          <Link
-            href="/news"
-            className="text-center text-(--accent-color) text-sm mt-4 hover:brightness-125 transition-all duration-200"
+        <div className="flex justify-center">
+          <RootButton
+            asChild
+            className="text-(--accent-color) hover:brightness-125 transition-all duration-200"
           >
-            <p>View All News</p>
-          </Link>
+            <Link href="/news">
+              <p>View All News</p>
+            </Link>
+          </RootButton>
         </div>
       </div>
     </div>

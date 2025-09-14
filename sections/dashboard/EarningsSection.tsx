@@ -1,12 +1,14 @@
 "use client";
 
 import Button from "@/components/general/Button";
+import { Button as RootButton } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import { useRefreshReports, useReportsFeed } from "@/lib/client/queries/reports";
 import EarningsRow from "@/components/EarningsRow"; // reuse same row component
 import { useState } from "react";
 import LastRefreshedBadge from "@/components/reports/LastRefreshedBadge";
 import { useEnsureLatestOnOpen } from "@/lib/client/hooks/useEnsureLatestOnOpen";
+import Link from "next/link";
 
 export default function EarningsSection() {
   useEnsureLatestOnOpen();
@@ -61,6 +63,16 @@ export default function EarningsSection() {
         {data?.slice(0, 3)?.map((row) => (
           <EarningsRow key={`${row.ticker}-${row.date}`} earnings={row} />
         ))}
+        <div className="py-4 flex justify-center">
+          <RootButton
+            asChild
+            className="text-(--accent-color) hover:brightness-125 transition-all duration-200"
+          >
+            <Link href="/earnings">
+              <p>View All Insights</p>
+            </Link>
+          </RootButton>
+        </div>
       </div>
     </div>
   );
