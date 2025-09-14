@@ -67,7 +67,7 @@ body {
   }
 
   .button {
-    @apply w-full py-5 cursor-pointer transition-colors duration-200 ease-in-out rounded-lg font-semibold;
+    @apply py-5 cursor-pointer transition-colors duration-200 ease-in-out rounded-lg font-semibold;
   }
 
   .divider {

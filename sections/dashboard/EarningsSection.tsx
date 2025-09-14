@@ -5,9 +5,13 @@ import { RefreshCcw } from "lucide-react";
 import { useReportsFeed } from "@/lib/client/queries/reports";
 import EarningsRow from "@/components/EarningsRow"; // reuse same row component
 import { useState } from "react";
+import LastRefreshedBadge from "@/components/reports/LastRefreshedBadge";
+import { useEnsureLatestOnOpen } from "@/lib/client/hooks/useEnsureLatestOnOpen";
 
 export default function EarningsSection() {
+  useEnsureLatestOnOpen();
   const { data, isLoading, isError, error, refetch } = useReportsFeed();
+
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = () => {
@@ -21,6 +25,7 @@ export default function EarningsSection() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">AI-Generated Earnings Insights</h2>
         <div className="flex items-center gap-2">
+          <LastRefreshedBadge />
           <Button
             className="font-bold !text-(--secondary-text-color)"
             variant="ghost"
