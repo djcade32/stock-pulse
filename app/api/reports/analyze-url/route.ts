@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { analyzeFilingToJson } from "@/lib/server/analyzers/reports";
 import { upsertFilingEvent, saveFilingAnalysis } from "@/lib/server/persistReports";
 import { sha256 } from "@/lib/server/crypto";
-import { doc, getDoc, setDoc } from "firebase/firestore";
 import { fetchFilingText } from "@/lib/server/vendors/edgar";
 import { format } from "date-fns";
 
@@ -88,7 +87,6 @@ export async function POST(req: Request) {
 }
 
 import { db } from "@/firebase/admin";
-import { hash } from "crypto";
 async function toFeedRowDTO(
   eventId: string,
   ticker: string,

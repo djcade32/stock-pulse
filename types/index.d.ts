@@ -93,3 +93,23 @@ export type ReportRowDTO = {
   overallSentiment: "Bullish" | "Neutral" | "Bearish";
   url: string;
 };
+
+type TickerSentiment = {
+  ticker: string;
+  score: number; // 0..100
+  counts: { positive: number; neutral: number; negative: number };
+  tags: Array<{ tag: string; sentiment: "Positive" | "Neutral" | "Negative"; count: number }>;
+  summary: string;
+  numOfNews: number;
+};
+
+type News = {
+  id: string;
+  title: string;
+  summary: string;
+  source: string;
+  url: string;
+  sentiment: "Positive" | "Negative" | "Neutral";
+  publishedAt: Date;
+  timeElapsed: string;
+};

@@ -2,7 +2,7 @@
 
 import Button from "@/components/general/Button";
 import { RefreshCcw } from "lucide-react";
-import { useReportsFeed } from "@/lib/client/queries/reports";
+import { useRefreshReports, useReportsFeed } from "@/lib/client/queries/reports";
 import EarningsRow from "@/components/EarningsRow"; // reuse same row component
 import { useState } from "react";
 import LastRefreshedBadge from "@/components/reports/LastRefreshedBadge";
@@ -10,14 +10,14 @@ import { useEnsureLatestOnOpen } from "@/lib/client/hooks/useEnsureLatestOnOpen"
 
 export default function EarningsSection() {
   useEnsureLatestOnOpen();
-  const { data, isLoading, isError, error, refetch } = useReportsFeed();
+  const { data, isLoading, isError, error } = useReportsFeed();
+  const refreshReports = useRefreshReports();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = () => {
-    console.log("Refreshing reports feed...");
     setIsRefreshing(true);
-    refetch().finally(() => setIsRefreshing(false));
+    refreshReports().finally(() => setIsRefreshing(false));
   };
 
   return (

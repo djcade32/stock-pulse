@@ -2,16 +2,10 @@ import Link from "next/link";
 import React from "react";
 import { FaNewspaper } from "react-icons/fa6";
 import AiTag from "./AiTag";
+import { News } from "@/types";
 
 interface NewsRowProps {
-  news: {
-    title: string;
-    source: string;
-    date: string;
-    summary: string;
-    sentiment: "Positive" | "Negative" | "Neutral";
-    elapsedTime: string;
-  };
+  news: News;
 }
 
 const getTag = (sentiment: string): "Mixed" | "Bullish" | "Bearish" => {
@@ -28,7 +22,7 @@ const getTag = (sentiment: string): "Mixed" | "Bullish" | "Bearish" => {
 };
 
 const NewsRow = ({ news }: NewsRowProps) => {
-  const { title, source, date, summary, sentiment, elapsedTime } = news;
+  const { title, source, summary, sentiment, timeElapsed, url } = news;
   return (
     <div className="flex items-start gap-4">
       <div>
@@ -39,10 +33,15 @@ const NewsRow = ({ news }: NewsRowProps) => {
 
       <div className="flex-1 flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <Link href={`/news/${title}`} className="hover:brightness-75 transition-all duration-200">
+          <Link
+            href={url}
+            className="hover:brightness-75 transition-all duration-200"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <h3 className="font-bold">{title}</h3>
           </Link>
-          <p className="text-xs text-(--secondary-text-color) font-bold">{elapsedTime}</p>
+          <p className="text-xs text-(--secondary-text-color) font-bold">{timeElapsed}</p>
         </div>
         <p className="text-sm text-(--secondary-text-color) leading-tight">{summary}</p>
         <div className="flex items-center gap-4">

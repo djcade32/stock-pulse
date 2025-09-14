@@ -41,7 +41,7 @@ const QuickChartsSection = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-      {quickChartList.map((symbol) => {
+      {quickChartList.slice(0, 3).map((symbol) => {
         const quote = quotesBySymbol[symbol];
         const error = errorsBySymbol[symbol];
         if (error) console.error(`Error loading quote for ${symbol}: ${error}`);

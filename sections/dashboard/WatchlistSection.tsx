@@ -159,7 +159,7 @@ const WatchlistSection = () => {
     );
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {watchlist.map(({ symbol, description }) => {
+      {watchlist.slice(0, 6).map(({ symbol, description }) => {
         const stock = {
           name: description,
           ticker: symbol,

@@ -1,13 +1,5 @@
+import { TickerSentiment } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-
-export type TickerSentiment = {
-  ticker: string;
-  score: number; // 0..100
-  counts: { positive: number; neutral: number; negative: number };
-  tags: Array<{ tag: string; sentiment: "Positive" | "Neutral" | "Negative"; count: number }>;
-  summary: string;
-  numOfNews: number;
-};
 
 export function useSentiment(tickers: string[], opts?: { enabled?: boolean }) {
   return useQuery({

@@ -48,7 +48,17 @@ type ArticlePred = { label: SentimentLabel; confidence: number; keyPhrases: stri
 // MVP analyzer: rule-based as a placeholder (upgrade later to FinBERT/LLM)
 function cheapHeuristicAnalyze(text: string): ArticlePred {
   const t = text.toLowerCase();
-  const positives = ["beat", "surge", "record", "growth", "raise", "upgrade", "strong", "profit"];
+  const positives = [
+    "beat",
+    "surge",
+    "record",
+    "growth",
+    "raise",
+    "upgrade",
+    "strong",
+    "profit",
+    "exceed",
+  ];
   const negatives = ["miss", "plunge", "cut", "downgrade", "lawsuit", "recall", "loss", "probe"];
   let score = 0;
   positives.forEach((p) => {
@@ -187,7 +197,6 @@ async function computeOrReadCached(ticker: string) {
 }
 
 export async function GET(req: NextRequest) {
-  console.log("Sentiment API called");
   try {
     const url = new URL(req.url);
     const tickersParam = url.searchParams.get("tickers") ?? "";
