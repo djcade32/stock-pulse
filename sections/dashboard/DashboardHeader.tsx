@@ -14,10 +14,10 @@ const DashboardHeader = () => {
           <h1 className="page-header-text">Dashboard</h1>
         </div>
         <div className="flex items-center gap-4">
-          <Button className="!bg-(--secondary-color) flex-1/2 font-bold">
+          {/* <Button className="!bg-(--secondary-color) flex-1/2 font-bold">
             <FaFilter />
             Filter
-          </Button>
+          </Button> */}
           <Button className="flex-1/2 font-bold" onClick={() => setIsAddStockModalOpen(true)}>
             <FaPlus />
             Add Stock

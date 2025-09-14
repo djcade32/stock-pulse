@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getAuth } from "firebase-admin/auth";
-import { addWatchlistItem, WatchlistStock } from "@/lib/server/watchlist";
+import { addWatchlistItem } from "@/lib/server/watchlist";
 import { analyzeLatestReportForTicker } from "@/lib/server/reports/analyzeLatest";
+import { WatchlistStock } from "@/types";
 
 // Tunables
 const MAX_BATCH = 5; // cap per request to be safe on Vercel
@@ -28,6 +29,7 @@ export async function POST(req: Request) {
       .map((s) => ({
         symbol: String(s.symbol || "").toUpperCase(),
         description: s.description ? String(s.description) : String(s.symbol || "").toUpperCase(),
+        type: s.type,
       }))
       .filter((s) => s.symbol);
     if (!stocks.length)

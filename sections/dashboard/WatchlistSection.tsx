@@ -1,7 +1,7 @@
 "use client";
 
 import WatchlistCard from "@/components/WatchlistCard";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 import { useUid } from "@/hooks/useUid";
@@ -10,137 +10,64 @@ import { useQuery } from "@tanstack/react-query";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/client";
 import { useSentiment } from "@/lib/client/hooks/useSentiment";
+import { Select } from "@/components/general/Select";
+import Button from "@/components/general/Button";
+import Link from "next/link";
+import { GalleryVerticalEnd } from "lucide-react";
+import { WatchlistCard as WatchlistCardType, WatchlistStock } from "@/types";
 
-// const DUMMY_STOCK_DATA: {
-//   name: string;
-//   symbol: string;
-//   price: number;
-//   percentChange: number;
-//   dollarChange: string;
-//   sentimentScore: number;
-//   numOfNews: number;
-//   aiTags?: { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[];
-//   sentimentSummary: string;
-// }[] = [
-//   {
-//     name: "Tesla, Inc.",
-//     ticker: "MU",
-//     price: 207.35,
-//     percentChange: 2.61,
-//     dollarChange: "$5.28",
-//     sentimentScore: 78,
-//     numOfNews: 12,
-//     aiTags: [
-//       { sentiment: "Positive", tag: "Cybertruck" },
-//       { sentiment: "Positive", tag: "FSD Expansion" },
-//       { sentiment: "Negative", tag: "Production Delays" },
-//     ],
-//     sentimentSummary:
-//       "Strong sentiment driven by Cybertruck delivery announcement and FSD expansions.",
-//   },
-//   {
-//     name: "Apple Inc.",
-//     ticker: "AAPL",
-//     price: 175.05,
-//     percentChange: 1.45,
-//     dollarChange: "$2.50",
-//     sentimentScore: 65,
-//     numOfNews: 8,
-//     aiTags: [
-//       { sentiment: "Positive", tag: "iPhone Sales" },
-//       { sentiment: "Positive", tag: "AI Integration" },
-//       { sentiment: "Negative", tag: "Supply Chain" },
-//     ],
-//     sentimentSummary: "Positive sentiment from strong iPhone sales and AI integration.",
-//   },
-//   {
-//     name: "Amazon.com, Inc.",
-//     ticker: "AMZN",
-//     price: 135.2,
-//     percentChange: 0.75,
-//     dollarChange: "$1.00",
-//     sentimentScore: 55,
-//     numOfNews: 5,
-//     aiTags: [
-//       { sentiment: "Positive", tag: "AWS Growth" },
-//       { sentiment: "Negative", tag: "Retail Challenges" },
-//       { sentiment: "Neutral", tag: "Prime Membership" },
-//     ],
-//     sentimentSummary: "Mixed sentiment with AWS growth offset by retail challenges.",
-//   },
-//   {
-//     name: "Alphabet Inc.",
-//     ticker: "GOOGL",
-//     price: 2800.5,
-//     percentChange: 1.2,
-//     dollarChange: "$33.60",
-//     sentimentScore: 70,
-//     numOfNews: 10,
-//     aiTags: [
-//       { sentiment: "Positive", tag: "AI Advancements" },
-//       { sentiment: "Neutral", tag: "Ad Revenue" },
-//     ],
-//     sentimentSummary: "Positive sentiment from AI advancements and ad revenue growth.",
-//   },
-//   {
-//     name: "Microsoft Corporation",
-//     ticker: "MSFT",
-//     price: 300.75,
-//     percentChange: -0.9,
-//     dollarChange: "$2.70",
-//     sentimentScore: 49,
-//     numOfNews: 6,
-//     aiTags: [
-//       { sentiment: "Positive", tag: "AI Investments" },
-//       { sentiment: "Negative", tag: "Regulatory Scrutiny" },
-//       { sentiment: "Neutral", tag: "Windows Updates" },
-//     ],
-//     sentimentSummary:
-//       "Neutral sentiment with mixed reactions to Windows updates and AI investments.",
-//   },
-//   {
-//     name: "Netflix, Inc.",
-//     ticker: "NFLX",
-//     price: 450.0,
-//     percentChange: -3.0,
-//     dollarChange: "$13.50",
-//     sentimentScore: 37,
-//     numOfNews: 4,
-//     aiTags: [
-//       {
-//         sentiment: "Positive",
-//         tag: "Streaming",
-//       },
-//       {
-//         sentiment: "Negative",
-//         tag: "Subscriber Losses",
-//       },
-//     ],
-//     sentimentSummary: "Negative sentiment due to subscriber losses and content costs.",
-//   },
-// ];
+const SORT_BY_OPTIONS = [
+  { label: "A to Z", value: "aToZ" },
+  { label: "Z to A", value: "ZtoA" },
+  { label: "Price", value: "price" },
+  { label: "Percent Change", value: "percentChange" },
+  { label: "Sentiment Score", value: "sentimentScore" },
+];
+
+const FILTER_BY_OPTIONS = [
+  { label: "All Sentiment", value: "all" },
+  { label: "Positive", value: "positive" },
+  { label: "Negative", value: "negative" },
+  { label: "Neutral", value: "neutral" },
+];
 
 const WatchlistSection = () => {
   const { uid, loading } = useUid();
   const { watchlist, setWatchlist } = useWatchlistStore();
+  const [filteredWatchlist, setFilteredWatchlist] = useState(watchlist);
   const { isPending } = useQuery({
     queryKey: ["watchlist", uid], // include uid in key so it refetches per user
     queryFn: async () => {
       const watchlisttDoc = doc(db, `watchlists/${uid}`);
       const fetchedDoc = await getDoc(watchlisttDoc);
-      setWatchlist(fetchedDoc.exists() ? fetchedDoc.data().stocks : []);
+      // Sort alphabetically by symbol
+      if (fetchedDoc.exists() && fetchedDoc.data().stocks) {
+        const stocks = fetchedDoc.data().stocks;
+        stocks.sort((a: { symbol: string }, b: { symbol: string }) =>
+          a.symbol.localeCompare(b.symbol)
+        );
+        setWatchlist(stocks);
+      } else {
+        setWatchlist([]);
+      }
       return true;
     },
     enabled: !!uid && !loading, // prevent running before uid is ready
   });
+  // Fetch quotes for all stocks in watchlist
   const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(
     watchlist.map((s) => s.symbol),
     {
       enabled: true,
     }
   );
+  const [sortBy, setSortBy] = React.useState("aToZ");
+  const [filterBy, setFilterBy] = React.useState("all");
 
+  // Patch real-time updates to quotes
   useQuoteStreamPatcher(watchlist.map((s) => s.symbol));
+
+  // Fetch sentiment data for all stocks in watchlist
   const { data: sentiments = [], isFetching: isSentFetching } = useSentiment(
     watchlist.map((s) => s.symbol),
     {
@@ -149,54 +76,164 @@ const WatchlistSection = () => {
   );
   const sentimentByTicker = Object.fromEntries(sentiments.map((s) => [s.ticker, s]));
 
-  if (isLoading || isPending || isSentFetching)
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-        {(watchlist.length ? watchlist : [1, 2, 3, 4, 5, 6]).map((_, index) => (
-          <div key={index} className="card h-[247px] animate-pulse" />
-        ))}
-      </div>
+  const handleSortChange = async (
+    value: string,
+    list: WatchlistStock[]
+  ): Promise<WatchlistStock[]> => {
+    let sorted = [...list];
+    switch (value) {
+      case "aToZ":
+        sorted.sort((a, b) => a.symbol.localeCompare(b.symbol));
+        return sorted;
+      case "ZtoA":
+        sorted.sort((a, b) => b.symbol.localeCompare(a.symbol));
+        return sorted;
+      case "price":
+        sorted.sort((a, b) => {
+          const quoteA = quotesBySymbol[a.symbol];
+          const quoteB = quotesBySymbol[b.symbol];
+          if (!quoteA || !quoteB) return 0;
+          return quoteB.c - quoteA.c; // descending
+        });
+        return sorted;
+      case "percentChange":
+        sorted.sort((a, b) => {
+          const quoteA = quotesBySymbol[a.symbol];
+          const quoteB = quotesBySymbol[b.symbol];
+          if (!quoteA || !quoteB) return 0;
+          const percentA = ((quoteA.c - quoteA.pc) / quoteA.pc) * 100;
+          const percentB = ((quoteB.c - quoteB.pc) / quoteB.pc) * 100;
+          return percentB - percentA; // descending
+        });
+        return sorted;
+      case "sentimentScore":
+        sorted.sort((a, b) => {
+          const sentimentA = sentimentByTicker[a.symbol]?.score || 0;
+          const sentimentB = sentimentByTicker[b.symbol]?.score || 0;
+          return sentimentB - sentimentA; // descending
+        });
+        return sorted;
+      default:
+        return sorted;
+    }
+  };
+
+  const handleFilterChange = async (
+    value: string,
+    list: WatchlistStock[]
+  ): Promise<WatchlistStock[]> => {
+    let filtered = [...list];
+    switch (value) {
+      case "all":
+        // no filter
+        return filtered;
+      case "positive":
+        filtered = filtered.filter((s) => (sentimentByTicker[s.symbol]?.score || 0) > 60);
+        return filtered;
+      case "negative":
+        filtered = filtered.filter((s) => (sentimentByTicker[s.symbol]?.score || 0) < 40);
+        return filtered;
+      case "neutral":
+        console.log("Filtering neutral");
+        filtered = filtered.filter(
+          (s) =>
+            (sentimentByTicker[s.symbol]?.score || 0) >= 40 &&
+            (sentimentByTicker[s.symbol]?.score || 0) <= 60
+        );
+        return filtered;
+      default:
+        return filtered;
+    }
+  };
+
+  useMemo(() => {
+    handleSortChange(sortBy, watchlist).then((res) =>
+      handleFilterChange(filterBy, res).then((final) => setFilteredWatchlist(final))
     );
+  }, [watchlist, sortBy, filterBy]);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {watchlist.slice(0, 6).map(({ symbol, description }) => {
-        const stock = {
-          name: description,
-          ticker: symbol,
-          price: 0,
-          percentChange: 0,
-          dollarChange: "",
-          sentimentScore: 50,
-          numOfNews: 0,
-          sentimentSummary: "Loading sentiment…",
-          aiTags: [] as { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[],
-        };
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold">Watchlist Sentiment</h2>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
+            <Select
+              items={SORT_BY_OPTIONS}
+              prefix="Sort:"
+              value={sortBy}
+              onValueChange={setSortBy}
+            />
+            <Select
+              items={FILTER_BY_OPTIONS}
+              prefix="Filter:"
+              value={filterBy}
+              onValueChange={setFilterBy}
+            />
+          </div>
+          <Button className="!bg-(--secondary-color) flex-1/2 font-bold" asChild>
+            <Link href="/watchlist">
+              <GalleryVerticalEnd />
+              View All
+            </Link>
+          </Button>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {(isLoading || isPending || isSentFetching) &&
+          [1, 2, 3, 4, 5, 6].map((_, index) => (
+            <div key={index} className="card h-[247px] animate-pulse" />
+          ))}
+        {filteredWatchlist.length === 0 && !(isLoading || isPending || isSentFetching) && (
+          <div className="text-(--secondary-text-color) h-[491px] flex items-center justify-center col-span-3">
+            <p>No stocks match the filter criteria.</p>
+          </div>
+        )}
+        {watchlist.length === 0 && !(isLoading || isPending || isSentFetching) && (
+          <div className="text-(--secondary-text-color) h-[491px] flex items-center justify-center col-span-3">
+            <p>Your watchlist is empty. Add some stocks to see them here!</p>
+          </div>
+        )}
+        {filteredWatchlist.slice(0, 6).map(({ symbol, description, type }) => {
+          const stock: WatchlistCardType = {
+            name: description,
+            ticker: symbol,
+            type,
+            price: 0,
+            percentChange: 0,
+            dollarChange: "",
+            sentimentScore: 50,
+            numOfNews: 0,
+            sentimentSummary: "Loading sentiment…",
+            aiTags: [] as { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[],
+          };
 
-        const quote = quotesBySymbol[stock.ticker];
-        const error = errorsBySymbol[stock.ticker];
-        if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
-        if (!quote) console.warn(`No quote data for ${stock.ticker}`);
-        if (!quote || error) return null;
+          const quote = quotesBySymbol[stock.ticker];
+          const error = errorsBySymbol[stock.ticker];
+          if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
+          if (!quote) console.warn(`No quote data for ${stock.ticker}`);
+          if (!quote || error) return null;
 
-        stock.price = Number(quote.c.toFixed(2)) || 0;
-        stock.dollarChange =
-          `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
-        stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
-        const s = sentimentByTicker[stock.ticker];
-        if (s) {
-          stock.sentimentScore = s.score;
-          stock.numOfNews = s.numOfNews;
-          stock.sentimentSummary = s.summary;
-          stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, tag: t.tag }));
-        } else {
-          // fallback while loading
-          stock.sentimentScore = 50;
-          stock.numOfNews = 0;
-          stock.sentimentSummary = "Loading sentiment…";
-          stock.aiTags = [];
-        }
-        return <WatchlistCard key={stock.ticker} stock={stock} />;
-      })}
+          stock.price = Number(quote.c.toFixed(2)) || 0;
+          stock.dollarChange =
+            `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
+          stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
+          const s = sentimentByTicker[stock.ticker];
+          if (s) {
+            stock.sentimentScore = s.score;
+            stock.numOfNews = s.numOfNews;
+            stock.sentimentSummary = s.summary;
+            stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, tag: t.tag }));
+          } else {
+            // fallback while loading
+            stock.sentimentScore = 50;
+            stock.numOfNews = 0;
+            stock.sentimentSummary = "Loading sentiment…";
+            stock.aiTags = [];
+          }
+          return <WatchlistCard key={stock.ticker} stock={stock} />;
+        })}
+      </div>
     </div>
   );
 };

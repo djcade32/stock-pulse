@@ -12,22 +12,10 @@ import useWatchlistStore from "@/stores/watchlist-store";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/client";
 import { useUid } from "@/hooks/useUid";
+import { WatchlistCard as WatchlistCardType } from "@/types";
 
 interface WatchlistCardProps {
-  stock: {
-    name: string;
-    ticker: string;
-    price: number;
-    percentChange: number;
-    dollarChange: string;
-    sentimentScore: number;
-    numOfNews: number;
-    aiTags?: {
-      sentiment: "Positive" | "Negative" | "Neutral";
-      tag: string;
-    }[];
-    sentimentSummary: string;
-  };
+  stock: WatchlistCardType;
   fullDetails?: boolean;
 }
 
@@ -42,6 +30,7 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
     numOfNews,
     aiTags = [],
     sentimentSummary,
+    type,
   } = stock;
 
   const { url: logoUrl } = useCompanyLogo(ticker);
@@ -190,10 +179,12 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
             <FaNewspaper size={15} className="mr-1" />
             News ({numOfNews})
           </Link>
-          <Link href={`/news/${ticker}`} className="watchlist-card-link">
-            <FaMicrophoneAlt size={15} className="mr-1" />
-            Earnings
-          </Link>
+          {type == "Common Stock" && (
+            <Link href={`/news/${ticker}`} className="watchlist-card-link">
+              <FaMicrophoneAlt size={15} className="mr-1" />
+              Earnings
+            </Link>
+          )}
         </div>
       ) : (
         // <Button className="mt-4">

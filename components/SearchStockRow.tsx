@@ -5,10 +5,11 @@ import useWatchlistStore from "@/stores/watchlist-store";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import { FaBookmark } from "react-icons/fa6";
 import { ChartLine } from "lucide-react";
+import { WatchlistStock } from "@/types";
 
 interface SearchStockRowProps {
-  stock: { symbol: string; name: string };
-  onSelect: (stock: { symbol: string; description: string }) => void;
+  stock: { symbol: string; name: string; type: string };
+  onSelect: (stock: WatchlistStock) => void;
   isSelected: boolean;
 }
 
@@ -18,10 +19,12 @@ const SearchStockRow = ({ stock, onSelect, isSelected }: SearchStockRowProps) =>
   const existInBothLists = existInWatchlist(stock.symbol) && existInQuickChartList(stock.symbol);
   const [selected, setSelected] = useState(isSelected);
   const toggleSelected = () => {
+    if (existInBothLists) return;
     setSelected(!selected);
     onSelect({
       symbol: stock.symbol,
       description: stock.name,
+      type: stock.type,
     });
   };
 

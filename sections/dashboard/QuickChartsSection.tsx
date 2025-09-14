@@ -18,7 +18,14 @@ const QuickChartsSection = () => {
     queryFn: async () => {
       const quickChartDoc = doc(db, `quickCharts/${uid}`);
       const fetchedDoc = await getDoc(quickChartDoc);
-      setQuickChartList(fetchedDoc.exists() ? fetchedDoc.data().symbols : []);
+      // Sort alphabetically by symbol
+      if (fetchedDoc.exists() && fetchedDoc.data().symbols) {
+        const symbols = fetchedDoc.data().symbols;
+        symbols.sort((a: string, b: string) => a.localeCompare(b));
+        setQuickChartList(symbols);
+      } else {
+        setQuickChartList([]);
+      }
       return true;
     },
     enabled: !!uid && !loading, // prevent running before uid is ready

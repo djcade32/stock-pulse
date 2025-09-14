@@ -1,7 +1,6 @@
 import { db } from "@/firebase/admin";
+import { WatchlistStock } from "@/types";
 import { FieldValue } from "firebase-admin/firestore";
-
-export type WatchlistStock = { description: string; symbol: string };
 
 /**
  * Read tickers (symbols) from watchlists/<userId>.stocks
@@ -20,7 +19,11 @@ export async function getUserWatchlistTickers(userId: string): Promise<string[]>
  */
 export async function addWatchlistItem(userId: string, stock: WatchlistStock) {
   const symbol = (stock.symbol || "").toUpperCase();
-  const canonical: WatchlistStock = { description: stock.description || symbol, symbol };
+  const canonical: WatchlistStock = {
+    description: stock.description || symbol,
+    symbol,
+    type: stock.type || "N/A",
+  };
 
   const ref = db.collection("watchlists").doc(userId);
   const snap = await ref.get();

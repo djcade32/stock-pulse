@@ -113,3 +113,21 @@ type News = {
   publishedAt: Date;
   timeElapsed: string;
 };
+
+export type WatchlistStock = { description: string; symbol: string; type: string };
+
+export type WatchlistCard = {
+  name: string;
+  ticker: string;
+  type: string;
+  price: number;
+  percentChange: number;
+  dollarChange: string;
+  sentimentScore: number;
+  numOfNews: number;
+  aiTags?: {
+    sentiment: "Positive" | "Negative" | "Neutral";
+    tag: string;
+  }[];
+  sentimentSummary: string;
+};

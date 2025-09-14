@@ -1,12 +1,10 @@
+import { WatchlistStock } from "@/types";
 import { create } from "zustand";
 
 export interface WatchlistState {
-  watchlist: {
-    symbol: string;
-    description: string;
-  }[];
-  setWatchlist: (list: { symbol: string; description: string }[]) => void;
-  addToWatchlist: (stock: { symbol: string; description: string }) => void;
+  watchlist: WatchlistStock[];
+  setWatchlist: (list: WatchlistStock[]) => void;
+  addToWatchlist: (stock: WatchlistStock) => void;
   removeFromWatchlist: (symbol: string) => void;
   existInWatchlist: (symbol: string) => boolean;
 }
@@ -16,7 +14,7 @@ const useWatchlistStore = create<WatchlistState>((set, get) => ({
 
   setWatchlist: (list) => set({ watchlist: list }),
 
-  addToWatchlist: (stock: { symbol: string; description: string }) => {
+  addToWatchlist: (stock: WatchlistStock) => {
     const currentWatchlist = get().watchlist;
     if (!currentWatchlist.find((s) => s.symbol === stock.symbol)) {
       set({ watchlist: [...currentWatchlist, stock] });

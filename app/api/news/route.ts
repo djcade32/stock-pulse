@@ -70,7 +70,7 @@ async function analyzeNewsSentiment(title: string, summary: string) {
   ];
   let score = 0;
   for (const p of positives) if (text.includes(p)) score++;
-  for (const n of negatives) if (text.includes(n)) score--;
+  for (const n of negatives) if (text.includes(n) && !text.includes("fed")) score--;
   if (score > 0) return "Positive";
   else if (score < 0) return "Negative";
   else return "Neutral";

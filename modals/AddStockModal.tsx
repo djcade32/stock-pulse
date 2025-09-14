@@ -9,11 +9,13 @@ import { useStockSymbols } from "@/lib/client/hooks/useStockSymbols";
 import { useAddToWatchlistAndAnalyze } from "@/lib/client/mutations/useAddToWatchlistAndAnalyze";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import useWatchlistStore from "@/stores/watchlist-store";
-import { ModalActionButtons, Stock } from "@/types";
+import { ModalActionButtons, Stock, WatchlistStock } from "@/types";
+import { add } from "date-fns";
 import { doc, setDoc } from "firebase/firestore";
 import { Search, ChartLine } from "lucide-react";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { FaBookmark } from "react-icons/fa6";
+import { toast } from "sonner";
 
 interface AddStockModalProps {
   open: boolean;
@@ -22,12 +24,7 @@ interface AddStockModalProps {
 
 const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [selected, setSelected] = useState<
-    {
-      symbol: string;
-      description: string;
-    }[]
-  >([]);
+  const [selected, setSelected] = useState<WatchlistStock[]>([]);
   const [addWatchlist, setAddWatchlist] = useState(true);
   const [addQuickChart, setAddQuickChart] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -66,13 +63,30 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
   const toggleQuickChart = () => setAddQuickChart(!addQuickChart);
   const isSelected = (symbol: string) => selected.find((s) => s.symbol === symbol) !== undefined;
 
-  const onSelect = (stock: { symbol: string; description: string }) => {
+  const onSelect = (stock: WatchlistStock) => {
+    if (existInWatchlist(stock.symbol) && existInQuickChartList(stock.symbol)) return;
     const exists = selected.find((s) => s.symbol === stock.symbol);
     if (exists) {
       setSelected(selected.filter((s) => s.symbol !== stock.symbol));
     } else {
       setSelected([...selected, stock]);
     }
+  };
+
+  const getToastMessage = () => {
+    if (addQuickChart && addWatchlist) {
+      if (selected.length === 1) return `Added ${selected[0].symbol} to Watchlist and QuickChart.`;
+      return `Added ${selected.length} stocks to Watchlist and QuickChart.`;
+    }
+    if (addWatchlist) {
+      if (selected.length === 1) return `Added ${selected[0].symbol} to Watchlist.`;
+      return `Added ${selected.length} stocks to Watchlist.`;
+    }
+    if (addQuickChart) {
+      if (selected.length === 1) return `Added ${selected[0].symbol} to QuickChart.`;
+      return `Added ${selected.length} stocks to QuickChart.`;
+    }
+    return "";
   };
 
   const handleSubmit = async () => {
@@ -82,13 +96,15 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
         console.error("User not authenticated");
         return;
       }
+      let addedToWatchlist = 0;
+      let addedToQuickChart = 0;
       if (addWatchlist && selected.length) {
         selected.forEach((stock) => {
           if (existInWatchlist(stock.symbol)) return;
           addToWatchlist(stock);
+          addedToWatchlist += 1;
         });
 
-        // If user adds >5 at once, you can chunk on client (optional).
         await addMany.mutateAsync(selected);
       }
       if (addQuickChart) {
@@ -96,6 +112,7 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
           if (existInQuickChartList(symbol)) return;
           addToQuickChartList(symbol);
         });
+        addedToQuickChart += 1;
         const quickChartDocRef = doc(db, "quickCharts", uid);
         await setDoc(
           quickChartDocRef,
@@ -106,12 +123,12 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
           { merge: true }
         );
       }
+      setOpen(false);
+      toast.success(getToastMessage());
     } catch (error) {
       console.error("Error adding stocks:", error);
     }
   };
-
-  const showRow = (symbol: string) => !isSelected(symbol);
 
   const modalActionButtons: ModalActionButtons = {
     confirm: {
@@ -135,12 +152,13 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <div className="mt-4 flex flex-col gap-2 overflow-y-auto h-[200px]">
-          {filteredStocks?.map(({ symbol, description }) => (
+          {filteredStocks?.map(({ symbol, description, type }) => (
             <SearchStockRow
               key={symbol}
               stock={{
                 symbol,
                 name: description,
+                type: type || "N/A",
               }}
               onSelect={onSelect}
               isSelected={isSelected(symbol)}
