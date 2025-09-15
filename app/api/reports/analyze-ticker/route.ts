@@ -9,7 +9,6 @@ import {
 import { analyzeFilingToJson } from "@/lib/server/analyzers/reports";
 import { upsertFilingEvent, saveFilingAnalysis } from "@/lib/server/persistReports";
 import { sha256 } from "@/lib/server/crypto";
-import { doc, getDoc } from "firebase/firestore";
 import { format } from "date-fns";
 import { db } from "@/firebase/admin";
 
@@ -108,7 +107,7 @@ async function toFeedRowDTO(
     : 0;
   const overallSentiment = avg > 0.15 ? "Bullish" : avg < -0.15 ? "Bearish" : "Neutral";
   const aiTags = themes.slice(0, 6).map((t: any) => ({
-    tag: t.topic,
+    topic: t.topic,
     sentiment: t.sentiment > 0.15 ? "Positive" : t.sentiment < -0.15 ? "Negative" : "Neutral",
   }));
 

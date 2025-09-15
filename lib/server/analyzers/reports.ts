@@ -1,19 +1,6 @@
+import { FilingAnalysis } from "@/types";
 import OpenAI from "openai";
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-
-export type FilingAnalysis = {
-  summary: { tldr: string; bullets: string[] };
-  themes: { topic: string; sentiment: number }[]; // -1..1
-  kpis: {
-    name: string;
-    value: string;
-    unit: string | null;
-    yoyDelta: string | null;
-    qoqDelta: string | null;
-  }[];
-  risks: { label: string; severity: number }[];
-  flags: { guidanceChange: boolean; liquidityConcern: boolean; marginInflection: boolean };
-};
 
 export async function analyzeFilingToJson(params: {
   ticker: string;

@@ -49,7 +49,7 @@ const NewsRow = ({ news }: NewsRowProps) => {
           <AiTag
             tag={{
               sentiment: sentiment,
-              tag: getTag(sentiment),
+              topic: getTag(sentiment),
             }}
             className="text-xs py-0"
           />

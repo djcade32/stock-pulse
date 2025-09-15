@@ -47,7 +47,7 @@ export async function GET() {
       const themes = a.themes ?? [];
       const aiTags = themes
         .slice(0, 6)
-        .map((t: any) => ({ tag: t.topic, sentiment: s2tag(t.sentiment) }));
+        .map((t: any) => ({ topic: t.topic, sentiment: s2tag(t.sentiment) }));
       const avg = themes.length
         ? themes.reduce((acc: number, t: any) => acc + (t.sentiment ?? 0), 0) / themes.length
         : 0;

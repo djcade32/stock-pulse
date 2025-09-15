@@ -12,6 +12,6 @@ export function useSentiment(tickers: string[], opts?: { enabled?: boolean }) {
       return (json.data as any[]).filter((x) => !x.error) as TickerSentiment[];
     },
     enabled: (opts?.enabled ?? true) && tickers.length > 0,
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
   });
 }

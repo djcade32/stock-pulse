@@ -56,6 +56,8 @@ async function analyzeNewsSentiment(title: string, summary: string) {
     "rally",
     "optimistic",
     "bullish",
+    "tops",
+    "improve",
   ];
   const negatives = [
     "miss",

@@ -5,6 +5,7 @@ import { POPULAR_TICKERS } from "@/lib/server/constants/popularTickers";
 import { db } from "@/firebase/admin";
 import { collection, getDocs, orderBy, query, where, limit, doc, getDoc } from "firebase/firestore";
 import { format } from "date-fns";
+import { AITag } from "@/types";
 
 type Row = {
   date: string;
@@ -12,7 +13,7 @@ type Row = {
   name: string;
   quarter: string;
   insights: string;
-  aiTags: { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[];
+  aiTags: AITag[];
   overallSentiment: "Bullish" | "Neutral" | "Bearish";
   sourceUrl?: string;
 };
@@ -79,7 +80,7 @@ async function rowsForTickers(tickers: string[]): Promise<Row[]> {
     const themes = a?.themes ?? [];
     const aiTags = themes
       .slice(0, 6)
-      .map((t: any) => ({ tag: t.topic, sentiment: s2tag(t.sentiment) }));
+      .map((t: any) => ({ topic: t.topic, sentiment: s2tag(t.sentiment) }));
     const avg = themes.length
       ? themes.reduce((acc: number, t: any) => acc + (t.sentiment ?? 0), 0) / themes.length
       : 0;

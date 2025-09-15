@@ -63,7 +63,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
           </div>
         </div>
         <div>
-          <AiTag tag={{ sentiment: getSentiment(overallSentiment), tag: overallSentiment }} />
+          <AiTag tag={{ sentiment: getSentiment(overallSentiment), topic: overallSentiment }} />
         </div>
       </div>
 

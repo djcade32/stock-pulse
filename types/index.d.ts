@@ -89,7 +89,7 @@ export type ReportRowDTO = {
   name: string;
   quarter: string; // "10-Q Q2 2025" or "10-K 2024"
   insights: string;
-  aiTags: { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[];
+  aiTags: AITag[];
   overallSentiment: "Bullish" | "Neutral" | "Bearish";
   url: string;
 };
@@ -97,10 +97,11 @@ export type ReportRowDTO = {
 type TickerSentiment = {
   ticker: string;
   score: number; // 0..100
-  counts: { positive: number; neutral: number; negative: number };
-  tags: Array<{ tag: string; sentiment: "Positive" | "Neutral" | "Negative"; count: number }>;
+  summary: string;
+  tags: AITag[];
   summary: string;
   numOfNews: number;
+  updatedAt: Date;
 };
 
 type News = {
@@ -116,6 +117,11 @@ type News = {
 
 export type WatchlistStock = { description: string; symbol: string; type: string };
 
+export type AITag = {
+  sentiment: SentimentLabel;
+  topic: string;
+};
+
 export type WatchlistCard = {
   name: string;
   ticker: string;
@@ -125,9 +131,35 @@ export type WatchlistCard = {
   dollarChange: string;
   sentimentScore: number;
   numOfNews: number;
-  aiTags?: {
-    sentiment: "Positive" | "Negative" | "Neutral";
-    tag: string;
-  }[];
+  aiTags?: AITag[];
   sentimentSummary: string;
+};
+
+export type FilingAnalysis = {
+  summary: { tldr: string; bullets: string[] };
+  themes: { topic: string; sentiment: number }[]; // -1..1
+  kpis: {
+    name: string;
+    value: string;
+    unit: string | null;
+    yoyDelta: string | null;
+    qoqDelta: string | null;
+  }[];
+  risks: { label: string; severity: number }[];
+  flags: { guidanceChange: boolean; liquidityConcern: boolean; marginInflection: boolean };
+};
+
+export type SentimentLabel =
+  | "positive"
+  | "neutral"
+  | "negative"
+  | "Positive"
+  | "Negative"
+  | "Neutral";
+
+export type ArticlePred = {
+  sentiment: SentimentLabel;
+  sentimentScore: number;
+  themes: { topic: string; sentiment: SentimentLabel }[];
+  summary: { tldr: string; bullets: string[] };
 };

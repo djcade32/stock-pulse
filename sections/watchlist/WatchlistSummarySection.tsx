@@ -11,7 +11,7 @@ const WatchlistSummarySection = () => {
           <AiTag
             tag={{
               sentiment: "Positive",
-              tag: "+2 this week",
+              topic: "+2 this week",
             }}
           />
         </div>
@@ -24,7 +24,7 @@ const WatchlistSummarySection = () => {
           <AiTag
             tag={{
               sentiment: "Positive",
-              tag: "Bullish",
+              topic: "Bullish",
             }}
           />
         </div>
@@ -37,7 +37,7 @@ const WatchlistSummarySection = () => {
           <AiTag
             tag={{
               sentiment: "Positive",
-              tag: "+3.42%",
+              topic: "+3.42%",
             }}
           />
         </div>
@@ -50,7 +50,7 @@ const WatchlistSummarySection = () => {
           <AiTag
             tag={{
               sentiment: "Negative",
-              tag: "-1.85%",
+              topic: "-1.85%",
             }}
           />
         </div>

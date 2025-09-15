@@ -14,7 +14,7 @@ import { Select } from "@/components/general/Select";
 import Button from "@/components/general/Button";
 import Link from "next/link";
 import { GalleryVerticalEnd } from "lucide-react";
-import { WatchlistCard as WatchlistCardType, WatchlistStock } from "@/types";
+import { AITag, WatchlistCard as WatchlistCardType, WatchlistStock } from "@/types";
 
 const SORT_BY_OPTIONS = [
   { label: "A to Z", value: "aToZ" },
@@ -180,7 +180,7 @@ const WatchlistSection = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {(isLoading || isPending || isSentFetching) &&
+        {(isLoading || isPending) &&
           [1, 2, 3, 4, 5, 6].map((_, index) => (
             <div key={index} className="card h-[247px] animate-pulse" />
           ))}
@@ -205,7 +205,7 @@ const WatchlistSection = () => {
             sentimentScore: 50,
             numOfNews: 0,
             sentimentSummary: "Loading sentiment…",
-            aiTags: [] as { sentiment: "Positive" | "Negative" | "Neutral"; tag: string }[],
+            aiTags: [] as AITag[],
           };
 
           const quote = quotesBySymbol[stock.ticker];
@@ -223,7 +223,7 @@ const WatchlistSection = () => {
             stock.sentimentScore = s.score;
             stock.numOfNews = s.numOfNews;
             stock.sentimentSummary = s.summary;
-            stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, tag: t.tag }));
+            stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, topic: t.topic }));
           } else {
             // fallback while loading
             stock.sentimentScore = 50;
