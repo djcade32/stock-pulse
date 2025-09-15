@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/firebase/admin";
 import { analyzeStockToJson } from "@/lib/server/analyzers/stocks";
-import { ArticlePred, TickerSentiment } from "@/types";
+import { TickerSentiment } from "@/types";
 
 // ----- Config knobs
-const STALE_MINUTES = 45; // recompute sentiment if older than this
+const STALE_MINUTES = 240; // recompute sentiment if older than 4 hours
 const LOOKBACK_DAYS = 3; // how far back to fetch news
 
 // ----- Fetch company news (Finnhub or your provider)
@@ -43,125 +43,6 @@ async function fetchCompanyNews(ticker: string) {
   return items;
 }
 
-// ----- Extremely simple, swappable sentiment adapter
-
-// MVP analyzer: rule-based as a placeholder (upgrade later to FinBERT/LLM)
-// function cheapHeuristicAnalyze(text: string): ArticlePred {
-//   const t = text.toLowerCase();
-//   const positives = [
-//     "beat",
-//     "surge",
-//     "record",
-//     "growth",
-//     "raise",
-//     "upgrade",
-//     "strong",
-//     "profit",
-//     "exceed",
-//   ];
-//   const negatives = ["miss", "plunge", "cut", "downgrade", "lawsuit", "recall", "loss", "probe"];
-//   let score = 0;
-//   positives.forEach((p) => {
-//     if (t.includes(p)) score += 1;
-//   });
-//   negatives.forEach((n) => {
-//     if (t.includes(n)) score -= 1;
-//   });
-//   const label: SentimentLabel = score > 0 ? "positive" : score < 0 ? "negative" : "neutral";
-//   const keyPhrases = Array.from(new Set([...positives, ...negatives].filter((w) => t.includes(w))));
-//   const confidence = Math.min(1, Math.abs(score) / 3 || 0.3);
-//   return { label, confidence, keyPhrases };
-// }
-
-// Optional: swap to a real model later (FinBERT or LLM)
-// async function finbertAnalyzeBatch(texts: string[]): Promise<ArticlePred[]> { ... }
-// async function llmAnalyzeBatch(texts: string[]): Promise<ArticlePred[]> { ... }
-
-// function aggregate(
-//   articles: Array<{
-//     title: string;
-//     summary: string;
-//     publishedAt: Date;
-//     pred: ArticlePred;
-//   }>
-// ) {
-//   if (!articles.length) {
-//     return {
-//       score: 50,
-//       counts: { positive: 0, neutral: 0, negative: 0 },
-//       tags: [] as { tag: string; sentiment: "Positive" | "Neutral" | "Negative"; count: number }[],
-//       summary: "No recent coverage.",
-//       numOfNews: 0,
-//     };
-//   }
-
-//   // Time-decay weighting: newer articles count more
-//   const now = Date.now();
-//   const weighted = articles.map((a) => {
-//     const ageH = Math.max(1, (now - a.publishedAt.getTime()) / (1000 * 60 * 60));
-//     const w = 1 / Math.sqrt(ageH); // gentle decay
-//     const s = a.pred.label === "positive" ? 1 : a.pred.label === "negative" ? -1 : 0;
-//     return { w, s, pred: a.pred };
-//   });
-
-//   const wSum = weighted.reduce((acc, x) => acc + x.w, 0);
-//   const raw = weighted.reduce((acc, x) => acc + x.w * x.s * x.pred.confidence, 0) / (wSum || 1);
-//   // Map -1..1 to 0..100
-//   const score = Math.round(((raw + 1) / 2) * 100);
-
-//   const counts = weighted.reduce(
-//     (acc, x) => {
-//       const l = x.pred.label;
-//       acc[l] += 1;
-//       return acc;
-//     },
-//     { positive: 0, neutral: 0, negative: 0 }
-//   );
-
-//   // Simple tag rollup
-//   const tagMap = new Map<string, { Positive: number; Neutral: number; Negative: number }>();
-//   articles.forEach((a) => {
-//     a.pred.keyPhrases.forEach((k) => {
-//       const cap =
-//         a.pred.label === "positive"
-//           ? "Positive"
-//           : a.pred.label === "negative"
-//           ? "Negative"
-//           : "Neutral";
-//       if (!tagMap.has(k)) tagMap.set(k, { Positive: 0, Neutral: 0, Negative: 0 });
-//       tagMap.get(k)![cap] += 1;
-//     });
-//   });
-//   const tags = Array.from(tagMap.entries())
-//     .map(([tag, c]) => {
-//       const sentiment =
-//         c.Positive >= c.Negative && c.Positive >= c.Neutral
-//           ? "Positive"
-//           : c.Negative >= c.Positive && c.Negative >= c.Neutral
-//           ? "Negative"
-//           : "Neutral";
-//       const count = Math.max(c.Positive, c.Negative, c.Neutral);
-//       return { tag, sentiment, count };
-//     })
-//     .sort((a, b) => b.count - a.count)
-//     .slice(0, 5);
-
-//   const summary =
-//     score >= 66
-//       ? "Overall positive coverage in recent articles."
-//       : score <= 34
-//       ? "Coverage skews negative in the last few days."
-//       : "Coverage is mixed/neutral recently.";
-
-//   return {
-//     score,
-//     counts,
-//     tags,
-//     summary,
-//     numOfNews: articles.length,
-//   };
-// }
-
 async function computeOrReadCached(ticker: string) {
   const ref = db.doc(`sentiments/${ticker}`);
   const snap = await ref.get();
@@ -176,18 +57,11 @@ async function computeOrReadCached(ticker: string) {
 
   console.log(`Recomputing sentiment for ${ticker}...`);
   const news = await fetchCompanyNews(ticker);
-  // const analyzed = news.map((n) => {
-  //   const text = `${n.title}. ${n.summary}`.trim();
-  //   // const pred = cheapHeuristicAnalyze(text);
-  //   const pred = analyzeStockToJson({ ticker, text });
-  //   return { ...n, pred };
-  // });
 
   const analysis = await analyzeStockToJson({
     ticker,
     text: news.map((a) => `${a.title}. ${a.summary}`).join("\n"),
   });
-  // const agg = aggregate(analyzed);
 
   const toStore: TickerSentiment = {
     ticker,

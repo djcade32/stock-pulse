@@ -17,9 +17,10 @@ import { WatchlistCard as WatchlistCardType } from "@/types";
 interface WatchlistCardProps {
   stock: WatchlistCardType;
   fullDetails?: boolean;
+  isLoading?: boolean;
 }
 
-export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps) => {
+export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: WatchlistCardProps) => {
   const {
     name,
     ticker,
@@ -148,20 +149,32 @@ export const WatchlistCard = ({ stock, fullDetails = true }: WatchlistCardProps)
             className="flex items-center mt-4 gap-1 flex-wrap overflow-hidden"
             style={{ maxHeight: "calc(2 * (1.5rem + 0.25rem))" }}
           >
+            {isLoading &&
+              [...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="w-16 h-6 rounded-full bg-(--gray-accent-color) text-(--secondary-text-color) animate-pulse"
+                />
+              ))}
             {aiTags.length > 0 && aiTags.map((tag, index) => <AiTag key={index} tag={tag} />)}
           </div>
 
           <div className="flex-1 min-h-0 mt-2">
-            <p
-              className="text-sm text-(--secondary-text-color) leading-tight h-full overflow-hidden pr-1 text-ellipsis"
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              {sentimentSummary}
-            </p>
+            {isLoading && (
+              <div className="w-full h-12 bg-(--gray-accent-color) rounded animate-pulse" />
+            )}
+            {
+              <p
+                className="text-sm text-(--secondary-text-color) leading-tight h-full overflow-hidden pr-1 text-ellipsis"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                }}
+              >
+                {sentimentSummary}
+              </p>
+            }
           </div>
         </div>
       </div>

@@ -231,7 +231,7 @@ const WatchlistSection = () => {
             stock.sentimentSummary = "Loading sentiment…";
             stock.aiTags = [];
           }
-          return <WatchlistCard key={stock.ticker} stock={stock} />;
+          return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isSentFetching} />;
         })}
       </div>
     </div>
