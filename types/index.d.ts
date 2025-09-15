@@ -163,3 +163,9 @@ export type ArticlePred = {
   themes: { topic: string; sentiment: SentimentLabel }[];
   summary: { tldr: string; bullets: string[] };
 };
+
+export type StockHit = {
+  symbol: string;
+  description: string;
+  type?: string;
+};

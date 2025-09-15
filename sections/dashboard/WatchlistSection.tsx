@@ -26,8 +26,8 @@ const SORT_BY_OPTIONS = [
 
 const FILTER_BY_OPTIONS = [
   { label: "All Sentiment", value: "all" },
-  { label: "Positive", value: "positive" },
-  { label: "Negative", value: "negative" },
+  { label: "Bullish", value: "positive" },
+  { label: "Bearish", value: "negative" },
   { label: "Neutral", value: "neutral" },
 ];
 

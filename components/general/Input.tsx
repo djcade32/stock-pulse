@@ -13,6 +13,8 @@ interface InputProps {
   preIcon?: React.ReactNode;
   postIcon?: React.ReactNode;
   className?: string;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 const Input = ({
@@ -25,6 +27,8 @@ const Input = ({
   name,
   className,
   preIcon,
+  onFocus,
+  onKeyDown,
 }: InputProps) => {
   const addExtraRightPadding = type === "email" || type === "password";
   const addExtraLeftPadding = !!preIcon;
@@ -64,6 +68,8 @@ const Input = ({
         data-rr-is-password={type === "password" ? "true" : "false"}
         name={name}
         ref={ref}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
       />
       <div className="absolute right-3">{postIcon ? postIcon : getPostIcon()}</div>
     </div>

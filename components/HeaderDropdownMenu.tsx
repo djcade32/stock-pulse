@@ -6,30 +6,20 @@ import DropdownMenu from "./general/DropdownMenu";
 import { signOut } from "@/lib/actions/auth.client.action";
 import { cn } from "@/lib/utils";
 
-interface DropdownMenuProps {
-  items?: {
-    icon?: React.ReactNode;
-    label: string;
-    onClick?: () => void;
-  }[];
-  className?: string;
-  sideOffset?: number;
-}
-
 const DROPDOWN_ITEMS = [
   { label: "Profile", icon: <CircleUser size={16} /> },
   { label: "Settings", icon: <Settings size={16} /> },
   { label: "Logout", icon: <LogOut size={16} />, onClick: signOut },
 ];
 
-const HeaderDropdownMenu = ({ items, className, sideOffset }: DropdownMenuProps) => {
+const HeaderDropdownMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <DropdownMenu
       items={DROPDOWN_ITEMS}
-      sideOffset={20}
+      sideOffset={10}
       renderTrigger={
         <div
           onMouseEnter={() => setIsHovered(!isHovered)}
