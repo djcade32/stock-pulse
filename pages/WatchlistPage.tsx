@@ -1,27 +1,34 @@
+"use client";
+
+import Button from "@/components/general/Button";
 import Input from "@/components/general/Input";
-import WatchlistPageSection from "@/sections/watchlist/WatchlistPageSection";
+import AddStockModal from "@/modals/AddStockModal";
+import WatchlistSection from "@/sections/dashboard/WatchlistSection";
 import WatchlistSummarySection from "@/sections/watchlist/WatchlistSummarySection";
 import { Search } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import { FaPlus } from "react-icons/fa6";
 
 const WatchlistPage = () => {
+  const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
   return (
-    <div className="page">
-      <div className="flex items-center justify-between">
-        <h1 className="page-header-text">Watchlist</h1>
-        <div className="w-[275px]min-w[200px]">
-          <Input
-            type="text"
-            placeholder="Add ticker or company..."
-            preIcon={<Search color="var(--secondary-text-color)" size={20} />}
-            className="bg-(--secondary-color) border-(--gray-accent-color) py-2"
-          />
+    <>
+      <div className="page">
+        <div className="flex items-center justify-between">
+          <h1 className="page-header-text">Watchlist</h1>
+          <div className="flex items-center gap-4">
+            <Button className="flex-1/2 font-bold" onClick={() => setIsAddStockModalOpen(true)}>
+              <FaPlus />
+              Add Stock
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <WatchlistSummarySection />
-      <WatchlistPageSection />
-    </div>
+        <WatchlistSummarySection />
+        <WatchlistSection isWatchlistPage />
+      </div>
+      <AddStockModal open={isAddStockModalOpen} setOpen={setIsAddStockModalOpen} />
+    </>
   );
 };
 

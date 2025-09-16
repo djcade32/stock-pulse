@@ -1,7 +1,7 @@
 "use client";
 
 import WatchlistCard from "@/components/WatchlistCard";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 import { useUid } from "@/hooks/useUid";
@@ -17,6 +17,7 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { AITag, WatchlistCard as WatchlistCardType, WatchlistStock } from "@/types";
 
 const SORT_BY_OPTIONS = [
+  { label: "Recently Added", value: "recentlyAdded" },
   { label: "A to Z", value: "aToZ" },
   { label: "Z to A", value: "ZtoA" },
   { label: "Price", value: "price" },
@@ -31,7 +32,11 @@ const FILTER_BY_OPTIONS = [
   { label: "Neutral", value: "neutral" },
 ];
 
-const WatchlistSection = () => {
+interface WatchlistSectionProps {
+  isWatchlistPage?: boolean;
+}
+
+const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
   const { uid, loading } = useUid();
   const { watchlist, setWatchlist } = useWatchlistStore();
   const [filteredWatchlist, setFilteredWatchlist] = useState(watchlist);
@@ -61,7 +66,7 @@ const WatchlistSection = () => {
       enabled: true,
     }
   );
-  const [sortBy, setSortBy] = React.useState("aToZ");
+  const [sortBy, setSortBy] = React.useState("recentlyAdded");
   const [filterBy, setFilterBy] = React.useState("all");
 
   // Patch real-time updates to quotes
@@ -82,6 +87,13 @@ const WatchlistSection = () => {
   ): Promise<WatchlistStock[]> => {
     let sorted = [...list];
     switch (value) {
+      case "recentlyAdded":
+        sorted.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA; // descending
+        });
+        return sorted;
       case "aToZ":
         sorted.sort((a, b) => a.symbol.localeCompare(b.symbol));
         return sorted;
@@ -146,7 +158,7 @@ const WatchlistSection = () => {
     }
   };
 
-  useMemo(() => {
+  useEffect(() => {
     handleSortChange(sortBy, watchlist).then((res) =>
       handleFilterChange(filterBy, res).then((final) => setFilteredWatchlist(final))
     );
@@ -155,7 +167,9 @@ const WatchlistSection = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Watchlist Sentiment</h2>
+        <h2 className="text-xl font-semibold">
+          {isWatchlistPage ? "Your Watchlist" : "Watchlist Sentiment"}
+        </h2>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-4">
             <Select
@@ -171,12 +185,14 @@ const WatchlistSection = () => {
               onValueChange={setFilterBy}
             />
           </div>
-          <Button className="!bg-(--secondary-color) flex-1/2 font-bold" asChild>
-            <Link href="/watchlist">
-              <GalleryVerticalEnd />
-              View All
-            </Link>
-          </Button>
+          {!isWatchlistPage && (
+            <Button className="!bg-(--secondary-color) flex-1/2 font-bold" asChild>
+              <Link href="/watchlist">
+                <GalleryVerticalEnd />
+                View All
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -194,45 +210,47 @@ const WatchlistSection = () => {
             <p>Your watchlist is empty. Add some stocks to see them here!</p>
           </div>
         )}
-        {filteredWatchlist.slice(0, 6).map(({ symbol, description, type }) => {
-          const stock: WatchlistCardType = {
-            name: description,
-            ticker: symbol,
-            type,
-            price: 0,
-            percentChange: 0,
-            dollarChange: "",
-            sentimentScore: 50,
-            numOfNews: 0,
-            sentimentSummary: "Loading sentiment…",
-            aiTags: [] as AITag[],
-          };
+        {(isWatchlistPage ? filteredWatchlist : filteredWatchlist.slice(0, 6)).map(
+          ({ symbol, description, type }) => {
+            const stock: WatchlistCardType = {
+              name: description,
+              ticker: symbol,
+              type,
+              price: 0,
+              percentChange: 0,
+              dollarChange: "",
+              sentimentScore: 50,
+              numOfNews: 0,
+              sentimentSummary: "Loading sentiment…",
+              aiTags: [] as AITag[],
+            };
 
-          const quote = quotesBySymbol[stock.ticker];
-          const error = errorsBySymbol[stock.ticker];
-          if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
-          if (!quote) console.warn(`No quote data for ${stock.ticker}`);
-          if (!quote || error) return null;
+            const quote = quotesBySymbol[stock.ticker];
+            const error = errorsBySymbol[stock.ticker];
+            if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
+            if (!quote) console.warn(`No quote data for ${stock.ticker}`);
+            if (!quote || error) return null;
 
-          stock.price = Number(quote.c.toFixed(2)) || 0;
-          stock.dollarChange =
-            `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
-          stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
-          const s = sentimentByTicker[stock.ticker];
-          if (s) {
-            stock.sentimentScore = s.score;
-            stock.numOfNews = s.numOfNews;
-            stock.sentimentSummary = s.summary;
-            stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, topic: t.topic }));
-          } else {
-            // fallback while loading
-            stock.sentimentScore = 50;
-            stock.numOfNews = 0;
-            stock.sentimentSummary = "Loading sentiment…";
-            stock.aiTags = [];
+            stock.price = Number(quote.c.toFixed(2)) || 0;
+            stock.dollarChange =
+              `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
+            stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
+            const s = sentimentByTicker[stock.ticker];
+            if (s) {
+              stock.sentimentScore = s.score;
+              stock.numOfNews = s.numOfNews;
+              stock.sentimentSummary = s.summary;
+              stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, topic: t.topic }));
+            } else {
+              // fallback while loading
+              stock.sentimentScore = 50;
+              stock.numOfNews = 0;
+              stock.sentimentSummary = "Loading sentiment…";
+              stock.aiTags = [];
+            }
+            return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isSentFetching} />;
           }
-          return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isSentFetching} />;
-        })}
+        )}
       </div>
     </div>
   );

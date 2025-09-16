@@ -23,6 +23,7 @@ export async function addWatchlistItem(userId: string, stock: WatchlistStock) {
     description: stock.description || symbol,
     symbol,
     type: stock.type || "N/A",
+    createdAt: new Date().toISOString(),
   };
 
   const ref = db.collection("watchlists").doc(userId);

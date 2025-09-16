@@ -163,7 +163,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
             {isLoading && (
               <div className="w-full h-12 bg-(--gray-accent-color) rounded animate-pulse" />
             )}
-            {
+            {!isLoading && (
               <p
                 className="text-sm text-(--secondary-text-color) leading-tight h-full overflow-hidden pr-1 text-ellipsis"
                 style={{
@@ -174,7 +174,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
               >
                 {sentimentSummary}
               </p>
-            }
+            )}
           </div>
         </div>
       </div>

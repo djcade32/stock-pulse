@@ -1,3 +1,5 @@
+import { FieldValue } from "firebase-admin/firestore";
+
 interface User {
   name: string;
   email: string;
@@ -115,7 +117,12 @@ type News = {
   timeElapsed: string;
 };
 
-export type WatchlistStock = { description: string; symbol: string; type: string };
+export type WatchlistStock = {
+  description: string;
+  symbol: string;
+  type: string;
+  createdAt?: string;
+};
 
 export type AITag = {
   sentiment: SentimentLabel;
