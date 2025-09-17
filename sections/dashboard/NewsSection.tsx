@@ -3,7 +3,6 @@
 import Button from "@/components/general/Button";
 import { Button as RootButton } from "@/components/ui/button";
 import React, { useState } from "react";
-import { FaFilter } from "react-icons/fa6";
 import { RefreshCcw } from "lucide-react";
 import NewsRow from "@/components/NewsRow";
 import Link from "next/link";

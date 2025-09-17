@@ -19,6 +19,7 @@ interface SelectProps {
   value: string;
   prefix?: string;
   onValueChange: (value: string) => void;
+  scrollable?: boolean;
 }
 
 export function Select({
@@ -28,6 +29,7 @@ export function Select({
   prefix,
   onValueChange,
   value,
+  scrollable = false,
 }: SelectProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -52,7 +54,12 @@ export function Select({
         {prefix && <span className="font-bold">{prefix}</span>}
         <SelectValue placeholder={placeholder || "Select"} />
       </SelectTrigger>
-      <SelectContent className="bg-(--secondary-color) outline-none border border-(--gray-accent-color) shadow-md">
+      <SelectContent
+        className={cn(
+          "bg-(--secondary-color) outline-none border border-(--gray-accent-color) shadow-md",
+          scrollable && "max-h-[250px] overflow-y-auto"
+        )}
+      >
         <SelectGroup>
           {items?.map((item) => (
             <SelectItem

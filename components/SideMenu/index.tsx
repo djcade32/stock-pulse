@@ -37,11 +37,6 @@ const data = {
       icon: FaEye,
     },
     {
-      title: "Alerts",
-      url: "/alerts",
-      icon: FaBell,
-    },
-    {
       title: "Earnings",
       url: "/earnings",
       icon: FaMicrophoneAlt,
@@ -50,6 +45,11 @@ const data = {
       title: "News",
       url: "/news",
       icon: FaNewspaper,
+    },
+    {
+      title: "Alerts",
+      url: "/alerts",
+      icon: FaBell,
     },
     {
       title: "Settings",

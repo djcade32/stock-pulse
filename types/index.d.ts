@@ -115,6 +115,7 @@ type News = {
   sentiment: "Positive" | "Negative" | "Neutral";
   publishedAt: Date;
   timeElapsed: string;
+  related: string[]; // related tickers
 };
 
 export type WatchlistStock = {

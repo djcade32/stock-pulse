@@ -5,7 +5,7 @@ export function useFetchMarketNews() {
   return useQuery({
     queryKey: ["market-news-feed"],
     queryFn: async () => {
-      const res = await fetch("/api/news");
+      const res = await fetch("/api/news/market");
       if (!res.ok) throw new Error(`Market news fetch failed`);
       const json = await res.json();
       return (json.data as any[]).filter((x) => !x.error) as News[];

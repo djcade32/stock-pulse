@@ -28,6 +28,7 @@ async function fetchMarketNews() {
       title: a.headline ?? "",
       summary: a.summary ?? "",
       source: a.source ?? "unknown",
+      related: a.related ? a.related.split(",") : [],
       url: a.url,
       sentiment: null as "Positive" | "Negative" | "Neutral" | null,
       publishedAt: a.datetime ? new Date(a.datetime) : new Date(),
@@ -58,6 +59,11 @@ async function analyzeNewsSentiment(title: string, summary: string) {
     "bullish",
     "tops",
     "improve",
+    "climb",
+    "soar",
+    "high",
+    "outperform",
+    "boost",
   ];
   const negatives = [
     "miss",

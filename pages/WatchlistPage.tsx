@@ -1,11 +1,9 @@
 "use client";
 
 import Button from "@/components/general/Button";
-import Input from "@/components/general/Input";
 import AddStockModal from "@/modals/AddStockModal";
 import WatchlistSection from "@/sections/dashboard/WatchlistSection";
 import WatchlistSummarySection from "@/sections/watchlist/WatchlistSummarySection";
-import { Search } from "lucide-react";
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 
