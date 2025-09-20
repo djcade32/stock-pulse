@@ -57,10 +57,10 @@ export default function EarningsSection() {
         {isError && (
           <div className="py-6 text-red-500">{(error as Error)?.message ?? "Failed to load"}</div>
         )}
-        {!isLoading && !isError && (!data || data.length === 0) && (
+        {!isLoading && !isError && (!data?.rows || data.rows.length === 0) && (
           <div className="py-6 text-(--muted-foreground)">No analyzed filings yet.</div>
         )}
-        {data?.slice(0, 3)?.map((row) => (
+        {data?.rows.slice(0, 3)?.map((row) => (
           <EarningsRow key={`${row.ticker}-${row.date}`} earnings={row} />
         ))}
         <div className="py-4 flex justify-center">

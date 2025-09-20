@@ -1,20 +1,65 @@
 import { ReportRowDTO } from "@/types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export function useReportsFeed() {
-  console.log("Fetching reports feed...");
-  return useQuery<ReportRowDTO[]>({
-    queryKey: ["reports-feed"],
+type FeedPage = { rows: ReportRowDTO[]; nextCursor?: string | null; hasMore: boolean };
+
+export function useReportsFeed(limit = 30, cursor?: string | null) {
+  return useQuery<FeedPage>({
+    queryKey: ["reports-feed", { limit }],
     queryFn: async () => {
-      const res = await fetch("/api/reports/feed", { cache: "no-store" });
+      const params = new URLSearchParams();
+      params.set("limit", String(limit));
+      if (cursor) params.set("cursor", cursor);
+      const res = await fetch(`/api/reports/feed?${params.toString()}`, { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to load reports feed");
       return res.json();
     },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    staleTime: 60_000, // make fresher if you like
   });
 }
 
-export function useRefreshReports() {
+export function useRefreshReports(limit = 30) {
   const qc = useQueryClient();
-  return () => qc.invalidateQueries({ queryKey: ["reports-feed"] });
+  return () => qc.invalidateQueries({ queryKey: ["reports-feed", { limit }] });
+}
+
+async function fetchFeedPage(
+  limit: number,
+  cursor?: string | null,
+  stock?: string | null,
+  year?: string | null,
+  quarter?: string | null
+): Promise<FeedPage> {
+  const params = new URLSearchParams();
+  params.set("limit", String(limit));
+  if (stock) params.set("stock", stock);
+  if (year) params.set("year", year);
+  if (quarter) params.set("quarter", quarter);
+  if (cursor) params.set("cursor", cursor);
+  const res = await fetch(`/api/reports/feed?${params.toString()}`, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load reports feed");
+  return res.json();
+}
+
+export function useReportsFeedInfinite(
+  limit = 30,
+  stock?: string,
+  year?: string,
+  quarter?: string
+) {
+  return useInfiniteQuery<FeedPage>({
+    queryKey: ["reports-feed-infinite", { limit }],
+    queryFn: ({ pageParam }) => {
+      const cursor = typeof pageParam === "string" ? pageParam : null;
+      return fetchFeedPage(limit, cursor, stock, year, quarter);
+    },
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    staleTime: 60_000,
+  });
+}
+
+export function useRefreshReportsInfinite(limit = 30) {
+  const qc = useQueryClient();
+  return () => qc.invalidateQueries({ queryKey: ["reports-feed-infinite", { limit }] });
 }

@@ -10,7 +10,7 @@ const FINNHUB_BASE_URL = "https://finnhub.io/api/v1";
 const FINNHUB_API_KEY = process.env.FINNHUB_KEY;
 
 // Cache times (quotes change fast; keep this tiny)
-const QUOTE_CACHE_TTL_MS = 2_000; // 2 seconds
+const QUOTE_CACHE_TTL_MS = 10_000; // 10 seconds
 
 // Safety check for API key
 if (!FINNHUB_API_KEY) {
@@ -42,6 +42,7 @@ const providerLimiter = new Bottleneck({
   reservoirRefreshAmount: 60,
   reservoirRefreshInterval: 60_000,
   minTime: 100,
+  // maxConcurrent: 5,
 });
 
 // === Small helpers ===
@@ -55,6 +56,7 @@ function isValidSymbol(symbol: string): boolean {
 }
 
 async function fetchQuoteFromProvider(symbol: string): Promise<unknown> {
+  console.log("Fetching fresh quote for: ", symbol);
   const providerUrl = new URL(`${FINNHUB_BASE_URL}/quote`);
   providerUrl.searchParams.set("symbol", symbol);
   providerUrl.searchParams.set("token", FINNHUB_API_KEY as string);
@@ -104,6 +106,7 @@ async function fetchCompanyLogo(ticker: string): Promise<string> {
 }
 
 async function getQuoteWithCache(symbol: string): Promise<{ data: unknown; fromCache: boolean }> {
+  console.log("Getting quote for: ", symbol);
   const cacheKey = `quote:${symbol}`;
   const cached = getCache<unknown>(cacheKey);
   if (cached) return { data: cached, fromCache: true };
@@ -148,6 +151,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
  * Example: /api/quote/AAPL
  */
 app.get("/api/quote/:symbol", async (request: Request, response: Response, next: NextFunction) => {
+  console.log("Received request for single quote: ", request.params.symbol);
   try {
     const symbol = normalizeSymbol(request.params.symbol);
     if (!isValidSymbol(symbol)) {
@@ -229,6 +233,7 @@ app.get(
  * - Returns an object keyed by symbol.
  */
 app.get("/api/quotes", async (request: Request, response: Response, next: NextFunction) => {
+  console.log("Received request for batch quotes: ", request.query.symbols);
   try {
     const rawSymbols = String(request.query.symbols || "");
     if (!rawSymbols) {

@@ -38,3 +38,13 @@ export async function fetchCompanyLogo(
   }
   return response.json();
 }
+
+// Get current quarter string like "Q1", "Q2", ...
+export function getCurrentQuarter() {
+  const now = new Date();
+  const month = now.getMonth(); // 0-indexed
+  if (month >= 0 && month <= 2) return "Q1";
+  if (month >= 3 && month <= 5) return "Q2";
+  if (month >= 6 && month <= 8) return "Q3";
+  return "Q4";
+}

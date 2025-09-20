@@ -62,6 +62,7 @@ async function fetchBatchQuotes(
   symbols: string[],
   signal?: AbortSignal
 ): Promise<BatchQuotesResponse> {
+  console.log("Fetching batch quotes for: ", symbols);
   const baseUrl = getApiBaseUrl();
   const params = new URLSearchParams({ symbols: symbols.join(",") });
   const url = `${baseUrl}/api/quotes?${params.toString()}`;
@@ -124,8 +125,9 @@ export function useBatchQuotes(
     // Quotes change fast; consider them stale quickly so UI is ok refetching when focused.
     staleTime: 1_000,
     refetchInterval,
-    refetchOnWindowFocus: false, // set true if you like "jump to live" when tab refocuses
+    refetchOnWindowFocus: true, // set true if you like "jump to live" when tab refocuses
     retry: 2,
+    refetchIntervalInBackground: true,
     // Optional: Transform into a friendlier shape for UI consumption.
     select: (
       raw

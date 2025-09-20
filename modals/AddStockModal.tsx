@@ -10,7 +10,6 @@ import { useAddToWatchlistAndAnalyze } from "@/lib/client/mutations/useAddToWatc
 import useQuickChartStore from "@/stores/quick-chart-store";
 import useWatchlistStore from "@/stores/watchlist-store";
 import { ModalActionButtons, Stock, WatchlistStock } from "@/types";
-import { add } from "date-fns";
 import { doc, setDoc } from "firebase/firestore";
 import { Search, ChartLine } from "lucide-react";
 import React, { useState, useEffect, useMemo, useRef } from "react";
@@ -20,9 +19,11 @@ import { toast } from "sonner";
 interface AddStockModalProps {
   open: boolean;
   setOpen: (open: boolean) => void; // Uncomment if you want to control the modal from parent
+  watchlistOnly?: boolean; // If true, only allow adding to watchlist
+  onSubmit?: () => void; // Optional: callback after successful submission
 }
 
-const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
+const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModalProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<WatchlistStock[]>([]);
   const [addWatchlist, setAddWatchlist] = useState(true);
@@ -91,6 +92,7 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
 
   const handleSubmit = async () => {
     try {
+      onSubmit?.();
       const uid = auth.currentUser?.uid;
       if (!uid) {
         console.error("User not authenticated");
@@ -100,12 +102,14 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
       let addedToQuickChart = 0;
       if (addWatchlist && selected.length) {
         selected.forEach((stock) => {
-          if (existInWatchlist(stock.symbol)) return;
+          if (existInWatchlist(stock.symbol)) {
+            return toast.warning(`${stock.symbol} is already in your watchlist`);
+          }
           addToWatchlist(stock);
           addedToWatchlist += 1;
         });
 
-        await addMany.mutateAsync(selected);
+        await addMany.mutateAsync(selected).finally(() => onSubmit?.());
       }
       if (addQuickChart) {
         selected.forEach(({ symbol }) => {
@@ -176,13 +180,15 @@ const AddStockModal = ({ open, setOpen }: AddStockModalProps) => {
               </div>
               <Switch checked={addWatchlist} onCheckedChange={toggleWatchlist} />
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <ChartLine size={18} color="var(--success-color)" />
-                <p>QuickChart</p>
+            {!watchlistOnly && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ChartLine size={18} color="var(--success-color)" />
+                  <p>QuickChart</p>
+                </div>
+                <Switch checked={addQuickChart} onCheckedChange={toggleQuickChart} />
               </div>
-              <Switch checked={addQuickChart} onCheckedChange={toggleQuickChart} />
-            </div>
+            )}
           </div>
         </div>
       </div>

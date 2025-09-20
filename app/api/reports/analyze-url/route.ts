@@ -14,6 +14,11 @@ function okTicker(s?: string) {
 
 export async function POST(req: Request) {
   try {
+    const authz = req.headers.get("authorization") || "";
+    const token = authz.startsWith("Bearer ") ? authz.slice(7) : null;
+    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { uid } = await getAuth().verifyIdToken(token);
+
     const body = await req.json().catch(() => ({}));
     const rawUrl: string | undefined = body.url;
     const ticker = okTicker(body.ticker);
@@ -45,7 +50,7 @@ export async function POST(req: Request) {
     const hashSnap = await hashRef.get();
     if (hashSnap.exists) {
       const { eventId } = hashSnap.data() as any;
-      const dto = await toFeedRowDTO(eventId, ticker, url.toString(), formLabel);
+      const dto = await toFeedRowDTO(eventId, ticker, url.toString(), uid, formLabel);
       return NextResponse.json({ eventId, ...dto, deduped: true });
     }
 
@@ -56,6 +61,7 @@ export async function POST(req: Request) {
       filingDate: new Date().toISOString(),
       docUrl: url.toString(),
       status: "ingesting",
+      analyzedBy: uid,
     });
 
     const analysis = await analyzeFilingToJson({
@@ -74,12 +80,13 @@ export async function POST(req: Request) {
         contentHash,
         retrievedAt: new Date().toISOString(),
       },
+      analyzedBy: uid,
     });
 
     hashRef.set({ eventId, ticker, createdAt: new Date() });
     await upsertFilingEvent(eventId, { status: "analyzed" });
 
-    const dto = await toFeedRowDTO(eventId, ticker, url.toString(), formLabel);
+    const dto = await toFeedRowDTO(eventId, ticker, url.toString(), uid, formLabel);
     return NextResponse.json({ eventId, ...dto, deduped: false });
   } catch (e: any) {
     return NextResponse.json({ error: e?.message || "Server error" }, { status: 500 });
@@ -87,10 +94,12 @@ export async function POST(req: Request) {
 }
 
 import { db } from "@/firebase/admin";
+import { getAuth } from "firebase-admin/auth";
 async function toFeedRowDTO(
   eventId: string,
   ticker: string,
   sourceUrl: string,
+  uid: string,
   formLabel?: string
 ) {
   const aSnapRef = db.doc(`filingAnalyses/${eventId}`);
@@ -118,5 +127,15 @@ async function toFeedRowDTO(
     (a?.summary?.bullets || []).slice(0, 2).join(" • ") ||
     "No summary available.";
 
-  return { date, ticker, name, quarter, insights, aiTags, overallSentiment, sourceUrl };
+  return {
+    date,
+    ticker,
+    name,
+    quarter,
+    insights,
+    aiTags,
+    overallSentiment,
+    sourceUrl,
+    analyzedBy: uid,
+  };
 }

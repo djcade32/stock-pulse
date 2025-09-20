@@ -1,7 +1,8 @@
+import ListAnalyzedEarningsPage from "@/pages/earnings/ListAnalyzedEarningsPage";
 import React from "react";
 
 const page = () => {
-  return <div>Earnings</div>;
+  return <ListAnalyzedEarningsPage />;
 };
 
 export default page;

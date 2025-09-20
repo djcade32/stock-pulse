@@ -42,9 +42,9 @@ async function fetchCompanyNews(symbol: string) {
   return items;
 }
 
-async function analyzeNewsSentiment(title: string, summary: string) {
+async function analyzeNewsSentiment(title: string) {
   // Placeholder: replace with real sentiment analysis (FinBERT/LLM/etc)
-  const text = (title + "\n" + summary).toLowerCase();
+  const text = title.toLowerCase();
   const positives = [
     "beat",
     "surge",
@@ -61,6 +61,8 @@ async function analyzeNewsSentiment(title: string, summary: string) {
     "bullish",
     "tops",
     "improve",
+    "catalyst",
+    "upbeat",
   ];
   const negatives = [
     "miss",
@@ -72,6 +74,23 @@ async function analyzeNewsSentiment(title: string, summary: string) {
     "cut",
     "downgrade",
     "loss",
+    "declining",
+    "stumble",
+    "pessimistic",
+    "bearish",
+    "warn",
+    "warning",
+    "investigation",
+    "lawsuit",
+    "fraud",
+    "scandal",
+    "selloff",
+    "plunge",
+    "slump",
+    "sink",
+    "crash",
+    "vulnerability",
+    "suffer",
   ];
   let score = 0;
   for (const p of positives) if (text.includes(p)) score++;
@@ -87,7 +106,7 @@ export async function GET(req: Request) {
     const symbol = (searchParams.get("symbol") || "").toLowerCase();
     const news = await fetchCompanyNews(symbol);
     for (const item of news) {
-      item["sentiment"] = await analyzeNewsSentiment(item.title, item.summary);
+      item["sentiment"] = await analyzeNewsSentiment(item.title);
     }
 
     return NextResponse.json({ data: news });

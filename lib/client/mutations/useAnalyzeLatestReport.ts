@@ -1,3 +1,4 @@
+import { ReportRowDTO } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useAnalyzeLatestReport() {
@@ -16,7 +17,7 @@ export function useAnalyzeLatestReport() {
         } catch {}
         throw new Error(msg);
       }
-      return res.json();
+      return res.json() as Promise<ReportRowDTO>;
     },
     onSuccess: () => {
       // refresh feed after analysis lands

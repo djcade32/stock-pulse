@@ -9,10 +9,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useUid } from "@/hooks/useUid";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/client";
+import useWatchlistStore from "@/stores/watchlist-store";
 
 const QuickChartsSection = () => {
   const { uid, loading } = useUid();
   const { quickChartList, setQuickChartList } = useQuickChartStore();
+  const { watchlist } = useWatchlistStore();
   const { isPending } = useQuery({
     queryKey: ["quickChartList", uid], // include uid in key so it refetches per user
     queryFn: async () => {
@@ -31,11 +33,24 @@ const QuickChartsSection = () => {
     enabled: !!uid && !loading, // prevent running before uid is ready
   });
 
+  const watchlistSymbols = watchlist.map((stock) => stock.symbol);
+
   const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(
     quickChartList.length ? quickChartList : ["AAPL", "GOOGL", "SPY"],
-    { enabled: true }
+    {
+      enabled: true,
+      marketRefetchMs: 30_000,
+    }
   );
-  useQuoteStreamPatcher(quickChartList.length ? quickChartList : ["AAPL", "GOOGL", "SPY"]);
+  useQuoteStreamPatcher(
+    quickChartList.length
+      ? quickChartList.filter((stock) => !watchlistSymbols.includes(stock))
+      : ["AAPL", "GOOGL", "SPY"]
+  );
+
+  useEffect(() => {
+    console.log("Quicklist Quotes updated: ", quotesBySymbol);
+  }, [quotesBySymbol]);
 
   if (isLoading || loading || isPending)
     return (

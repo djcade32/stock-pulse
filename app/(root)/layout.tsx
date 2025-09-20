@@ -20,7 +20,7 @@ export default async function RootLayout({
       <SideMenu />
       <div className="w-full relative">
         <Header />
-        <div className="pt-[68px]">{children}</div>
+        <div className="pt-[68px] h-full">{children}</div>
       </div>
     </SidebarProvider>
   );

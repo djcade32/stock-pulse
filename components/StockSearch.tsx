@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import Input from "./general/Input";
 import { StockHit } from "@/types";
@@ -14,13 +14,14 @@ type StockSearchProps = {
   onSelect?: (hit: StockHit) => void;
   /** Optional: override how we fetch search results */
   fetcher?: (q: string, signal: AbortSignal) => Promise<StockHit[]>;
+  onChange?: (q?: string) => void;
+  clear?: boolean; // when true, clears the input field
 };
 
 const defaultFetcher = async (q: string, signal: AbortSignal): Promise<StockHit[]> => {
   if (!q.trim()) return [];
   const params = new URLSearchParams({ q });
   const res = await fetch(`/api/search?${params.toString()}`, { signal });
-  console.log("fetch: ", res);
   if (!res.ok) throw new Error(`Search failed: ${res.status}`);
   const data = await res.json();
   // Normalize shape if needed
@@ -33,6 +34,8 @@ export default function StockSearch({
   maxResults = 8,
   onSelect,
   fetcher = defaultFetcher,
+  onChange,
+  clear,
 }: StockSearchProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -94,6 +97,17 @@ export default function StockSearch({
     };
   }, [query, maxResults, fetcher]);
 
+  // Clear input if `clear` prop is true
+  useEffect(() => {
+    if (clear) {
+      setQuery("");
+      setHits([]);
+      setError(null);
+      setLoading(false);
+      setActiveIndex(-1);
+    }
+  }, [clear]);
+
   // Open panel when focusing/typing
   const handleFocus = () => setOpen(true);
 
@@ -123,7 +137,8 @@ export default function StockSearch({
     onSelect?.(hit);
     // You can also navigate here if you want:
     // router.push(`/stocks/${hit.symbol}`);
-    setQuery("");
+    setQuery(hit.symbol);
+    // setQuery("");
     setHits([]);
     setActiveIndex(-1);
     setOpen(false);
@@ -141,7 +156,10 @@ export default function StockSearch({
         <Input
           type="text"
           value={query}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            onChange?.(e.target.value);
+            setQuery(e.target.value);
+          }}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}

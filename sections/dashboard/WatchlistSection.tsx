@@ -64,6 +64,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
     watchlist.map((s) => s.symbol),
     {
       enabled: true,
+      marketRefetchMs: 30_000,
     }
   );
   const [sortBy, setSortBy] = React.useState("recentlyAdded");
@@ -163,6 +164,9 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
       handleFilterChange(filterBy, res).then((final) => setFilteredWatchlist(final))
     );
   }, [watchlist, sortBy, filterBy]);
+  useEffect(() => {
+    console.log("Watchlist Quotes updated: ", quotesBySymbol);
+  }, [quotesBySymbol]);
 
   return (
     <div>
@@ -200,11 +204,13 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
           [1, 2, 3, 4, 5, 6].map((_, index) => (
             <div key={index} className="card h-[247px] animate-pulse" />
           ))}
-        {filteredWatchlist.length === 0 && !(isLoading || isPending || isSentFetching) && (
-          <div className="text-(--secondary-text-color) h-[491px] flex items-center justify-center col-span-3">
-            <p>No stocks match the filter criteria.</p>
-          </div>
-        )}
+        {filteredWatchlist.length === 0 &&
+          !(isLoading || isPending || isSentFetching) &&
+          !!watchlist.length && (
+            <div className="text-(--secondary-text-color) h-[491px] flex items-center justify-center col-span-3">
+              <p>No stocks match the filter criteria.</p>
+            </div>
+          )}
         {watchlist.length === 0 && !(isLoading || isPending || isSentFetching) && (
           <div className="text-(--secondary-text-color) h-[491px] flex items-center justify-center col-span-3">
             <p>Your watchlist is empty. Add some stocks to see them here!</p>

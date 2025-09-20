@@ -1,26 +1,56 @@
-// /components/reports/AnalyzeLatestButton.tsx
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Button from "@/components/general/Button";
 import { useAnalyzeLatestReport } from "@/lib/client/mutations/useAnalyzeLatestReport";
+import StockSearch from "../StockSearch";
+import { toast } from "sonner";
+import { ReportRowDTO } from "@/types";
 
-export default function AnalyzeLatestButton() {
-  const [ticker, setTicker] = useState("");
-  const { mutate, isPending, error } = useAnalyzeLatestReport();
+interface AnalyzeLatestButtonProps {
+  // Optional: callback to receive analysis data
+  setAnalysisData?: Dispatch<SetStateAction<ReportRowDTO[]>>;
+}
+
+export default function AnalyzeLatestButton({ setAnalysisData }: AnalyzeLatestButtonProps) {
+  const [ticker, setTicker] = useState<string | undefined>("");
+  const { mutate, isPending, error, data } = useAnalyzeLatestReport();
+
+  useEffect(() => {
+    if (error) {
+      toast.error((error as Error).message);
+      return;
+    }
+    if (data && setAnalysisData) {
+      toast.success(`Analysis for ${data.ticker} added to feed`);
+      setAnalysisData((prev) => {
+        // Avoid duplicates
+        if (prev.find((r) => r.ticker === data.ticker)) return prev;
+        return [data, ...prev];
+      });
+      return;
+    }
+  }, [error, data]);
+
+  const handleAnalyzeClicked = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (ticker) {
+      mutate({ ticker });
+    }
+    setTicker("");
+  };
 
   return (
-    <div className="flex items-center gap-2">
-      <input
-        className="px-3 py-2 rounded-md bg-(--secondary-color) text-sm outline-none"
-        placeholder="Enter ticker (e.g., NVDA)"
-        value={ticker}
-        onChange={(e) => setTicker(e.target.value.toUpperCase())}
-      />
-      <Button disabled={!ticker || isPending} onClick={() => mutate({ ticker })}>
-        {isPending ? "Analyzing…" : "Analyze latest 10-Q/10-K"}
+    <form className="flex items-center gap-2" onSubmit={handleAnalyzeClicked}>
+      <StockSearch className="w-full" onSelect={(t) => setTicker(t.symbol)} clear={!ticker} />
+      <Button
+        disabled={!ticker || isPending}
+        onClick={handleAnalyzeClicked}
+        showLoading={isPending}
+        className="flex-1/3 font-bold"
+      >
+        Analyze
       </Button>
-      {error ? <span className="text-red-500 text-sm">{(error as Error).message}</span> : null}
-    </div>
+    </form>
   );
 }

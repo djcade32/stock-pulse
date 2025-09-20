@@ -26,7 +26,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
   };
 
   return (
-    <div className="py-4 flex flex-col gap-4">
+    <div className="group py-4 flex flex-col gap-4">
       <div className="flex justify-between">
         <div className="flex gap-2">
           <Link href={`/stocks/${ticker}`}>
@@ -71,12 +71,18 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
         <p className="leading-relax text-sm">{insights}</p>
       </div>
 
-      <div>
+      <div className="flex justify-between items-center">
         <div className="flex flex-wrap gap-2">
           {aiTags.map((tag, index) => (
             <AiTag key={index} tag={tag} />
           ))}
         </div>
+        <Link
+          href={"#"}
+          className="hover:brightness-125 smooth-animation opacity-0 group-hover:opacity-100"
+        >
+          <p className="text-xs text-(--accent-color) font-bold mt-2">Read Full Analysis</p>
+        </Link>
       </div>
     </div>
   );
