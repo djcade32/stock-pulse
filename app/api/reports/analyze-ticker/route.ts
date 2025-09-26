@@ -23,6 +23,9 @@ export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
     const ticker = okTicker(body.ticker);
+    const name = (body.name || "").trim();
+    console.log("Analyzing latest report for", name);
+
     if (!ticker) return NextResponse.json({ error: "ticker required" }, { status: 400 });
 
     const cik10 = await getCikFromTicker(ticker);
@@ -47,6 +50,7 @@ export async function POST(req: Request) {
     // write event
     await upsertFilingEvent(eventId, {
       ticker,
+      name: name || ticker,
       form: filing.form,
       filingDate: filing.filingDate,
       docUrl,
@@ -64,6 +68,7 @@ export async function POST(req: Request) {
     await saveFilingAnalysis(eventId, {
       ...analysis,
       ticker,
+      name: name || ticker,
       form: filing.form,
       filingDate: filing.filingDate,
       provenance: {
@@ -102,23 +107,18 @@ async function toFeedRowDTO(
   const a = aSnap.data() as any;
 
   const themes = a?.themes ?? [];
-  const avg = themes.length
-    ? themes.reduce((s: number, t: any) => s + (t.sentiment ?? 0), 0) / themes.length
-    : 0;
-  const overallSentiment = avg > 0.15 ? "Bullish" : avg < -0.15 ? "Bearish" : "Neutral";
+  const overallSentiment = a?.overallSentiment || "Neutral";
   const aiTags = themes.slice(0, 6).map((t: any) => ({
     topic: t.topic,
-    sentiment: t.sentiment > 0.15 ? "Positive" : t.sentiment < -0.15 ? "Negative" : "Neutral",
+    sentiment: t.sentiment > 7 ? "Positive" : t.sentiment < 4 ? "Negative" : "Neutral",
   }));
 
-  const companySnapRef = db.doc(`companies/${ticker}`);
-  const companySnap = await companySnapRef.get();
-  const name = companySnap.exists ? (companySnap.data() as any).name : ticker;
+  const name = a.name || ticker;
 
   const date = format(new Date(filing.filingDate), "MMM d, yyyy");
   const quarter =
     filing.form === "10-Q"
-      ? `10-Q ${inferQuarterLabel(filing.filingDate)}`
+      ? `10-Q ${a?.quarter || inferQuarterLabel(filing.filingDate)}`
       : `10-K ${new Date(filing.filingDate).getFullYear()}`;
   const insights =
     a?.summary?.tldr ||

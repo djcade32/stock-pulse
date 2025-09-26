@@ -61,7 +61,6 @@ async function rowsForTickers(tickers: string[]): Promise<Row[]> {
     const companySnapRef = db.doc(`companies/${ticker}`);
     const companySnap = await companySnapRef.get();
     const name = companySnap.exists ? (companySnap.data() as any).name : ticker;
-
     const filingDate = a?.filingDate || event?.filingDate || new Date().toISOString();
     const date = format(new Date(filingDate), "MMM d, yyyy");
 

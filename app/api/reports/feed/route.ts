@@ -5,13 +5,13 @@ import { db } from "@/firebase/admin";
 import { FieldPath, Timestamp } from "firebase-admin/firestore";
 
 function s2overall(score: number): "Bullish" | "Neutral" | "Bearish" {
-  if (score > 0.15) return "Bullish";
-  if (score < -0.15) return "Bearish";
+  if (score > 7) return "Bullish";
+  if (score < 4) return "Bearish";
   return "Neutral";
 }
 function s2tag(s: number): "Positive" | "Negative" | "Neutral" {
-  if (s > 0.15) return "Positive";
-  if (s < -0.15) return "Negative";
+  if (s > 7) return "Positive";
+  if (s < 4) return "Negative";
   return "Neutral";
 }
 
@@ -68,18 +68,7 @@ export async function GET(req: Request) {
   }
 
   if (hasQuarterRange) {
-    // expects quarter like "Q1", "Q2", ... and year as "2024"
-    const qNum = parseInt(String(whereQuarter).replace(/[^\d]/g, ""), 10);
-    const y = parseInt(String(whereYear), 10);
-    if (isNaN(qNum) || qNum < 1 || qNum > 4 || isNaN(y)) {
-      return NextResponse.json({ rows: [], nextCursor: null, hasMore: false });
-    }
-    const start = new Date(y, (qNum - 1) * 3, 1);
-    const end = new Date(y, qNum * 3, 1);
-    // filingDate stored as ISO string => range on ISO strings is fine
-    q = q
-      .where("filingDate", ">=", start.toISOString())
-      .where("filingDate", "<", end.toISOString());
+    q = q.where("quarter", "==", `${whereQuarter} ${whereYear}`);
   }
 
   // ---- Apply cursor matching the sort fields ----
@@ -105,19 +94,15 @@ export async function GET(req: Request) {
 
       const eSnap = await db.doc(`filingEvents/${d.id}`).get();
       const e = eSnap.exists ? (eSnap.data() as any) : undefined;
-
       const ticker = (a?.ticker ?? e?.ticker ?? "—").toUpperCase();
 
-      const companySnap = await db.doc(`companies/${ticker}`).get();
-      const name = companySnap.exists ? (companySnap.data() as any).name : ticker;
+      const name = a.name || ticker;
 
       const filingDate = a?.filingDate || e?.filingDate || new Date().toISOString();
       const date = format(new Date(filingDate), "MMM d, yyyy");
       const quarter =
         a?.form === "10-Q"
-          ? `10-Q Q${Math.floor(new Date(filingDate).getMonth() / 3) + 1} ${new Date(
-              filingDate
-            ).getFullYear()}`
+          ? `10-Q ${a?.quarter || Math.floor(new Date(filingDate).getMonth() / 3) + 1}`
           : a?.form === "10-K"
           ? `10-K ${new Date(filingDate).getFullYear()}`
           : a?.form || "—";
@@ -127,21 +112,33 @@ export async function GET(req: Request) {
       const insights = tldr || bullets || "No summary available.";
 
       const themes = a?.themes ?? [];
-      const avg = themes.length
-        ? themes.reduce((acc: number, t: any) => acc + (t.sentiment ?? 0), 0) / themes.length
-        : 0;
 
       const aiTags: AITag[] =
-        themes.slice(0, 6).map((t: any) => ({
+        themes.map((t: any) => ({
           topic: t.topic,
           sentiment: s2tag(t.sentiment),
         })) ?? [];
 
-      const overallSentiment = s2overall(avg);
+      const overallSentiment = a?.overallSentiment;
 
       const url = a?.provenance?.sourceUrl ?? e?.docUrl ?? "";
-
-      return { date, ticker, name, quarter, insights, aiTags, overallSentiment, url };
+      const risks = a?.risks ?? [];
+      const kpis = a?.kpis ?? [];
+      const bulletSummary = a?.summary?.bullets ?? [];
+      return {
+        id: d.id,
+        date,
+        ticker,
+        name,
+        quarter,
+        insights,
+        aiTags,
+        overallSentiment,
+        url,
+        risks,
+        kpis,
+        bulletSummary,
+      } as ReportRowDTO;
     })
   );
 

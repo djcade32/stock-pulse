@@ -127,5 +127,15 @@ async function toFeedRowDTO(
     (a?.summary?.bullets || []).slice(0, 2).join(" • ") ||
     "No summary available.";
 
-  return { date, ticker, name, quarter, insights, aiTags, overallSentiment, sourceUrl };
+  return {
+    date,
+    ticker,
+    name,
+    quarter,
+    insights,
+    aiTags,
+    overallSentiment,
+    sourceUrl,
+    sentimentScore: avg,
+  };
 }

@@ -86,6 +86,7 @@ export interface Stock {
 }
 
 export type ReportRowDTO = {
+  id: string;
   date: string; // filing date e.g. "Sep 10, 2025"
   ticker: string;
   name: string;
@@ -94,6 +95,16 @@ export type ReportRowDTO = {
   aiTags: AITag[];
   overallSentiment: "Bullish" | "Neutral" | "Bearish";
   url: string;
+  risks?: { label: string; severity: number }[];
+  kpis?: KPI[];
+  bulletSummary?: SummaryBullet[]; // array of bullet points
+};
+export type KPI = {
+  name: string;
+  value: string;
+  unit: string | null;
+  yoyDelta: string | null;
+  qoqDelta: string | null;
 };
 
 type TickerSentiment = {
@@ -144,8 +155,9 @@ export type WatchlistCard = {
 };
 
 export type FilingAnalysis = {
-  summary: { tldr: string; bullets: string[] };
-  themes: { topic: string; sentiment: number }[]; // -1..1
+  summary: { tldr: string; bullets: SummaryBullet[] };
+  themes: { topic: string; sentiment: number }[]; // 1..10
+  overallSentiment: "Bullish" | "Neutral" | "Bearish";
   kpis: {
     name: string;
     value: string;
@@ -155,6 +167,12 @@ export type FilingAnalysis = {
   }[];
   risks: { label: string; severity: number }[];
   flags: { guidanceChange: boolean; liquidityConcern: boolean; marginInflection: boolean };
+  quarter: string; // e.g. "Q2 2024"
+};
+
+export type SummaryBullet = {
+  bullet: string;
+  sentiment: SentimentLabel;
 };
 
 export type SentimentLabel =

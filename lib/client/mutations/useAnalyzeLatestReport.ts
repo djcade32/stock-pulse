@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export function useAnalyzeLatestReport() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (payload: { ticker: string }) => {
+    mutationFn: async (payload: { ticker: string; name: string }) => {
       const res = await fetch("/api/reports/analyze-ticker", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

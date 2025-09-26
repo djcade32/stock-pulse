@@ -16,7 +16,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
@@ -29,6 +28,7 @@ const AnalyzeEarningsPage = () => {
   const { data, isLoading, isError, error } = useReportsFeed();
 
   useEffect(() => {
+    console.log("data changed: ", data);
     if (!isMounting && data?.rows.length) {
       !isFirstLoad && setAnalysisData((prev) => [data.rows[0], ...prev]);
       setIsFirstLoad(false);
@@ -46,7 +46,7 @@ const AnalyzeEarningsPage = () => {
                 Earnings
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
+            <BreadcrumbSeparator className="text-(--secondary-text-color)" />
             <BreadcrumbItem>
               <BreadcrumbLink className="page-header-text">Analyze</BreadcrumbLink>
             </BreadcrumbItem>

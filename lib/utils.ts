@@ -48,3 +48,25 @@ export function getCurrentQuarter() {
   if (month >= 6 && month <= 8) return "Q3";
   return "Q4";
 }
+
+export function getQuarterFromDate(date: Date) {
+  const month = date.getMonth(); // 0-indexed
+  if (month >= 0 && month <= 2) return "Q1";
+  if (month >= 3 && month <= 5) return "Q2";
+  if (month >= 6 && month <= 8) return "Q3";
+  return "Q4";
+}
+
+export function formatToUSD(value: number): string {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+}
+
+export function formatNumber(value: number): string {
+  return value.toLocaleString("en-US", {
+    maximumFractionDigits: 0,
+  });
+}

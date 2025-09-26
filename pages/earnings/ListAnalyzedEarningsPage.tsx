@@ -16,12 +16,6 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 
-const yearFilterOptions = [
-  { label: "2025", value: "2025" },
-  { label: "2024", value: "2024" },
-  { label: "2023", value: "2023" },
-];
-
 const quarterFilterOptions = [
   { label: "Q1", value: "Q1" },
   { label: "Q2", value: "Q2" },
@@ -79,6 +73,19 @@ const ListAnalyzedEarningsPage = () => {
     router.push("/earnings/analyze");
   };
 
+  // Grab the last 3 years as options
+  const getYearFilterOptions = () => {
+    const options = [];
+    const currentYear = new Date().getFullYear();
+    let i = 0;
+    while (i < 3) {
+      const option = (currentYear - i).toString();
+      options.push({ label: option, value: option });
+      i++;
+    }
+    return options;
+  };
+
   return (
     <div className="page h-full">
       {/* <div className="flex items-center justify-between"> */}
@@ -101,7 +108,11 @@ const ListAnalyzedEarningsPage = () => {
           />
 
           <div className="flex items-center gap-4">
-            <Select value={yearFilter} onValueChange={setYearFilter} items={yearFilterOptions} />
+            <Select
+              value={yearFilter}
+              onValueChange={setYearFilter}
+              items={getYearFilterOptions()}
+            />
             <Select
               value={quarterFilter}
               onValueChange={setQuarterFilter}

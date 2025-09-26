@@ -14,6 +14,7 @@ interface AnalyzeLatestButtonProps {
 
 export default function AnalyzeLatestButton({ setAnalysisData }: AnalyzeLatestButtonProps) {
   const [ticker, setTicker] = useState<string | undefined>("");
+  const [stockName, setStockName] = useState<string | undefined>("");
   const { mutate, isPending, error, data } = useAnalyzeLatestReport();
 
   useEffect(() => {
@@ -35,14 +36,22 @@ export default function AnalyzeLatestButton({ setAnalysisData }: AnalyzeLatestBu
   const handleAnalyzeClicked = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (ticker) {
-      mutate({ ticker });
+      mutate({ ticker, name: stockName || ticker });
     }
     setTicker("");
+    setStockName("");
   };
 
   return (
     <form className="flex items-center gap-2" onSubmit={handleAnalyzeClicked}>
-      <StockSearch className="w-full" onSelect={(t) => setTicker(t.symbol)} clear={!ticker} />
+      <StockSearch
+        className="w-full"
+        onSelect={(t) => {
+          setTicker(t.symbol);
+          setStockName(t.description);
+        }}
+        clear={!ticker}
+      />
       <Button
         disabled={!ticker || isPending}
         onClick={handleAnalyzeClicked}

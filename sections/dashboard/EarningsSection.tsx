@@ -58,21 +58,25 @@ export default function EarningsSection() {
           <div className="py-6 text-red-500">{(error as Error)?.message ?? "Failed to load"}</div>
         )}
         {!isLoading && !isError && (!data?.rows || data.rows.length === 0) && (
-          <div className="py-6 text-(--muted-foreground)">No analyzed filings yet.</div>
+          <div className="py-6 text-(--secondary-text-color)">
+            <p className="text-center">No analyzed filings yet</p>
+          </div>
         )}
         {data?.rows.slice(0, 3)?.map((row) => (
           <EarningsRow key={`${row.ticker}-${row.date}`} earnings={row} />
         ))}
-        <div className="py-4 flex justify-center">
-          <RootButton
-            asChild
-            className="text-(--accent-color) hover:brightness-125 transition-all duration-200"
-          >
-            <Link href="/earnings">
-              <p>View All Insights</p>
-            </Link>
-          </RootButton>
-        </div>
+        {data?.rows && data.rows.length > 0 && (
+          <div className="py-4 flex justify-center">
+            <RootButton
+              asChild
+              className="text-(--accent-color) hover:brightness-125 transition-all duration-200"
+            >
+              <Link href="/earnings">
+                <p>View All Insights</p>
+              </Link>
+            </RootButton>
+          </div>
+        )}
       </div>
     </div>
   );

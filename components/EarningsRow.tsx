@@ -3,6 +3,7 @@ import React from "react";
 import AiTag from "./AiTag";
 import { useCompanyLogo } from "@/lib/client/hooks/useCompanyLogo";
 import { ReportRowDTO } from "@/types";
+import { format } from "date-fns";
 
 interface EarningsRowProps {
   earnings: ReportRowDTO;
@@ -73,12 +74,23 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
 
       <div className="flex justify-between items-center">
         <div className="flex flex-wrap gap-2">
-          {aiTags.map((tag, index) => (
+          {aiTags.slice(0, 6).map((tag, index) => (
             <AiTag key={index} tag={tag} />
           ))}
+          {aiTags.length > 6 && (
+            <AiTag
+              className={"bg-(--gray-accent-color) text-(--secondary-text-color)"}
+              tag={{ topic: `+${aiTags.length - 6} more`, sentiment: "Neutral" }}
+            />
+          )}
         </div>
         <Link
-          href={"#"}
+          href={{
+            pathname: `/earnings/${earnings.ticker.toLocaleLowerCase()}`,
+            query: {
+              q: format(new Date(earnings.date), "yyyy-MM-dd"),
+            },
+          }}
           className="hover:brightness-125 smooth-animation opacity-0 group-hover:opacity-100"
         >
           <p className="text-xs text-(--accent-color) font-bold mt-2">Read Full Analysis</p>
