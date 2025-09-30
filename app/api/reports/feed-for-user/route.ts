@@ -62,7 +62,9 @@ async function rowsForTickers(tickers: string[]): Promise<Row[]> {
     const companySnap = await companySnapRef.get();
     const name = companySnap.exists ? (companySnap.data() as any).name : ticker;
     const filingDate = a?.filingDate || event?.filingDate || new Date().toISOString();
-    const date = format(new Date(filingDate), "MMM d, yyyy");
+    const [year, month, day] = filingDate.split("-");
+    const jsDate = new Date(Number(year), Number(month) - 1, Number(day));
+    const date = format(jsDate, "MMM d, yyyy");
 
     let quarter = "—";
     if (a?.form === "10-K") {

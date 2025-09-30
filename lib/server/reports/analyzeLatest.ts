@@ -6,7 +6,11 @@ import {
   fetchCompanyFacts,
 } from "@/lib/server/vendors/edgar";
 import { analyzeFilingToJson } from "@/lib/server/analyzers/reports";
-import { upsertFilingEvent, saveFilingAnalysis } from "@/lib/server/persistReports";
+import {
+  upsertFilingEvent,
+  saveFilingAnalysis,
+  persistLatestEarningsDate,
+} from "@/lib/server/persistReports";
 import { sha256 } from "@/lib/server/crypto";
 import { db } from "@/firebase/admin";
 import { format } from "date-fns";
@@ -84,6 +88,7 @@ export async function analyzeLatestReportForTicker(tickerInput: string) {
       retrievedAt: new Date().toISOString(),
     },
   });
+  await persistLatestEarningsDate(ticker, filing.filingDate);
 
   hashRef.set({ eventId, ticker, createdAt: new Date() });
   await upsertFilingEvent(eventId, { status: "analyzed" });

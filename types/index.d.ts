@@ -134,6 +134,7 @@ export type WatchlistStock = {
   symbol: string;
   type: string;
   createdAt?: string;
+  latestEarningsDate?: string;
 };
 
 export type AITag = {
@@ -152,6 +153,7 @@ export type WatchlistCard = {
   numOfNews: number;
   aiTags?: AITag[];
   sentimentSummary: string;
+  latestEarningsDate?: string;
 };
 
 export type FilingAnalysis = {

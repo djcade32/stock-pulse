@@ -7,7 +7,11 @@ import {
   fetchCompanyFacts,
 } from "@/lib/server/vendors/edgar";
 import { analyzeFilingToJson } from "@/lib/server/analyzers/reports";
-import { upsertFilingEvent, saveFilingAnalysis } from "@/lib/server/persistReports";
+import {
+  upsertFilingEvent,
+  saveFilingAnalysis,
+  persistLatestEarningsDate,
+} from "@/lib/server/persistReports";
 import { sha256 } from "@/lib/server/crypto";
 import { format } from "date-fns";
 import { db } from "@/firebase/admin";
@@ -78,6 +82,8 @@ export async function POST(req: Request) {
         retrievedAt: new Date().toISOString(),
       },
     });
+
+    await persistLatestEarningsDate(ticker, filing.filingDate);
 
     hashRef.set({ eventId, ticker, createdAt: new Date() });
 

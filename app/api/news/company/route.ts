@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { formatDistanceToNow } from "date-fns";
+import { persistLatestEarningsDate } from "@/lib/server/persistReports";
 
 async function fetchCompanyNews(symbol: string) {
   const token = process.env.FINNHUB_KEY!;

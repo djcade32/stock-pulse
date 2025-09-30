@@ -51,7 +51,22 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
         stocks.sort((a: { symbol: string }, b: { symbol: string }) =>
           a.symbol.localeCompare(b.symbol)
         );
-        setWatchlist(stocks);
+        // Get latestEarningsDate from companies collection
+        const stocksWithEarnings = await Promise.all(
+          stocks.map(async (stock: WatchlistStock) => {
+            const companyDoc = doc(db, `companies/${stock.symbol}`);
+            const companySnap = await getDoc(companyDoc);
+            if (companySnap.exists()) {
+              const companyData = companySnap.data();
+              return {
+                ...stock,
+                latestEarningsDate: companyData.latestEarningsDate || null,
+              };
+            }
+            return { ...stock, latestEarningsDate: null };
+          })
+        );
+        setWatchlist(stocksWithEarnings);
       } else {
         setWatchlist([]);
       }
@@ -217,7 +232,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
           </div>
         )}
         {(isWatchlistPage ? filteredWatchlist : filteredWatchlist.slice(0, 6)).map(
-          ({ symbol, description, type }) => {
+          ({ symbol, description, type, latestEarningsDate }) => {
             const stock: WatchlistCardType = {
               name: description,
               ticker: symbol,
@@ -247,6 +262,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
               stock.numOfNews = s.numOfNews;
               stock.sentimentSummary = s.summary;
               stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, topic: t.topic }));
+              latestEarningsDate && (stock.latestEarningsDate = latestEarningsDate);
             } else {
               // fallback while loading
               stock.sentimentScore = 50;

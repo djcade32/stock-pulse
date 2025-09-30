@@ -99,7 +99,9 @@ export async function GET(req: Request) {
       const name = a.name || ticker;
 
       const filingDate = a?.filingDate || e?.filingDate || new Date().toISOString();
-      const date = format(new Date(filingDate), "MMM d, yyyy");
+      const [year, month, day] = filingDate.split("-");
+      const jsDate = new Date(Number(year), Number(month) - 1, Number(day));
+      const date = format(jsDate, "MMM d, yyyy");
       const quarter =
         a?.form === "10-Q"
           ? `10-Q ${a?.quarter || Math.floor(new Date(filingDate).getMonth() / 3) + 1}`

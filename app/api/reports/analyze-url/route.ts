@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { analyzeFilingToJson } from "@/lib/server/analyzers/reports";
-import { upsertFilingEvent, saveFilingAnalysis } from "@/lib/server/persistReports";
+import {
+  upsertFilingEvent,
+  saveFilingAnalysis,
+  persistLatestEarningsDate,
+} from "@/lib/server/persistReports";
 import { sha256 } from "@/lib/server/crypto";
 import { fetchFilingText } from "@/lib/server/vendors/edgar";
 import { format } from "date-fns";
@@ -82,6 +86,8 @@ export async function POST(req: Request) {
       },
       analyzedBy: uid,
     });
+
+    await persistLatestEarningsDate(ticker, new Date().toISOString());
 
     hashRef.set({ eventId, ticker, createdAt: new Date() });
     await upsertFilingEvent(eventId, { status: "analyzed" });

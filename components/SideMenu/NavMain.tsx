@@ -43,7 +43,8 @@ export const NavMain = ({ items }: { items: SidebarItem[] }) => {
                 className={`cursor-pointer`}
                 size={"lg"}
                 asChild
-                isActive={pathname === item.url}
+                isActive={pathname?.includes(item.url)}
+                // isActive={pathname === item.url}
               >
                 <item.icon />
               </SidebarMenuButton>

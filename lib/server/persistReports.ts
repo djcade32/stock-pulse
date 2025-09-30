@@ -16,3 +16,29 @@ export async function saveFilingAnalysis(eventId: string, payload: any) {
     { merge: true }
   );
 }
+
+// Added latest earnings date to watchlist stocks
+export async function persistLatestEarningsDate(ticker: string, earningsDate: string) {
+  const watchlistsRef = db.collection("companies").where("symbol", "==", ticker);
+  const snapshot = await watchlistsRef.get();
+  if (snapshot.empty) {
+    db.collection("companies").doc(ticker).set(
+      {
+        symbol: ticker,
+        latestEarningsDate: earningsDate,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+    return;
+  }
+  snapshot.forEach((doc) => {
+    doc.ref.set(
+      {
+        latestEarningsDate: earningsDate,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+  });
+}

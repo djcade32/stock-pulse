@@ -27,6 +27,17 @@ export async function addWatchlistItem(userId: string, stock: WatchlistStock) {
   };
 
   const ref = db.collection("watchlists").doc(userId);
+  const companiesRef = db.collection("companies").doc(symbol);
+  // Ensure company doc exists (for name lookup later)
+  await companiesRef.set(
+    {
+      symbol,
+      name: canonical.description,
+      updatedAt: FieldValue.serverTimestamp(),
+      type: canonical.type,
+    },
+    { merge: true }
+  );
   const snap = await ref.get();
 
   if (!snap.exists) {
