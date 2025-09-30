@@ -4,6 +4,7 @@ import { Select } from "@/components/general/Select";
 import NewsRow from "@/components/NewsRow";
 import { News } from "@/types";
 import React, { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface NewsDisplayProps {
   header: string;
@@ -31,6 +32,7 @@ const NewsDisplay = ({
   companyFilter,
   setCompanyFilter,
 }: NewsDisplayProps) => {
+  const router = useRouter();
   const [visibleNews, setVisibleNews] = useState(20);
   const [sourceFilter, setSourceFilter] = useState("all");
   const [sentimentFilter, setSentimentFilter] = useState("all");
@@ -97,6 +99,7 @@ const NewsDisplay = ({
 
   const handleCompanyChange = (value: string) => {
     setCompanyFilter && setCompanyFilter(value);
+    router.push(`/news?q=${value.toLocaleUpperCase()}`);
   };
   return (
     <div className={className}>

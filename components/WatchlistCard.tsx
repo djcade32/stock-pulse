@@ -197,9 +197,9 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
 
       {fullDetails ? (
         <div className="flex justify-between mt-4 w-full">
-          <Link href={"/news"} className="watchlist-card-link">
+          <Link href={`/news?q=${ticker}`} className="watchlist-card-link">
             <FaNewspaper size={15} className="mr-1" />
-            News ({numOfNews})
+            News
           </Link>
           {type == "Common Stock" && latestEarningsDate && (
             <Link

@@ -64,6 +64,10 @@ async function analyzeNewsSentiment(title: string) {
     "improve",
     "catalyst",
     "upbeat",
+    "lifted",
+    "bull run",
+    "bull",
+    "soar",
   ];
   const negatives = [
     "miss",
@@ -92,6 +96,7 @@ async function analyzeNewsSentiment(title: string) {
     "crash",
     "vulnerability",
     "suffer",
+    "bear",
   ];
   let score = 0;
   for (const p of positives) if (text.includes(p)) score++;

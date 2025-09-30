@@ -12,6 +12,7 @@ import { db } from "@/firebase/client";
 import { Select } from "@/components/general/Select";
 import Button from "@/components/general/Button";
 import { RefreshCcw } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const selectItems = [
   { label: "All News", value: "all" },
@@ -20,9 +21,13 @@ const selectItems = [
 ];
 
 const NewsContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const stock = searchParams?.get("q")?.toLocaleUpperCase();
+
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("all");
-  const [companyFilter, setCompanyFilter] = useState<string | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState(stock ? "watchlist" : "all");
+  const [companyFilter, setCompanyFilter] = useState<string | null>(stock ? stock : null);
   const { watchlist, setWatchlist } = useWatchlistStore();
   const { uid, loading } = useUid();
   const { isPending } = useQuery({
@@ -57,12 +62,15 @@ const NewsContent = () => {
   const companyOptions = useMemo(() => {
     if (!watchlist || watchlist.length === 0) return [];
     const sorted = [...watchlist].sort((a, b) => a.symbol.localeCompare(b.symbol));
-    setCompanyFilter(sorted[0]?.symbol);
+    setCompanyFilter(stock || sorted[0]?.symbol);
     return sorted.map((item) => ({ label: item.symbol, value: item.symbol.toLocaleLowerCase() }));
   }, [watchlist, isPending]);
 
   const handleSelectChange = (value: string) => {
     setSelectedFilter(value);
+    router.replace(
+      `/news${value === "all" ? "" : value === "market" ? "?q=" : "?q=" + (companyFilter || "")}`
+    );
     // Implement filtering logic based on selected value
   };
 
