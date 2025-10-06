@@ -18,8 +18,10 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useRouter } from "next/navigation";
 
 const AnalyzeEarningsPage = () => {
+  const router = useRouter();
   const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
   const [isMounting, setIsMounting] = useState(true);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
@@ -42,7 +44,10 @@ const AnalyzeEarningsPage = () => {
         <Breadcrumb className="w-full h-[44px] flex items-center">
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink className="page-header-text hover:brightness-75" href="/earnings">
+              <BreadcrumbLink
+                className="page-header-text hover:brightness-75"
+                onClick={() => router.back()}
+              >
                 Earnings
               </BreadcrumbLink>
             </BreadcrumbItem>

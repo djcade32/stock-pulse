@@ -8,7 +8,7 @@ import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
 import EarningsRow from "@/components/earnings/EarningsRow";
 import { Select } from "@/components/general/Select";
 import { getCurrentQuarter } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -25,12 +25,16 @@ const quarterFilterOptions = [
 
 const ListAnalyzedEarningsPage = () => {
   const router = useRouter();
-  const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
-  const [quarterFilter, setQuarterFilter] = useState(getCurrentQuarter());
-  const [selectedStock, setSelectedStock] = useState<string | undefined>(undefined);
+  const searchParams = useSearchParams();
+  const symbol = searchParams?.get("symbol");
+  const quarter = searchParams?.get("quarter");
+  const year = searchParams?.get("year");
+  const [yearFilter, setYearFilter] = useState(year || new Date().getFullYear().toString());
+  const [quarterFilter, setQuarterFilter] = useState(quarter || getCurrentQuarter());
+  const [selectedStock, setSelectedStock] = useState<string | undefined>(symbol || undefined);
   const [endReach, setEndReach] = useState(false);
 
-  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, refetch } =
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, isFetching } =
     useReportsFeedInfinite(30, selectedStock, yearFilter, quarterFilter);
   const rows = (data?.pages ?? []).flatMap((p) => p.rows);
 
@@ -105,17 +109,28 @@ const ListAnalyzedEarningsPage = () => {
                 handleStockChange("");
               }
             }}
+            value={symbol || ""}
           />
 
           <div className="flex items-center gap-4">
             <Select
               value={yearFilter}
-              onValueChange={setYearFilter}
+              onValueChange={(value) => {
+                setYearFilter(value);
+                router.push(
+                  `/earnings?${symbol ? symbol + "&" : ""}year=${value}&quarter=${quarterFilter}`
+                );
+              }}
               items={getYearFilterOptions()}
             />
             <Select
               value={quarterFilter}
-              onValueChange={setQuarterFilter}
+              onValueChange={(value) => {
+                setQuarterFilter(value);
+                router.push(
+                  `/earnings?${symbol ? symbol + "&" : ""}year=${yearFilter}&quarter=${value}`
+                );
+              }}
               items={quarterFilterOptions}
             />
             <Button className="flex-1/2 font-bold" onClick={handleAnalyzeEarningsClick}>
@@ -129,13 +144,14 @@ const ListAnalyzedEarningsPage = () => {
       {/* </div> */}
 
       <div className="flex flex-col gap-4 h-full">
-        {isLoading &&
-          [...Array(6)].map((_, index) => (
-            <div
-              key={index}
-              className="h-[188px] bg-(--secondary-color) rounded-lg animate-pulse"
-            />
-          ))}
+        {isLoading ||
+          (isFetching &&
+            [...Array(6)].map((_, index) => (
+              <div
+                key={index}
+                className="h-[188px] bg-(--secondary-color) rounded-lg animate-pulse"
+              />
+            )))}
         {!isLoading && rows.length === 0 && (
           <div className="flex items-center justify-center h-full">
             <p className="py-6 text-(--secondary-text-color)">No analyzed filings found</p>

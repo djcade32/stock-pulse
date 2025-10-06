@@ -3,28 +3,13 @@
 import React, { useEffect, useState } from "react";
 import router, { useSearchParams, useRouter } from "next/navigation";
 import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
-import { getQuarterFromDate } from "@/lib/utils";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Select } from "@/components/general/Select";
-import { AITag, KPI, ReportRowDTO } from "@/types";
+import { ReportRowDTO } from "@/types";
 import { format } from "date-fns";
 import AiTag from "@/components/AiTag";
 import Button from "@/components/general/Button";
 import { ExternalLink } from "lucide-react";
 import EarningsFinancialMetricsCard from "@/components/earnings/EarningsFinancialMetricsCard";
-
-const quarterFilterOptions = [
-  { label: "Q1", value: "Q1" },
-  { label: "Q2", value: "Q2" },
-  { label: "Q3", value: "Q3" },
-  { label: "Q4", value: "Q4" },
-];
 
 const FullEarningsAnalysisPage = () => {
   const route = useRouter();
@@ -34,9 +19,7 @@ const FullEarningsAnalysisPage = () => {
   const { data, isLoading } = useReportsFeedInfinite(30, symbol);
   const rows = (data?.pages ?? []).flatMap((p) => p.rows);
   const [yearFilter, setYearFilter] = useState(date ? new Date(date).getFullYear().toString() : "");
-  const [quarterFilter, setQuarterFilter] = useState(
-    date ? getQuarterFromDate(new Date(date)) : ""
-  );
+  const [quarterFilter, setQuarterFilter] = useState("");
   const [currentReport, setCurrentReport] = useState<ReportRowDTO | null>(null);
 
   useEffect(() => {
@@ -49,6 +32,9 @@ const FullEarningsAnalysisPage = () => {
       console.log("rows: ", rows[0]);
       const foundReport = rows.find((row) => format(row.date, "yyyy-MM-dd") === date);
       setCurrentReport(foundReport ?? null);
+      if (foundReport) {
+        setQuarterFilter(foundReport.quarter.split(" ")[1]);
+      }
     }
   }, [date, symbol, rows]);
 
@@ -64,6 +50,24 @@ const FullEarningsAnalysisPage = () => {
       return {
         label: year,
         value: year,
+      };
+    });
+    return options;
+  };
+
+  const getAvailableQuarters = (rows: ReportRowDTO[], year: string) => {
+    const quarters: string[] = [];
+    rows
+      .filter((row) => new Date(row.date).getFullYear().toString() === year)
+      .forEach((row) => {
+        const quarter = row.quarter.split(" ")[1];
+        if (!quarters.includes(quarter)) quarters.push(quarter);
+      });
+    // Convert to options
+    const options = quarters.map((quarter) => {
+      return {
+        label: quarter,
+        value: quarter,
       };
     });
     return options;
@@ -95,18 +99,8 @@ const FullEarningsAnalysisPage = () => {
 
   return (
     <div className="page h-full">
-      <Breadcrumb className="flex items-center justify-between">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink className="page-header-text hover:brightness-75" href="/earnings">
-              Earnings
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="text-(--secondary-text-color)" />
-          <BreadcrumbItem>
-            <BreadcrumbLink className="page-header-text">{symbol.toUpperCase()}</BreadcrumbLink>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <div className="flex items-center justify-between">
+        <h1 className="page-header-text">Earnings</h1>
 
         <div className="flex items-center gap-4">
           <Select
@@ -117,10 +111,10 @@ const FullEarningsAnalysisPage = () => {
           <Select
             value={quarterFilter}
             onValueChange={setQuarterFilter}
-            items={quarterFilterOptions}
+            items={getAvailableQuarters(rows, yearFilter)}
           />
         </div>
-      </Breadcrumb>
+      </div>
       <div className="flex flex-col gap-4">
         <div className="bg-(--secondary-color) p-4 rounded-lg ">
           <div className="flex justify-between items-center">

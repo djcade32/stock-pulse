@@ -16,6 +16,7 @@ type StockSearchProps = {
   fetcher?: (q: string, signal: AbortSignal) => Promise<StockHit[]>;
   onChange?: (q?: string) => void;
   clear?: boolean; // when true, clears the input field
+  value?: string; // controlled input value
 };
 
 const defaultFetcher = async (q: string, signal: AbortSignal): Promise<StockHit[]> => {
@@ -36,8 +37,9 @@ export default function StockSearch({
   fetcher = defaultFetcher,
   onChange,
   clear,
+  value,
 }: StockSearchProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(value || "");
   const [open, setOpen] = useState(false);
   const [hits, setHits] = useState<StockHit[]>([]);
   const [loading, setLoading] = useState(false);
@@ -184,6 +186,17 @@ export default function StockSearch({
           {!loading &&
             !error &&
             hits.map((h, i) => {
+              console.log("hit: ", h); // For debugging
+              if (h.type === "Indice" && hits.length > 1) return null;
+              if (h.type === "Indice")
+                return (
+                  <div
+                    key={`${h.symbol}-${i}`}
+                    className="px-3 py-2 text-sm text-(--secondary-text-color)"
+                  >
+                    No matches
+                  </div>
+                );
               const active = i === activeIndex;
               return (
                 <div
