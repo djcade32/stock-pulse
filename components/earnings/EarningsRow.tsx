@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import AiTag from "./AiTag";
+import AiTag from "../AiTag";
 import { useCompanyLogo } from "@/lib/client/hooks/useCompanyLogo";
 import { ReportRowDTO } from "@/types";
 import { format } from "date-fns";
@@ -30,7 +30,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
     <div className="group py-4 flex flex-col gap-4">
       <div className="flex justify-between">
         <div className="flex gap-2">
-          <Link href={`/stocks/${ticker}`}>
+          <Link href={`/stock?symbol=${ticker}`}>
             {logoUrl.data ? (
               <img
                 src={logoUrl.data}
@@ -46,7 +46,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
           </Link>
           <div className="flex flex-col justify-between">
             <Link
-              href={`/stocks/${ticker}`}
+              href={`/stock?symbol=${ticker}`}
               className="hover:brightness-75 transition-all duration-200"
             >
               <h3 className="font-bold">{`${name} (${ticker})`}</h3>

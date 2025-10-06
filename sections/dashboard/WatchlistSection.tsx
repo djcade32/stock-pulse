@@ -179,9 +179,6 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
       handleFilterChange(filterBy, res).then((final) => setFilteredWatchlist(final))
     );
   }, [watchlist, sortBy, filterBy]);
-  useEffect(() => {
-    console.log("Watchlist Quotes updated: ", quotesBySymbol);
-  }, [quotesBySymbol]);
 
   return (
     <div>
@@ -236,7 +233,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
             const stock: WatchlistCardType = {
               name: description,
               ticker: symbol,
-              type,
+              type: type || "N/A",
               price: 0,
               percentChange: 0,
               dollarChange: "",

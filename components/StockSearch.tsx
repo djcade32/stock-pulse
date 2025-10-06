@@ -135,10 +135,7 @@ export default function StockSearch({
 
   const select = (hit: StockHit) => {
     onSelect?.(hit);
-    // You can also navigate here if you want:
-    // router.push(`/stocks/${hit.symbol}`);
     setQuery(hit.symbol);
-    // setQuery("");
     setHits([]);
     setActiveIndex(-1);
     setOpen(false);

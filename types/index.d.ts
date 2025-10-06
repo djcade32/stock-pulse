@@ -132,7 +132,7 @@ type News = {
 export type WatchlistStock = {
   description: string;
   symbol: string;
-  type: string;
+  type?: string;
   createdAt?: string;
   latestEarningsDate?: string;
 };

@@ -4,7 +4,7 @@ import Button from "@/components/general/Button";
 import { Button as RootButton } from "@/components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import { useRefreshReports, useReportsFeed } from "@/lib/client/queries/reports";
-import EarningsRow from "@/components/EarningsRow"; // reuse same row component
+import EarningsRow from "@/components/earnings/EarningsRow"; // reuse same row component
 import { useState } from "react";
 import LastRefreshedBadge from "@/components/reports/LastRefreshedBadge";
 import { useEnsureLatestOnOpen } from "@/lib/client/hooks/useEnsureLatestOnOpen";

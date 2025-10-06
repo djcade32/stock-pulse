@@ -10,8 +10,10 @@ export function useCompanyLogo(symbol: string = "") {
     queryKey,
     // AbortController lets the request cancel if the component unmounts or the symbols change mid-flight.
     queryFn: async ({ signal }) => fetchCompanyLogo(symbol, signal),
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours - how long data stays in cache after inactive
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours});
+    enabled: !!symbol, // Only run the query if we have a symbol
   });
-
   return {
     /** TanStack Query extrass */
     url: query.data || { data: null, cached: false },

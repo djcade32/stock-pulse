@@ -15,13 +15,7 @@ import {
 import { sha256 } from "@/lib/server/crypto";
 import { format } from "date-fns";
 import { db } from "@/firebase/admin";
-
-function okTicker(s?: string) {
-  return (s || "")
-    .trim()
-    .toUpperCase()
-    .replace(/[^A-Z.]/g, "");
-}
+import { okTicker } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {

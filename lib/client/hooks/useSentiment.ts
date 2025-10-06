@@ -13,5 +13,6 @@ export function useSentiment(tickers: string[], opts?: { enabled?: boolean }) {
     },
     enabled: (opts?.enabled ?? true) && tickers.length > 0,
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours
   });
 }

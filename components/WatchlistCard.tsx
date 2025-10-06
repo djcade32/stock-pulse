@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FaNewspaper } from "react-icons/fa6";
 import { FaMicrophoneAlt } from "react-icons/fa";
-import { Ellipsis, Trash2 } from "lucide-react";
+import { Ellipsis, Minus } from "lucide-react";
 import AiTag from "./AiTag";
 import { useCompanyLogo } from "@/lib/client/hooks/useCompanyLogo";
 import DropdownMenu from "./general/DropdownMenu";
@@ -69,7 +69,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
       <div className="flex flex-col w-full flex-1">
         <div className="flex justify-between w-full">
           <div className="flex gap-2 w-full">
-            <Link href={`/stocks/${ticker}`} className="flex-shrink-0">
+            <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0">
               {logoUrl.data ? (
                 <img
                   src={logoUrl.data}
@@ -85,7 +85,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
             </Link>
             <div className="flex flex-col justify-between w-full">
               <Link
-                href={`/stocks/${ticker}`}
+                href={`/stock?symbol=${ticker}`}
                 className="hover:brightness-75 transition-all duration-200"
               >
                 <h3 className="font-bold">{ticker}</h3>
@@ -187,7 +187,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
         }
         items={[
           {
-            icon: <Trash2 size={12} color="var(--danger-color" />,
+            icon: <Minus size={12} color="var(--danger-color" />,
             label: "Remove",
             onClick: handleRemove,
           },

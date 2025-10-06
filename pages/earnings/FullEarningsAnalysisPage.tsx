@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import AiTag from "@/components/AiTag";
 import Button from "@/components/general/Button";
 import { ExternalLink } from "lucide-react";
-import FinancialMetricsCard from "@/components/FinancialMetricsCard";
+import EarningsFinancialMetricsCard from "@/components/earnings/EarningsFinancialMetricsCard";
 
 const quarterFilterOptions = [
   { label: "Q1", value: "Q1" },
@@ -245,7 +245,7 @@ const FullEarningsAnalysisPage = () => {
                   />
                 ))
               : currentReport.kpis?.map((kpi, index) => (
-                  <FinancialMetricsCard key={index} kpi={kpi} />
+                  <EarningsFinancialMetricsCard key={index} kpi={kpi} />
                 ))}
           </div>
         </div>

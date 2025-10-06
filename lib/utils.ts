@@ -70,3 +70,24 @@ export function formatNumber(value: number): string {
     maximumFractionDigits: 0,
   });
 }
+
+export function okTicker(s?: string) {
+  return (s || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z.]/g, "");
+}
+
+export function formatUSD(valueInMillions: number): string {
+  const symbol = valueInMillions < 0 ? "-$" : "$";
+  const value = Math.abs(valueInMillions) * 1_000_000; // convert millions → raw USD
+  if (value >= 1_000_000_000_000) {
+    return `${symbol}${(value / 1_000_000_000_000).toFixed(2)}T`;
+  } else if (value >= 1_000_000_000) {
+    return `${symbol}${(value / 1_000_000_000).toFixed(2)}B`;
+  } else if (value >= 1_000_000) {
+    return `${symbol}${(value / 1_000_000).toFixed(2)}M`;
+  } else {
+    return `${symbol}${value.toFixed(2)}`;
+  }
+}

@@ -8,7 +8,7 @@ import { FaPlus } from "react-icons/fa6";
 import React, { useEffect, useState } from "react";
 import AddStockModal from "@/modals/AddStockModal";
 import { ReportRowDTO } from "@/types";
-import EarningsRow from "@/components/EarningsRow";
+import EarningsRow from "@/components/earnings/EarningsRow";
 import { cn } from "@/lib/utils";
 import { useReportsFeed } from "@/lib/client/queries/reports";
 import {

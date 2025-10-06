@@ -5,7 +5,7 @@ import StockSearch from "@/components/StockSearch";
 import React, { useEffect, useState } from "react";
 import { FileChartColumn } from "lucide-react";
 import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
-import EarningsRow from "@/components/EarningsRow";
+import EarningsRow from "@/components/earnings/EarningsRow";
 import { Select } from "@/components/general/Select";
 import { getCurrentQuarter } from "@/lib/utils";
 import { useRouter } from "next/navigation";
