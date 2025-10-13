@@ -110,7 +110,7 @@ const StockProfileHeader = ({ symbol }: StockProfileHeaderProps) => {
             />
           ) : (
             <div className="w-15 h-15 rounded-lg bg-(--secondary-text-color) text-foreground font-bold flex items-center justify-center">
-              <p>{symbol[0]}</p>
+              <p className="text-2xl">{symbol[0]}</p>
             </div>
           )}
         </div>

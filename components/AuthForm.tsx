@@ -8,13 +8,16 @@ import { useForm, FormProvider } from "react-hook-form";
 import { signIn, signUp } from "@/lib/actions/auth.server.action";
 import {
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
-import { auth } from "@/firebase/client";
+import { auth, db } from "@/firebase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -28,7 +31,7 @@ const AuthForm = ({ show }: AuthFormProps) => {
 
   // Create a single RHF instance for this form and share via context
   const methods = useForm({ mode: "onChange" });
-  const { getValues, watch, trigger, handleSubmit } = methods;
+  const { watch, trigger } = methods;
 
   // When password changes, revalidate retype_password
   const password = watch("password");
@@ -139,8 +142,26 @@ const AuthForm = ({ show }: AuthFormProps) => {
     try {
       if (show === "sign-in") {
         try {
-          console.log("Signing in with email:", email);
           const cred = await signInWithEmailAndPassword(auth, email, password);
+          // Check if email is verified
+          if (!cred.user.emailVerified) {
+            toast.error("Please verify your email before signing in.");
+            sendEmailVerification(cred.user);
+            await auth.signOut();
+            return;
+          }
+          // Check if user previously changed email and need to update db record
+          const uid = cred.user.uid;
+          await getDoc(doc(db, `users/${uid}`)).then(async (docSnap) => {
+            if (docSnap.exists()) {
+              const userData = docSnap.data();
+              if (userData.email !== cred.user.email) {
+                console.log("Updating email in Firestore to: ", cred.user.email);
+                // Update email in Firestore
+                await setDoc(doc(db, `users/${uid}`), { email: cred.user.email }, { merge: true });
+              }
+            }
+          });
 
           // 1) Get a fresh token up front
           let idToken = await cred.user.getIdToken(/* forceRefresh */ true);
@@ -166,12 +187,18 @@ const AuthForm = ({ show }: AuthFormProps) => {
         } catch (e) {
           console.error(e);
           toast.error("Sign in failed. Please try again.");
+          return;
         }
       } else if (show === "sign-up") {
+        console.log("Signing up with email:", email);
         const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredentials.user, {
+          displayName: name,
+        });
+        await sendEmailVerification(userCredentials.user);
         const result = await signUp({
           uid: userCredentials.user.uid,
-          name: name!,
+          name: name,
           email,
           password,
         });
@@ -179,7 +206,7 @@ const AuthForm = ({ show }: AuthFormProps) => {
           toast.error(result?.message || "Error signing up, please try again.");
           return;
         }
-        toast.success("Account created successfully! Please sign in.");
+        toast.success("Account created successfully! Please verify email to sign in.");
         router.push("/sign-in");
       } else if (show === "forgot-password") {
         try {
@@ -194,7 +221,11 @@ const AuthForm = ({ show }: AuthFormProps) => {
       }
     } catch (error) {
       console.error("Error during sign up:", error);
-      // Handle error appropriately, e.g., show a notification
+      if ((error as { code?: string }).code === "auth/email-already-in-use") {
+        toast.error("Email already in use. Please Sign In.");
+      } else {
+        toast.error("Error during sign up. Please try again.");
+      }
     }
   };
 
@@ -203,7 +234,7 @@ const AuthForm = ({ show }: AuthFormProps) => {
       <Form
         inputsArray={inputsArray}
         submitButtonText={getSubmitButtonText()}
-        onSubmit={async (data) => await submitForm(data)}
+        onSubmit={submitForm}
         slot={show === "sign-in" && customSlot}
       />
     </FormProvider>

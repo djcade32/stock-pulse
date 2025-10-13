@@ -8,14 +8,16 @@ import { cn } from "@/lib/utils";
 
 interface FormProps {
   inputsArray: FormInputType[];
+  formErrors?: Record<string, string>;
   className?: string;
-  onSubmit?: (data: Record<string, string | {}>) => void;
+  onSubmit?: (data: Record<string, string | {}>) => Promise<void>;
   submitButtonText?: string;
   slot?: React.ReactNode; // Allow custom elements like links or checkboxes below the form
 }
 
 const Form = ({
   inputsArray,
+  formErrors: externalFormErrors,
   className,
   onSubmit,
   submitButtonText = "Submit",
@@ -24,6 +26,10 @@ const Form = ({
   const [inputValues, setInputValues] = useState<Record<string, string | {}>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setFormErrors(externalFormErrors || {});
+  }, [externalFormErrors]);
 
   useEffect(() => {
     const initialValues: Record<string, string | {}> = {};
@@ -101,11 +107,17 @@ const Form = ({
 
   const inputHasError = (name: string) => Boolean(formErrors[name] && formErrors[name] !== "");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     if (!validateForm()) return setIsSubmitting(false);
-    onSubmit?.(inputValues);
+    try {
+      await onSubmit?.(inputValues);
+    } catch (error) {
+      console.error("Form submission error: ", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

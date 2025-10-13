@@ -52,6 +52,10 @@ function normalizeSymbol(raw: string): string {
 
 function isValidSymbol(symbol: string): boolean {
   // Keep this simple; expand if you support more exotic tickers.
+  // Allow indices like ^GSPC, ^DJI, ^IXIC
+  if (symbol.startsWith("^")) {
+    return /^\^[A-Z.\-]+$/.test(symbol);
+  }
   return /^[A-Z.\-]+$/.test(symbol);
 }
 

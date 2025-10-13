@@ -10,9 +10,10 @@ interface ModalProps {
   children: React.ReactNode;
   header?: string;
   actionButtons?: ModalActionButtons;
+  hideFooter?: boolean; // Optional: whether to show footer with action buttons
 }
 
-const Modal = ({ children, header, actionButtons, open, setOpen }: ModalProps) => {
+const Modal = ({ children, header, actionButtons, open, setOpen, hideFooter }: ModalProps) => {
   if (!children) {
     return null; // Don't render the modal if there are no children
   }
@@ -45,30 +46,36 @@ const Modal = ({ children, header, actionButtons, open, setOpen }: ModalProps) =
           />
         </div>
         <div className="p-6">{children}</div>
-        <div className="flex items-center justify-between gap-4 border-t-2 border-(--secondary-color) p-6">
-          <div>
-            {!!actionButtons?.slotLeft
-              ? actionButtons.slotLeft()
-              : showCancelButton && (
-                  <Button
-                    onClick={closeModal}
-                    variant={actionButtons?.cancel?.variant || "ghost"}
-                    className="!text-foreground"
-                  >
-                    {actionButtons?.cancel?.label || "Cancel"}
-                  </Button>
-                )}
+        {!hideFooter && (
+          <div className="flex items-center justify-between gap-4 border-t-2 border-(--secondary-color) p-6">
+            <div>
+              {!!actionButtons?.slotLeft
+                ? actionButtons.slotLeft()
+                : showCancelButton && (
+                    <Button
+                      onClick={closeModal}
+                      variant={actionButtons?.cancel?.variant || "ghost"}
+                      className="!text-foreground"
+                    >
+                      {actionButtons?.cancel?.label || "Cancel"}
+                    </Button>
+                  )}
+            </div>
+            <div className="flex justify-end gap-4 ">
+              {!!actionButtons?.slotRight ? (
+                <div>{actionButtons.slotRight()}</div>
+              ) : (
+                <Button
+                  onClick={onConfirm}
+                  disabled={actionButtons?.confirm?.disabled}
+                  variant={actionButtons?.confirm?.variant}
+                >
+                  {actionButtons?.confirm?.label || "Confirm"}
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="flex justify-end gap-4 ">
-            {!!actionButtons?.slotRight ? (
-              <div>{actionButtons.slotRight()}</div>
-            ) : (
-              <Button onClick={onConfirm} disabled={actionButtons?.confirm?.disabled}>
-                {actionButtons?.confirm?.label || "Confirm"}
-              </Button>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

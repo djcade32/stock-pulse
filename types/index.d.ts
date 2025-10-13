@@ -62,6 +62,7 @@ export interface ModalActionButtons {
     label?: string;
     onClick: () => void | Promise<void>;
     disabled?: boolean;
+    variant?: "danger" | "ghost";
   };
   cancel?: {
     label?: string;
@@ -196,4 +197,9 @@ export type StockHit = {
   symbol: string;
   description: string;
   type?: string;
+};
+
+export type PromiseResolveType = {
+  message?: string;
+  success: boolean;
 };

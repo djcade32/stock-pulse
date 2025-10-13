@@ -186,7 +186,6 @@ export default function StockSearch({
           {!loading &&
             !error &&
             hits.map((h, i) => {
-              console.log("hit: ", h); // For debugging
               if (h.type === "Indice" && hits.length > 1) return null;
               if (h.type === "Indice")
                 return (
