@@ -49,7 +49,6 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
 
   useEffect(() => {
     setChartData((prev) => [...prev, { time: Date.now(), desktop: stock.price }]);
-    console.log("Updated chart data for", stock.ticker, chartData);
   }, [stock.price]);
 
   const handleRemove = async () => {

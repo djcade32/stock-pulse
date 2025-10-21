@@ -20,9 +20,9 @@ const Header = () => {
         />
       </div>
       <div className="flex items-center gap-2">
-        <div className="hover:bg-(--color-sidebar-accent) transition-colors duration-200 p-2 rounded-lg cursor-pointer">
+        {/* <div className="hover:bg-(--color-sidebar-accent) transition-colors duration-200 p-2 rounded-lg cursor-pointer">
           <Bell color="var(--secondary-text-color)" className="cursor-pointer" />
-        </div>
+        </div> */}
         <HeaderDropdownMenu />
       </div>
     </nav>

@@ -20,7 +20,7 @@ const DashboardHeader = () => {
           </Button>
         </div>
       </div>
-      <AddStockModal open={isAddStockModalOpen} setOpen={setIsAddStockModalOpen} />
+      <AddStockModal open={isAddStockModalOpen} setOpen={setIsAddStockModalOpen} watchlistOnly />
     </>
   );
 };

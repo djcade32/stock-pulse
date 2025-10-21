@@ -46,16 +46,16 @@ const data = {
       url: "/news",
       icon: FaNewspaper,
     },
-    {
-      title: "Alerts",
-      url: "/alerts",
-      icon: FaBell,
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: IoSettingsSharp,
-    },
+    // {
+    //   title: "Alerts",
+    //   url: "/alerts",
+    //   icon: FaBell,
+    // },
+    // {
+    //   title: "Settings",
+    //   url: "/settings",
+    //   icon: IoSettingsSharp,
+    // },
   ],
 };
 
