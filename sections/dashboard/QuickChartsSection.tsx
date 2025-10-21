@@ -11,6 +11,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/client";
 import useWatchlistStore from "@/stores/watchlist-store";
 
+const INDEXES = ["SPY", "QQQ", "IWM"];
+
 const QuickChartsSection = () => {
   const { uid, loading } = useUid();
   const { quickChartList, setQuickChartList } = useQuickChartStore();
@@ -33,29 +35,32 @@ const QuickChartsSection = () => {
     enabled: !!uid && !loading, // prevent running before uid is ready
   });
 
-  const watchlistSymbols = watchlist.map((stock) => stock.symbol);
+  // const watchlistSymbols = watchlist.map((stock) => stock.symbol);
 
-  const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(
-    quickChartList.length ? quickChartList : ["AAPL", "GOOGL", "SPY"],
-    {
-      enabled: true,
-      marketRefetchMs: 30_000,
-    }
-  );
-  useQuoteStreamPatcher(
-    quickChartList.length
-      ? quickChartList.filter((stock) => !watchlistSymbols.includes(stock))
-      : ["AAPL", "GOOGL", "SPY"]
-  );
+  // const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(
+  //   quickChartList.length ? quickChartList : ["AAPL", "GOOGL", "SPY"],
+  //   {
+  //     enabled: true,
+  //     marketRefetchMs: 30_000,
+  //   }
+  // );
+  // useQuoteStreamPatcher(
+  //   quickChartList.length
+  //     ? quickChartList.filter((stock) => !watchlistSymbols.includes(stock))
+  //     : ["AAPL", "GOOGL", "SPY"]
+  // );
 
-  useEffect(() => {
-    console.log("Quicklist Quotes updated: ", quotesBySymbol);
-  }, [quotesBySymbol]);
+  const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(INDEXES, {
+    enabled: true,
+    marketRefetchMs: 300_000,
+    afterHoursRefetchMs: 600_000,
+  });
+  useQuoteStreamPatcher(INDEXES);
 
   if (isLoading || loading || isPending)
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-        {["AAPL", "GOOGL", "SPY"].map((symbol) => (
+        {INDEXES.map((symbol) => (
           <div key={symbol} className="card h-[100px] animate-pulse" />
         ))}
       </div>
@@ -63,7 +68,21 @@ const QuickChartsSection = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-      {quickChartList.slice(0, 3).map((symbol) => {
+      {INDEXES.map((symbol) => {
+        const quote = quotesBySymbol[symbol];
+        const error = errorsBySymbol[symbol];
+        if (error) console.error(`Error loading quote for ${symbol}: ${error}`);
+        if (!quote) console.warn(`No quote data for ${symbol}`);
+        if (!quote || error) return null;
+
+        const stock = {
+          ticker: symbol,
+          price: Number(quote.c.toFixed(2)) || 0,
+          change: Number(quote.dp.toFixed(2)) || 0, // use change percentage if available
+        };
+        return <QuickChart key={symbol} stock={stock} deletable={false} />;
+      })}
+      {/* {quickChartList.slice(0, 3).map((symbol) => {
         const quote = quotesBySymbol[symbol];
         const error = errorsBySymbol[symbol];
         if (error) console.error(`Error loading quote for ${symbol}: ${error}`);
@@ -76,7 +95,7 @@ const QuickChartsSection = () => {
           change: Number(quote.dp.toFixed(2)) || 0, // use change percentage if available
         };
         return <QuickChart key={symbol} stock={stock} />;
-      })}
+      })} */}
     </div>
   );
 };

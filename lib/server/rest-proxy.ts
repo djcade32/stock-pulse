@@ -60,7 +60,6 @@ function isValidSymbol(symbol: string): boolean {
 }
 
 async function fetchQuoteFromProvider(symbol: string): Promise<unknown> {
-  console.log("Fetching fresh quote for: ", symbol);
   const providerUrl = new URL(`${FINNHUB_BASE_URL}/quote`);
   providerUrl.searchParams.set("symbol", symbol);
   providerUrl.searchParams.set("token", FINNHUB_API_KEY as string);
@@ -110,7 +109,6 @@ async function fetchCompanyLogo(ticker: string): Promise<string> {
 }
 
 async function getQuoteWithCache(symbol: string): Promise<{ data: unknown; fromCache: boolean }> {
-  console.log("Getting quote for: ", symbol);
   const cacheKey = `quote:${symbol}`;
   const cached = getCache<unknown>(cacheKey);
   if (cached) return { data: cached, fromCache: true };
@@ -164,6 +162,7 @@ app.get("/api/quote/:symbol", async (request: Request, response: Response, next:
     }
 
     const { data, fromCache } = await getQuoteWithCache(symbol);
+    console.log("Returning quote for: ", symbol, " fromCache=", fromCache, " data=", data);
     response.json({ data, cached: fromCache, symbol });
   } catch (error) {
     next(error);
