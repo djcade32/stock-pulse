@@ -8,7 +8,6 @@ export function useFetchStockProfile(symbol: string) {
       const res = await fetch(`/api/stock?${params}`);
       if (!res.ok) throw new Error(`Stock profile fetch failed`);
       const json = await res.json();
-      console.log("Stock profile data:", json.data);
       return json.data as any;
     },
     staleTime: 1000 * 60 * 60, // 1 hour
