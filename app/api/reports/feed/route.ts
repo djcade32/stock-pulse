@@ -127,6 +127,9 @@ export async function GET(req: Request) {
       const risks = a?.risks ?? [];
       const kpis = a?.kpis ?? [];
       const bulletSummary = a?.summary?.bullets ?? [];
+      const risk_factors: string = a?.risk_factors ?? "";
+      const management_tone: string = a?.management_tone ?? "";
+      const revenue_performance: string = a?.revenue_performance ?? "";
       return {
         id: d.id,
         date,
@@ -140,6 +143,9 @@ export async function GET(req: Request) {
         risks,
         kpis,
         bulletSummary,
+        risk_factors,
+        management_tone,
+        revenue_performance,
       } as ReportRowDTO;
     })
   );

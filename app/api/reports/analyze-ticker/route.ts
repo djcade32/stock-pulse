@@ -124,6 +124,21 @@ async function toFeedRowDTO(
     a?.summary?.tldr ||
     (a?.summary?.bullets || []).slice(0, 2).join(" • ") ||
     "No summary available.";
+  const revenue_performance = a?.revenue_performance || null;
+  const risk_factors = a?.risk_factors || null;
+  const management_tone = a?.management_tone || null;
 
-  return { date, ticker, name, quarter, insights, aiTags, overallSentiment, sourceUrl };
+  return {
+    date,
+    ticker,
+    name,
+    quarter,
+    insights,
+    aiTags,
+    overallSentiment,
+    sourceUrl,
+    revenue_performance,
+    risk_factors,
+    management_tone,
+  };
 }

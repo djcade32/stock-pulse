@@ -8,7 +8,8 @@ import { ReportRowDTO } from "@/types";
 import { format } from "date-fns";
 import AiTag from "@/components/AiTag";
 import Button from "@/components/general/Button";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, FileSearch } from "lucide-react";
+
 import EarningsFinancialMetricsCard from "@/components/earnings/EarningsFinancialMetricsCard";
 
 const FullEarningsAnalysisPage = () => {
@@ -29,7 +30,6 @@ const FullEarningsAnalysisPage = () => {
     }
 
     if (!!rows.length) {
-      console.log("rows: ", rows[0]);
       const foundReport = rows.find((row) => format(row.date, "yyyy-MM-dd") === date);
       setCurrentReport(foundReport ?? null);
       if (foundReport) {
@@ -113,6 +113,17 @@ const FullEarningsAnalysisPage = () => {
             onValueChange={setQuarterFilter}
             items={getAvailableQuarters(rows, yearFilter)}
           />
+          <Button
+            onClick={() =>
+              route.push(
+                `/earnings/compare?sA=${symbol.toLocaleUpperCase()}&quarterA=${quarterFilter}&yearA=${yearFilter}&sB=&quarterB=&yearB=`
+              )
+            }
+            className="bg-(--secondary-color)"
+          >
+            <FileSearch />
+            <p>Compare Earnings</p>
+          </Button>
         </div>
       </div>
       <div className="flex flex-col gap-4">
@@ -141,9 +152,12 @@ const FullEarningsAnalysisPage = () => {
                 />
               )}
             </div>
-            <Button onClick={() => window.open(currentReport?.url, "_blank")}>
-              <p>View Report</p>
+            <Button
+              onClick={() => window.open(currentReport?.url, "_blank")}
+              className="bg-(--secondary-color) border border-(--gray-accent-color)"
+            >
               <ExternalLink />
+              <p>View Report</p>
             </Button>
           </div>
           <div>

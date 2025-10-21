@@ -45,10 +45,12 @@ export function useReportsFeedInfinite(
   limit = 30,
   stock?: string,
   year?: string,
-  quarter?: string
+  quarter?: string,
+  enabled = true
 ) {
+  const key = stock ? "reports-feed-infinite-" + stock : "reports-feed-infinite";
   return useInfiniteQuery<FeedPage>({
-    queryKey: ["reports-feed-infinite", { limit }],
+    queryKey: [key, { limit }],
     queryFn: ({ pageParam }) => {
       const cursor = typeof pageParam === "string" ? pageParam : null;
       return fetchFeedPage(limit, cursor, stock, year, quarter);
@@ -56,6 +58,7 @@ export function useReportsFeedInfinite(
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     staleTime: 60_000,
+    enabled: enabled,
   });
 }
 

@@ -55,6 +55,33 @@ export async function getLatest10Qor10K(cik10: string): Promise<{
   };
 }
 
+/** Find the 10-Q for given date */
+export async function get10QForDate(
+  cik10: string,
+  targetDate: string
+): Promise<{
+  form: "10-Q";
+  filingDate: string; // 2025-08-28
+  accessionNo: string; // e.g. 0001045810-25-000123
+  primaryDoc: string; // e.g. a10q.htm
+}> {
+  const subs = await secJson(`https://data.sec.gov/submissions/CIK${cik10}.json`);
+  const forms: string[] = subs?.filings?.recent?.form || [];
+  const dates: string[] = subs?.filings?.recent?.filingDate || [];
+  const accessions: string[] = subs?.filings?.recent?.accessionNumber || [];
+  const primaryDocs: string[] = subs?.filings?.recent?.primaryDocument || [];
+
+  const idx = forms.findIndex((f, i) => f === "10-Q" && dates[i] === targetDate);
+  if (idx < 0) throw new Error(`No 10-Q found for date ${targetDate}`);
+
+  return {
+    form: forms[idx] as "10-Q",
+    filingDate: dates[idx],
+    accessionNo: accessions[idx],
+    primaryDoc: primaryDocs[idx],
+  };
+}
+
 /** Build raw file URL for primary doc */
 export function buildFilingDocUrl(cik10: string, accessionNo: string, primaryDoc: string): string {
   // EDGAR path uses CIK without leading zeros and accession without dashes

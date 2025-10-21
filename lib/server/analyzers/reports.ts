@@ -18,6 +18,9 @@ export async function analyzeFilingToJson(params: {
   "flags": { "guidanceChange": boolean, "liquidityConcern": boolean, "marginInflection": boolean },
   "overallSentiment": "Bullish" | "Neutral" | "Bearish",
   "quarter": string // e.g. "Q2 2024"
+  "revenue_performance": string | null, // e.g. "Strong iPhone 15 sales drove 2.1% revenue growth to $89.5B, exceeding analyst expectations despite macro headwinds."
+  "risk_factors": string | null // e.g. "Risks include supply chain disruptions, competitive pressures, and regulatory challenges in key markets."
+  "management_tone": string | null // e.g. "Management remains cautiously optimistic, emphasizing innovation and operational efficiency to navigate macro challenges."
 }
 `;
 
@@ -42,6 +45,7 @@ Goals:
 - Provide the quarter that the report covers (e.g., Q2 2024).
 - Do not repeat the same KPI with the same or different names (e.g., "total revenue" and "revenues")
 - The words I provided in parentheses are examples only. Use what you see fit according to the actual report.
+- For revenue_performance, risk_factors, management_tone: provide a concise summary in 1-2 sentences if that information is explicitly stated in the report; otherwise use contextual clues to infer it.
 
 ${xbrlHint}
 
@@ -68,5 +72,8 @@ ${params.text}
   parsed.flags ||= { guidanceChange: false, liquidityConcern: false, marginInflection: false };
   parsed.overallSentiment ||= "Neutral";
   parsed.quarter ||= "Unknown";
+  parsed.revenue_performance ||= null;
+  parsed.risk_factors ||= null;
+  parsed.management_tone ||= null;
   return parsed;
 }

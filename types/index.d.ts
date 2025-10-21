@@ -99,6 +99,9 @@ export type ReportRowDTO = {
   risks?: { label: string; severity: number }[];
   kpis?: KPI[];
   bulletSummary?: SummaryBullet[]; // array of bullet points
+  risk_factors?: string | null; // e.g. "Risks include supply chain disruptions, competitive pressures, and regulatory challenges in key markets."
+  management_tone?: string | null; // e.g. "Management remains cautiously optimistic, emphasizing innovation and operational efficiency to navigate macro challenges."
+  revenue_performance?: string | null; // e.g. "Strong iPhone 15 sales drove 2.1% revenue growth to $89.5B, exceeding analyst expectations despite macro headwinds."
 };
 export type KPI = {
   name: string;
@@ -171,6 +174,22 @@ export type FilingAnalysis = {
   risks: { label: string; severity: number }[];
   flags: { guidanceChange: boolean; liquidityConcern: boolean; marginInflection: boolean };
   quarter: string; // e.g. "Q2 2024"
+  revenue_performance: string | null; // e.g. "Strong iPhone 15 sales drove 2.1% revenue growth to $89.5B, exceeding analyst expectations despite macro headwinds."
+  risk_factors: string | null; // e.g. "Risks include supply chain disruptions, competitive pressures, and regulatory challenges in key markets."
+  management_tone: string | null; // e.g. "Management remains cautiously optimistic, emphasizing innovation and operational efficiency to navigate macro challenges."
+};
+
+export type CompareFilingsAIResult = {
+  comparisonTitle: string; // e.g. "COMPANY_A (Q2 2025) vs COMPANY_B (Q1 2025)"
+  aiVerdict: {
+    growthEdge: string;
+    stabilityEdge: string;
+    overallOutlook: string;
+    investmentSummary: {
+      momentumInvestors: string;
+      riskAverseInvestors: string;
+    };
+  };
 };
 
 export type SummaryBullet = {

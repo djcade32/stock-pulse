@@ -133,6 +133,10 @@ async function toFeedRowDTO(
     (a?.summary?.bullets || []).slice(0, 2).join(" • ") ||
     "No summary available.";
 
+  const revenue_performance = a?.revenue_performance || null;
+  const risk_factors = a?.risk_factors || null;
+  const management_tone = a?.management_tone || null;
+
   return {
     date,
     ticker,
@@ -143,5 +147,9 @@ async function toFeedRowDTO(
     overallSentiment,
     sourceUrl,
     analyzedBy: uid,
+    risks: a?.risks || [],
+    revenue_performance,
+    risk_factors,
+    management_tone,
   };
 }

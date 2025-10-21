@@ -5,9 +5,11 @@ import { Search } from "lucide-react";
 import Input from "./general/Input";
 import { StockHit } from "@/types";
 import { useStockSymbols } from "@/lib/client/hooks/useStockSymbols";
+import { cn } from "@/lib/utils";
 
 type StockSearchProps = {
   className?: string;
+  inputClassName?: string;
   placeholder?: string;
   maxResults?: number;
   /** Optional: callback when a user selects a result */
@@ -17,6 +19,7 @@ type StockSearchProps = {
   onChange?: (q?: string) => void;
   clear?: boolean; // when true, clears the input field
   value?: string; // controlled input value
+  showLongNames?: boolean; // whether to show long company names in results
 };
 
 const defaultFetcher = async (q: string, signal: AbortSignal): Promise<StockHit[]> => {
@@ -31,6 +34,7 @@ const defaultFetcher = async (q: string, signal: AbortSignal): Promise<StockHit[
 
 export default function StockSearch({
   className,
+  inputClassName,
   placeholder = "Search ticker or company...",
   maxResults = 8,
   onSelect,
@@ -38,6 +42,7 @@ export default function StockSearch({
   onChange,
   clear,
   value,
+  showLongNames = false,
 }: StockSearchProps) {
   const [query, setQuery] = useState(value || "");
   const [open, setOpen] = useState(false);
@@ -83,7 +88,8 @@ export default function StockSearch({
       setLoading(true);
       setError(null);
       try {
-        const results = await fetcher(query.trim(), controller.signal);
+        const removeNameQuery = query.includes(" - ") ? query.split(" - ")[0].trim() : query.trim();
+        const results = await fetcher(removeNameQuery, controller.signal);
         setHits(results.slice(0, maxResults));
       } catch (err: any) {
         if (err?.name !== "AbortError") {
@@ -137,7 +143,7 @@ export default function StockSearch({
 
   const select = (hit: StockHit) => {
     onSelect?.(hit);
-    setQuery(hit.symbol);
+    setQuery(showLongNames ? `${hit.symbol} - ${hit.description}` : hit.symbol);
     setHits([]);
     setActiveIndex(-1);
     setOpen(false);
@@ -163,7 +169,10 @@ export default function StockSearch({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           preIcon={<Search color="var(--secondary-text-color)" size={18} />}
-          className="bg-(--secondary-color) w-full border-(--gray-accent-color) py-2"
+          className={cn(
+            "bg-(--secondary-color) w-full border-(--gray-accent-color) py-2",
+            inputClassName
+          )}
         />
       </div>
 

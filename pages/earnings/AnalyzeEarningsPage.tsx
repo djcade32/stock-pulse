@@ -30,7 +30,6 @@ const AnalyzeEarningsPage = () => {
   const { data, isLoading, isError, error } = useReportsFeed();
 
   useEffect(() => {
-    console.log("data changed: ", data);
     if (!isMounting && data?.rows.length) {
       !isFirstLoad && setAnalysisData((prev) => [data.rows[0], ...prev]);
       setIsFirstLoad(false);
