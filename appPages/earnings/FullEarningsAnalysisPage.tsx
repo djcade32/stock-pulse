@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import router, { useSearchParams, useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import router, { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
 import { Select } from "@/components/general/Select";
 import { ReportRowDTO } from "@/types";
@@ -13,20 +13,26 @@ import { ExternalLink, FileSearch } from "lucide-react";
 import EarningsFinancialMetricsCard from "@/components/earnings/EarningsFinancialMetricsCard";
 
 const FullEarningsAnalysisPage = () => {
-  const route = useRouter();
-  const symbol = router.useParams()?.symbol as string;
+  const router = useRouter();
+  const params = useParams<{ symbol?: string }>();
   const searchParams = useSearchParams();
-  const date = searchParams?.get("q");
+
+  const symbol = (params?.symbol ?? "").toUpperCase();
+  const date = searchParams?.get("q") || "";
+
   const { data, isLoading } = useReportsFeedInfinite(30, symbol);
-  const rows = (data?.pages ?? []).flatMap((p) => p.rows);
-  const [yearFilter, setYearFilter] = useState(date ? new Date(date).getFullYear().toString() : "");
+  const rows = useMemo(() => (data?.pages ?? []).flatMap((p) => p.rows), [data]);
+
+  const [yearFilter, setYearFilter] = useState(() =>
+    date ? new Date(date).getFullYear().toString() : ""
+  );
   const [quarterFilter, setQuarterFilter] = useState("");
   const [currentReport, setCurrentReport] = useState<ReportRowDTO | null>(null);
 
   useEffect(() => {
     const validDate = date && !isNaN(new Date(date).getTime());
     if (!symbol || !date || !validDate) {
-      route.push("/earnings");
+      router.push("/earnings");
     }
 
     if (!!rows.length) {
@@ -36,7 +42,7 @@ const FullEarningsAnalysisPage = () => {
         setQuarterFilter(foundReport.quarter.split(" ")[1]);
       }
     }
-  }, [date, symbol, rows]);
+  }, [date, symbol, rows, router]);
 
   // Get available years to view
   const getAvailableYears = (rows: ReportRowDTO[]) => {
@@ -115,7 +121,7 @@ const FullEarningsAnalysisPage = () => {
           />
           <Button
             onClick={() =>
-              route.push(
+              router.push(
                 `/earnings/compare?sA=${symbol.toLocaleUpperCase()}&quarterA=${quarterFilter}&yearA=${yearFilter}&sB=&quarterB=&yearB=`
               )
             }
