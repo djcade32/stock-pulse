@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import StockSentimentSection from "@/sections/stockProfile/StockSentimentSection";
@@ -10,14 +10,28 @@ import StockNextEarningsSection from "@/sections/stockProfile/StockNextEarningsS
 import StockAnalystRatingsSection from "@/sections/stockProfile/StockAnalystRatingsSection";
 import StockNewsSection from "@/sections/stockProfile/StockNewsSection";
 
+// prevent build-time prerender so hooks run in a client context
+export const dynamic = "force-dynamic";
+
 const StockProfilePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const symbol = searchParams?.get("symbol")?.toLocaleUpperCase();
-  if (!symbol) {
-    router.push("/dashboard");
-    return null;
-  }
+
+  const symbol = useMemo(() => {
+    const raw = searchParams?.get("symbol") || "";
+    return raw.trim().toUpperCase();
+  }, [searchParams]);
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (!symbol) {
+      setIsRedirecting(true);
+      router.replace("/dashboard");
+    }
+  }, [symbol, router]);
+
+  if (!symbol || isRedirecting) return null;
 
   return (
     <div className="page">

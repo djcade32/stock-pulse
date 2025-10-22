@@ -27,7 +27,7 @@ const STOCK_SYMBOLS: string[] = [
 
 export default function Ticker() {
   const [stockItems, setStockItems] = useState<Item[]>([]);
-  const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(STOCK_SYMBOLS, {
+  const { quotesBySymbol, isLoading } = useBatchQuotes(STOCK_SYMBOLS, {
     enabled: true,
     marketRefetchMs: 60_000,
   });
@@ -44,7 +44,7 @@ export default function Ticker() {
       });
       setStockItems(updatedItems);
     }
-  }, [quotesBySymbol]);
+  }, [STOCK_SYMBOLS]);
 
   return (
     <div className="ticker">

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import router, { useSearchParams, useRouter } from "next/navigation";
 import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
 import { Select } from "@/components/general/Select";
 import { ReportRowDTO } from "@/types";
@@ -14,9 +14,8 @@ import EarningsFinancialMetricsCard from "@/components/earnings/EarningsFinancia
 
 const FullEarningsAnalysisPage = () => {
   const route = useRouter();
-  // const symbol = router.useParams()?.symbol as string;
+  const symbol = router.useParams()?.symbol as string;
   const searchParams = useSearchParams();
-  const symbol = searchParams?.get("s")?.toLocaleUpperCase() || "";
   const date = searchParams?.get("q");
   const { data, isLoading } = useReportsFeedInfinite(30, symbol);
   const rows = (data?.pages ?? []).flatMap((p) => p.rows);

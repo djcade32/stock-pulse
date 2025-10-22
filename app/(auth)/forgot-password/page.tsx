@@ -1,4 +1,4 @@
-import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
+import ForgotPasswordPage from "@/appPages/auth/ForgotPasswordPage";
 
 export default function Page() {
   return <ForgotPasswordPage />;

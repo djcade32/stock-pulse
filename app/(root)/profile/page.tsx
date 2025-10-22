@@ -1,4 +1,4 @@
-import ProfilePage from "@/pages/ProfilePage";
+import ProfilePage from "@/appPages/ProfilePage";
 import React from "react";
 
 const page = () => {

@@ -1,4 +1,4 @@
-import CompareEarningsPage from "@/pages/earnings/CompareEarningsPage";
+import CompareEarningsPage from "@/appPages/earnings/CompareEarningsPage";
 import React from "react";
 
 const page = () => {

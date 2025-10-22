@@ -1,4 +1,4 @@
-import WatchlistPage from "@/pages/WatchlistPage";
+import WatchlistPage from "@/appPages/WatchlistPage";
 import React from "react";
 
 const page = () => {

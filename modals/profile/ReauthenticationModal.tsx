@@ -1,8 +1,8 @@
 import Form from "@/components/general/Form";
 import Modal from "@/components/general/Modal";
 import { auth } from "@/firebase/client";
-import { reauthenticateUser } from "@/lib/actions/auth.client.action";
 import { FormInputType } from "@/types";
+import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import React from "react";
 import { toast } from "sonner";
 
@@ -28,18 +28,25 @@ const ReauthenticationModal = ({ open, setOpen, onSubmit }: ReauthenticationModa
   ];
 
   const handleSubmit = async (data: Record<string, string | {}>) => {
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error("No user is currently logged in.");
+      return;
+    }
     const password = data.password as string;
-    const email = (auth.currentUser?.email as string) || "";
+    const email = (user.email as string) || "";
 
     try {
-      const result = await reauthenticateUser(email, password);
-      if (result.success) {
+      // const result = await reauthenticateUser(email, password);
+      const cred = EmailAuthProvider.credential(email, password);
+      const result = await reauthenticateWithCredential(user, cred);
+      if (!!result) {
         setOpen(false);
         if (onSubmit) {
           await onSubmit();
         }
       } else {
-        throw new Error(result.message || "Reauthentication failed");
+        throw new Error("Reauthentication failed");
       }
     } catch (error: any) {
       console.error("Reauthentication error:", error);

@@ -23,7 +23,6 @@ const UserInfoSection = () => {
   const [inputHasError, setInputHasError] = useState(false);
 
   useEffect(() => {
-    console.log("Current user from auth: ", auth.currentUser);
     if (user && user.displayName) {
       setDisplayName(user.displayName);
     } else {

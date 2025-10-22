@@ -36,7 +36,7 @@ export const removeUserFromDb = async (uid: string) => {
   }
 };
 
-export const deleteAccount = async () => {
+export async function deleteAccount() {
   if (!auth) {
     throw new Error("Firebase Auth is not initialized");
   }
@@ -51,7 +51,7 @@ export const deleteAccount = async () => {
     console.error(`Error deleting user account: ${error}`);
     throw error;
   }
-};
+}
 
 export const reauthenticateUser = async (
   email: string,

@@ -2,6 +2,7 @@
 
 import { db, auth } from "@/firebase/admin";
 import { SignInParams, SignInResult, SignUpParams, User } from "@/types";
+import { deleteDoc } from "firebase/firestore";
 import { cookies } from "next/headers";
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -154,5 +155,43 @@ export async function addUserToDBIfNotExists(idToken: string) {
     }
   } catch (error) {
     console.error("Error adding user to DB:", error);
+  }
+}
+
+export const removeUserFromDb = async (uid: string) => {
+  if (!db) {
+    throw new Error("Firebase DB is not initialized");
+  }
+  try {
+    const usersDocRef = db.collection("users").doc(uid);
+    await usersDocRef.delete();
+    const watchlistsDocRef = db.collection("watchlists").doc(uid);
+    await watchlistsDocRef.delete();
+    const quickChartsDocRef = db.collection("quickCharts").doc(uid);
+    await quickChartsDocRef.delete();
+    console.log(`User document with uid ${uid} removed from Firestore`);
+  } catch (error) {
+    console.error(`Error removing user document: ${error}`);
+    throw error;
+  }
+};
+
+export async function deleteAccount() {
+  if (!auth) {
+    throw new Error("Firebase Auth is not initialized");
+  }
+  const jar = await cookies();
+  const sessionCookie = jar.get("session")?.value;
+  if (!sessionCookie) {
+    throw new Error("No user is logged in");
+  }
+  try {
+    const decoded = await auth.verifySessionCookie(sessionCookie, true);
+    await removeUserFromDb(decoded.uid);
+    await auth.deleteUser(decoded.uid);
+    await deleteSessionCookie();
+  } catch (error) {
+    console.error(`Error deleting user account: ${error}`);
+    throw error;
   }
 }

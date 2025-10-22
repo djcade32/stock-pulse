@@ -3,16 +3,28 @@
 import React, { useState } from "react";
 import { CircleUser, Settings, LogOut, ChevronDown } from "lucide-react";
 import DropdownMenu from "./general/DropdownMenu";
-import { signOut } from "@/lib/actions/auth.client.action";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useUid } from "@/hooks/useUid";
 import { auth } from "@/firebase/client";
 import LoaderComponent from "./general/LoaderComponent";
 
+async function postJSON<T = any>(url: string, body?: unknown): Promise<T> {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.message || `Request failed: ${res.status}`);
+  }
+  return (await res.json()) as T;
+}
+
 const HeaderDropdownMenu = () => {
   const router = useRouter();
-  const { uid, loading } = useUid();
+  const { loading } = useUid();
   const user = auth.currentUser;
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -22,7 +34,7 @@ const HeaderDropdownMenu = () => {
     {
       label: "Sign Out",
       icon: <LogOut size={16} />,
-      onClick: async () => await signOut(),
+      onClick: async () => await postJSON("/api/auth/sign-out").then(() => router.push("/sign-in")),
     },
   ];
 

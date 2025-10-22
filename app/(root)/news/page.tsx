@@ -1,4 +1,4 @@
-import NewsPage from "@/pages/NewsPage";
+import NewsPage from "@/appPages/NewsPage";
 import React from "react";
 
 const page = () => {

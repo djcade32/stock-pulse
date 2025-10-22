@@ -1,10 +1,7 @@
 import Form from "@/components/general/Form";
 import Modal from "@/components/general/Modal";
 import { auth } from "@/firebase/client";
-import { reauthenticateUser } from "@/lib/actions/auth.client.action";
 import { FormInputType } from "@/types";
-import { set } from "date-fns";
-import { updatePassword } from "firebase/auth";
 import React, { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";

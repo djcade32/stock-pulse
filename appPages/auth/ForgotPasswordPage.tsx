@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Button from "@/components/general/Button";
-import Input from "@/components/general/Input";
 import Image from "next/image";
 import Link from "next/link";
 import AuthForm from "@/components/AuthForm";

@@ -1,4 +1,4 @@
-import StockProfilePage from "@/pages/StockProfilePage";
+import StockProfilePage from "@/appPages/StockProfilePage";
 import React from "react";
 
 const page = () => {
