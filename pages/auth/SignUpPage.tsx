@@ -25,7 +25,7 @@ const SignUpPage = () => {
           </p>
         </div>
       </div>
-      <div className="flex gap-4">
+      {/* <div className="flex gap-4">
         <Link href="/terms" className="text-(--secondary-text-color) text-sm hover:brightness-125">
           Terms
         </Link>
@@ -35,7 +35,7 @@ const SignUpPage = () => {
         >
           Privacy
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };

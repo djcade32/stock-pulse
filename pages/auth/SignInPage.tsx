@@ -88,7 +88,7 @@ const SignInPage = () => {
           </p>
         </div>
       </div>
-      <div className="flex gap-4">
+      {/* <div className="flex gap-4">
         <Link href="/terms" className="text-(--secondary-text-color) text-sm hover:brightness-125">
           Terms
         </Link>
@@ -98,7 +98,7 @@ const SignInPage = () => {
         >
           Privacy
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };
