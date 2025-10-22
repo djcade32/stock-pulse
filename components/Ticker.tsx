@@ -44,7 +44,7 @@ export default function Ticker() {
       });
       setStockItems(updatedItems);
     }
-  }, [STOCK_SYMBOLS, isLoading]);
+  }, [STOCK_SYMBOLS, isLoading, quotesBySymbol]);
 
   return (
     <div className="ticker">
