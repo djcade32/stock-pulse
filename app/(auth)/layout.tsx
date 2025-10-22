@@ -3,89 +3,6 @@ import Ticker, { Item } from "@/components/Ticker";
 import { isAuthenticated } from "@/lib/actions/auth.server.action";
 import { redirect } from "next/navigation";
 
-const DUMMY_MARKET_DATA: Item[] = [
-  {
-    symbol: "MSFT",
-    price: 417.56,
-    change: "positive",
-  },
-  {
-    symbol: "AAPL",
-    price: 175.64,
-    change: "positive",
-  },
-  {
-    symbol: "GOOGL",
-    price: 2800.12,
-    change: "negative",
-  },
-  {
-    symbol: "AMZN",
-    price: 3450.23,
-    change: "negative",
-  },
-  {
-    symbol: "TSLA",
-    price: 720.45,
-    change: "positive",
-  },
-  {
-    symbol: "NFLX",
-    price: 550.78,
-    change: "positive",
-  },
-  {
-    symbol: "META",
-    price: 330.12,
-    change: "negative",
-  },
-  {
-    symbol: "NVDA",
-    price: 220.34,
-    change: "positive",
-  },
-  {
-    symbol: "SPY",
-    price: 450.67,
-    change: "negative",
-  },
-  {
-    symbol: "QQQ",
-    price: 370.89,
-    change: "positive",
-  },
-  {
-    symbol: "DIA",
-    price: 350.45,
-    change: "negative",
-  },
-  {
-    symbol: "XOM",
-    price: 85.23,
-    change: "positive",
-  },
-  {
-    symbol: "IBIT",
-    price: 68.67,
-    change: "negative",
-  },
-  {
-    symbol: "V",
-    price: 230.12,
-    change: "positive",
-  },
-  {
-    symbol: "JPM",
-    price: 150.45,
-    change: "negative",
-  },
-  {
-    symbol: "WMT",
-    price: 140.78,
-    change: "positive",
-  },
-];
-
 export default async function AuthLayout({
   children,
 }: Readonly<{
@@ -118,7 +35,7 @@ export default async function AuthLayout({
         }}
       >
         <div className="absolute top-4 left-0 right-0 z-10">
-          <Ticker items={DUMMY_MARKET_DATA} />
+          <Ticker />
         </div>
       </div>
       {children}

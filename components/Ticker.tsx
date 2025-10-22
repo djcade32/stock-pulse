@@ -25,7 +25,7 @@ const STOCK_SYMBOLS: string[] = [
   "WMT",
 ];
 
-export default function Ticker({ items }: { items: Item[] }) {
+export default function Ticker() {
   const [stockItems, setStockItems] = useState<Item[]>([]);
   const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(STOCK_SYMBOLS, {
     enabled: true,
