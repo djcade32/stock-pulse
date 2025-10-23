@@ -13,6 +13,7 @@ import Link from "next/link";
 export default function EarningsSection() {
   useEnsureLatestOnOpen();
   const { data, isLoading, isError, error } = useReportsFeed();
+  console.log("EarningsSection data:", data);
   const refreshReports = useRefreshReports();
 
   const [isRefreshing, setIsRefreshing] = useState(false);

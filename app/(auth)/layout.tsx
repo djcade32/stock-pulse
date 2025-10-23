@@ -14,7 +14,7 @@ export default async function AuthLayout({
   }
 
   return (
-    <div className="min-h-screen w-full bg-background relative">
+    <div className="min-h-screen w-full bg-(--background) relative">
       <div
         className="absolute inset-0 z-0"
         style={{

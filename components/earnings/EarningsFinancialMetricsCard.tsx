@@ -9,7 +9,7 @@ interface FinancialMetricsCardProps {
 const FinancialMetricsCard = ({ kpi }: FinancialMetricsCardProps) => {
   const { name, value, unit, yoyDelta, qoqDelta } = kpi;
   return (
-    <div className="bg-background rounded-lg p-2 flex flex-col gap-1">
+    <div className="bg-(--background) rounded-lg p-2 flex flex-col gap-1">
       <h3 className="font-bold">{name}</h3>
       <p className="text-(--secondary-text-color)">
         {unit?.includes("USD") ? formatToUSD(parseInt(value)) : formatNumber(parseInt(value))}{" "}

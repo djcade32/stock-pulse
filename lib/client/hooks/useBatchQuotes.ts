@@ -1,6 +1,7 @@
 // lib/client/hooks/useBatchQuotes.ts
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { isUsMarketOpen } from "@/lib/utils";
 
 /** Shape of a single quote as Finnhub returns it (simplified). */
 export type FinnhubQuote = {
@@ -26,26 +27,6 @@ type BatchQuotesResponse = {
     }
   >;
 };
-
-/** Basic utility: determine if U.S. market is likely open (Mon–Fri, 9:30–16:00 ET). */
-function isUsMarketOpen(now: Date = new Date()): boolean {
-  // Convert to US/Eastern "roughly" using the client’s local time as a proxy.
-  // For MVP we keep it simple; if you need precision, pass a server flag down.
-  const day = now.getUTCDay(); // 0 Sun ... 6 Sat
-  if (day === 0 || day === 6) return false; // weekends closed
-
-  // Market hours in Eastern Time: 9:30–16:00
-  // Approximate conversion: get Eastern time offset quickly
-  // NOTE: This is a lightweight approximation for the MVP.
-  const easternOffsetMinutes = -4 * 60; // EDT approx; adjust when you add a proper time util
-  const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
-  const easternMinutes = utcMinutes + easternOffsetMinutes;
-  const minutesSinceMidnight = ((easternMinutes % (24 * 60)) + 24 * 60) % (24 * 60);
-
-  const open = 9 * 60 + 30; // 9:30
-  const close = 16 * 60; // 16:00
-  return minutesSinceMidnight >= open && minutesSinceMidnight < close;
-}
 
 /** Resolve the base URL of your REST proxy. */
 function getApiBaseUrl(): string {

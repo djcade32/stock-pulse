@@ -175,6 +175,10 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
   };
 
   useEffect(() => {
+    console.log("Quotes updated in WatchlistSection", quotesBySymbol);
+  }, [quotesBySymbol]);
+
+  useEffect(() => {
     handleSortChange(sortBy, watchlist).then((res) =>
       handleFilterChange(filterBy, res).then((final) => setFilteredWatchlist(final))
     );
@@ -187,6 +191,10 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
           {isWatchlistPage ? "Your Watchlist" : "Watchlist Sentiment"}
         </h2>
         <div className="flex items-center gap-4">
+          <div className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-md bg-(--secondary-color) text-(--secondary-text-color) max-h-fit w-full">
+            <span className="inline-block h-2 w-2 rounded-full bg-(--accent-color)" />
+            <span>Delay 30s</span>
+          </div>
           <div className="flex items-center gap-4">
             <Select
               items={SORT_BY_OPTIONS}

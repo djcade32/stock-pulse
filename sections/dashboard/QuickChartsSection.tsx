@@ -15,25 +15,25 @@ const INDEXES = ["SPY", "QQQ", "IWM"];
 
 const QuickChartsSection = () => {
   const { uid, loading } = useUid();
-  const { quickChartList, setQuickChartList } = useQuickChartStore();
-  const { watchlist } = useWatchlistStore();
-  const { isPending } = useQuery({
-    queryKey: ["quickChartList", uid], // include uid in key so it refetches per user
-    queryFn: async () => {
-      const quickChartDoc = doc(db, `quickCharts/${uid}`);
-      const fetchedDoc = await getDoc(quickChartDoc);
-      // Sort alphabetically by symbol
-      if (fetchedDoc.exists() && fetchedDoc.data().symbols) {
-        const symbols = fetchedDoc.data().symbols;
-        symbols.sort((a: string, b: string) => a.localeCompare(b));
-        setQuickChartList(symbols);
-      } else {
-        setQuickChartList([]);
-      }
-      return true;
-    },
-    enabled: !!uid && !loading, // prevent running before uid is ready
-  });
+  // const { quickChartList, setQuickChartList } = useQuickChartStore();
+  // const { watchlist } = useWatchlistStore();
+  // const { isPending } = useQuery({
+  //   queryKey: ["quickChartList", uid], // include uid in key so it refetches per user
+  //   queryFn: async () => {
+  //     const quickChartDoc = doc(db, `quickCharts/${uid}`);
+  //     const fetchedDoc = await getDoc(quickChartDoc);
+  //     // Sort alphabetically by symbol
+  //     if (fetchedDoc.exists() && fetchedDoc.data().symbols) {
+  //       const symbols = fetchedDoc.data().symbols;
+  //       symbols.sort((a: string, b: string) => a.localeCompare(b));
+  //       setQuickChartList(symbols);
+  //     } else {
+  //       setQuickChartList([]);
+  //     }
+  //     return true;
+  //   },
+  //   enabled: !!uid && !loading, // prevent running before uid is ready
+  // });
 
   // const watchlistSymbols = watchlist.map((stock) => stock.symbol);
 
@@ -57,7 +57,8 @@ const QuickChartsSection = () => {
   });
   useQuoteStreamPatcher(INDEXES);
 
-  if (isLoading || loading || isPending)
+  // if (isLoading || loading || isPending)
+  if (isLoading || loading)
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
         {INDEXES.map((symbol) => (
