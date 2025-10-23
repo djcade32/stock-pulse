@@ -169,7 +169,7 @@ const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModal
             />
           ))}
         </div>
-        <div className="mt-6 border-t-2 border-(--secondary-color) pt-4 flex flex-col gap-4">
+        {/* <div className="mt-6 border-t-2 border-(--secondary-color) pt-4 flex flex-col gap-4">
           <p>Add {!!selected.length && selected.length} stock(s) to:</p>
 
           <div className="flex flex-col gap-4">
@@ -190,7 +190,7 @@ const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModal
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     </Modal>
   );
