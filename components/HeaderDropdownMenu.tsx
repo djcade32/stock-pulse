@@ -30,7 +30,7 @@ const HeaderDropdownMenu = () => {
   const [isHovered, setIsHovered] = useState(false);
   const DROPDOWN_ITEMS = [
     { label: "Profile", icon: <CircleUser size={16} />, onClick: () => router.push("/profile") },
-    { label: "Settings", icon: <Settings size={16} /> },
+    // { label: "Settings", icon: <Settings size={16} /> },
     {
       label: "Sign Out",
       icon: <LogOut size={16} />,
