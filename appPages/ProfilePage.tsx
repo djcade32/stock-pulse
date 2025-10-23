@@ -15,7 +15,7 @@ const ProfilePage = () => {
       </div>
       <UserInfoSection />
       <PasswordAndEmailSection />
-      <LoginMethods />
+      {/* <LoginMethods /> */}
       <AccountSettingsSection />
     </div>
   );

@@ -205,11 +205,6 @@ const LoginMethods = () => {
       <ConnectEmailAndPasswordModal
         open={showConnectEmailModal}
         setOpen={setShowConnectEmailModal}
-        onSubmit={async () => {
-          // after successful linkWithCredential inside the modal:
-          // await auth.currentUser?.reload();
-          // setUser({ ...auth.currentUser! });
-        }}
       />
     </>
   );
