@@ -105,7 +105,7 @@ const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModal
           if (existInWatchlist(stock.symbol)) {
             return toast.warning(`${stock.symbol} is already in your watchlist`);
           }
-          addToWatchlist(stock);
+          addToWatchlist({ ...stock, createdAt: new Date().toISOString() });
           addedToWatchlist += 1;
         });
 

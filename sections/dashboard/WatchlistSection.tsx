@@ -175,10 +175,6 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
   };
 
   useEffect(() => {
-    console.log("Quotes updated in WatchlistSection", quotesBySymbol);
-  }, [quotesBySymbol]);
-
-  useEffect(() => {
     handleSortChange(sortBy, watchlist).then((res) =>
       handleFilterChange(filterBy, res).then((final) => setFilteredWatchlist(final))
     );
