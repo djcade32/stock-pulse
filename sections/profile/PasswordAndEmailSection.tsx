@@ -130,8 +130,8 @@ const PasswordAndEmailSection = () => {
             description="Update your account password"
             icon={FaLock}
           />
-          <div className="bg-(--background) p-4 rounded-lg flex items-center justify-between">
-            <div className="flex items-center gap-3 w-[30%]">
+          <div className="bg-(--background) p-4 rounded-lg flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 w-full">
               <div className="flex items-center justify-center bg-[#FF9800]/20 p-2 rounded-lg w-10 h-10">
                 <MdEmail className="text-[#FF9800]" />
               </div>

@@ -93,7 +93,7 @@ const ListAnalyzedEarningsPage = () => {
   return (
     <div className="page h-full">
       {/* <div className="flex items-center justify-between"> */}
-      <Breadcrumb className="flex items-center justify-between">
+      <Breadcrumb className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink className="page-header-text">Earnings</BreadcrumbLink>
@@ -101,7 +101,7 @@ const ListAnalyzedEarningsPage = () => {
         </BreadcrumbList>
         <div className="flex items-center gap-4">
           <StockSearch
-            className="w-[430px] min-w[100px]"
+            className="w-[200px] lg:w-[430px] min-w[100px]"
             placeholder="Search for earnings analysis by ticker or company..."
             onSelect={(item) => handleStockChange(item.symbol)}
             onChange={(value) => {
@@ -133,9 +133,9 @@ const ListAnalyzedEarningsPage = () => {
               }}
               items={quarterFilterOptions}
             />
-            <Button className="flex-1/2 font-bold" onClick={handleAnalyzeEarningsClick}>
+            <Button className="font-bold" onClick={handleAnalyzeEarningsClick}>
               <FileChartColumn />
-              Analyze Earnings
+              <p>Analyze Earnings</p>
             </Button>
           </div>
         </div>

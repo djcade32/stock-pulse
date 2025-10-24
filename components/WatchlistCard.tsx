@@ -67,7 +67,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
     <div className="group card flex-col justify-between h-full">
       <Ellipsis className="absolute top-0 right-4 text-(--secondary-text-color) opacity-0 group-hover:opacity-100 hover:brightness-125 cursor-pointer smooth-animation" />
       <div className="flex flex-col w-full flex-1">
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between w-full ">
           <div className="flex gap-2 w-full">
             <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0">
               {logoUrl.data ? (
@@ -77,20 +77,19 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
                   className="!w-10 h-10 rounded-lg bg-white bg-cover"
                 />
               ) : (
-                //   <div className="w-10 h-10 rounded-lg bg-gray-200 animate-pulse" />
                 <div className="w-10 h-10 rounded-lg bg-(--secondary-text-color) text-foreground font-bold flex items-center justify-center">
                   <p>{ticker[0]}</p>
                 </div>
               )}
             </Link>
-            <div className="flex flex-col justify-between w-full">
+            <div className="flex flex-col justify-between flex-1 min-w-0">
               <Link
                 href={`/stock?symbol=${ticker}`}
                 className="hover:brightness-75 transition-all duration-200"
               >
                 <h3 className="font-bold">{ticker}</h3>
               </Link>
-              <p className="text-xs text-(--secondary-text-color) font-medium text-ellipsis w-[90%] overflow-hidden text-nowrap">
+              <p className="text-xs text-(--secondary-text-color) font-medium text-ellipsis overflow-hidden text-nowrap w-[90%]">
                 {name}
               </p>
             </div>
