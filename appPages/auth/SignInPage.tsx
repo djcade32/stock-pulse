@@ -34,6 +34,8 @@ const SignInPage = () => {
 
   const handleOauthSignin = useCallback(
     async (provider: GoogleAuthProvider | TwitterAuthProvider) => {
+      if (provider.providerId === "google.com")
+        return toast.error("Google sign-in is currently disabled.");
       try {
         setIsSigningIn(true);
 
