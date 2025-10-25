@@ -86,7 +86,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
         </div>
         <Link
           href={{
-            pathname: `/earnings/${earnings.ticker.toLocaleLowerCase()}`,
+            pathname: `/earnings/${earnings.ticker.toLocaleUpperCase()}`,
             query: {
               q: format(new Date(earnings.date), "yyyy-MM-dd"),
             },

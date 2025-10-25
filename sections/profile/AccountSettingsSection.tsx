@@ -76,6 +76,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { auth } from "@/firebase/client";
 import { signOut as fbSignOut } from "firebase/auth";
+import useWatchlistStore from "@/stores/watchlist-store";
 
 async function postJSON<T = any>(url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -94,6 +95,7 @@ const AccountSettingsSection = () => {
   const router = useRouter();
   const { loading } = useUid();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const { clearWatchlist } = useWatchlistStore();
 
   const handleSignOut = async () => {
     try {
@@ -103,6 +105,7 @@ const AccountSettingsSection = () => {
       await fbSignOut(auth);
       toast.success("Signed out");
       router.push("/sign-in");
+      clearWatchlist();
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message || "Failed to sign out");

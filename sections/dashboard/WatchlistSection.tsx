@@ -16,6 +16,15 @@ import Link from "next/link";
 import { GalleryVerticalEnd } from "lucide-react";
 import { AITag, WatchlistCard as WatchlistCardType, WatchlistStock } from "@/types";
 
+const DEFAULT_WATCHLIST: WatchlistStock[] = [
+  { symbol: "AAPL", description: "Apple Inc.", type: "Technology" },
+  { symbol: "MSFT", description: "Microsoft Corporation", type: "Technology" },
+  { symbol: "GOOGL", description: "Alphabet Inc.", type: "Communication Services" },
+  { symbol: "AMZN", description: "Amazon.com, Inc.", type: "Consumer Discretionary" },
+  { symbol: "TSLA", description: "Tesla, Inc.", type: "Consumer Discretionary" },
+  { symbol: "NVDA", description: "NVIDIA Corporation", type: "Technology" },
+];
+
 const SORT_BY_OPTIONS = [
   { label: "Recently Added", value: "recentlyAdded" },
   { label: "A to Z", value: "aToZ" },
@@ -68,7 +77,21 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
         );
         setWatchlist(stocksWithEarnings);
       } else {
-        setWatchlist([]);
+        const stocksWithEarnings = await Promise.all(
+          DEFAULT_WATCHLIST.map(async (stock: WatchlistStock) => {
+            const companyDoc = doc(db, `companies/${stock.symbol}`);
+            const companySnap = await getDoc(companyDoc);
+            if (companySnap.exists()) {
+              const companyData = companySnap.data();
+              return {
+                ...stock,
+                latestEarningsDate: companyData.latestEarningsDate || null,
+              };
+            }
+            return { ...stock, latestEarningsDate: null };
+          })
+        );
+        setWatchlist(stocksWithEarnings);
       }
       return true;
     },
@@ -162,7 +185,6 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
         filtered = filtered.filter((s) => (sentimentByTicker[s.symbol]?.score || 0) < 40);
         return filtered;
       case "neutral":
-        console.log("Filtering neutral");
         filtered = filtered.filter(
           (s) =>
             (sentimentByTicker[s.symbol]?.score || 0) >= 40 &&

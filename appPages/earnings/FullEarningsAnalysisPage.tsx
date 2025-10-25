@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import router, { useSearchParams, useRouter, useParams } from "next/navigation";
+import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
 import { Select } from "@/components/general/Select";
 import { ReportRowDTO } from "@/types";
@@ -28,6 +28,7 @@ const FullEarningsAnalysisPage = () => {
   );
   const [quarterFilter, setQuarterFilter] = useState("");
   const [currentReport, setCurrentReport] = useState<ReportRowDTO | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     const validDate = date && !isNaN(new Date(date).getTime());
@@ -42,7 +43,24 @@ const FullEarningsAnalysisPage = () => {
         setQuarterFilter(foundReport.quarter.split(" ")[1]);
       }
     }
+    setIsInitialLoad(false);
   }, [date, symbol, rows, router]);
+
+  useEffect(() => {
+    const yearAndQuarterString = `${quarterFilter} ${yearFilter}`;
+    if (!yearFilter || !quarterFilter) return;
+    if (!rows.length) return;
+    if (isInitialLoad) return;
+    if (currentReport && currentReport.quarter.includes(yearAndQuarterString)) return;
+
+    const foundReport = rows.find(
+      (row) => row.quarter.includes(yearAndQuarterString) && row.ticker.toUpperCase() === symbol
+    );
+    router.replace(
+      `/earnings/${symbol}?q=${foundReport ? format(foundReport.date, "yyyy-MM-dd") : ""}`
+    );
+    setCurrentReport(foundReport ?? null);
+  }, [yearFilter, quarterFilter]);
 
   // Get available years to view
   const getAvailableYears = (rows: ReportRowDTO[]) => {

@@ -200,7 +200,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
             <FaNewspaper size={15} className="mr-1" />
             News
           </Link>
-          {type == "Common Stock" && latestEarningsDate && (
+          {latestEarningsDate && (
             <Link
               href={`/earnings/${ticker}?q=${latestEarningsDate}`}
               className="watchlist-card-link"

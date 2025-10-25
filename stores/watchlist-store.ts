@@ -7,6 +7,7 @@ export interface WatchlistState {
   addToWatchlist: (stock: WatchlistStock) => void;
   removeFromWatchlist: (symbol: string) => void;
   existInWatchlist: (symbol: string) => boolean;
+  clearWatchlist: () => void;
 }
 
 const useWatchlistStore = create<WatchlistState>((set, get) => ({
@@ -29,6 +30,8 @@ const useWatchlistStore = create<WatchlistState>((set, get) => ({
   existInWatchlist: (symbol: string) => {
     return get().watchlist.some((s) => s.symbol === symbol);
   },
+
+  clearWatchlist: () => set({ watchlist: [] }),
 }));
 
 export default useWatchlistStore;

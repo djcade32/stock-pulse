@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useUid } from "@/hooks/useUid";
 import { auth } from "@/firebase/client";
 import LoaderComponent from "./general/LoaderComponent";
+import useWatchlistStore from "@/stores/watchlist-store";
 
 async function postJSON<T = any>(url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -28,13 +29,18 @@ const HeaderDropdownMenu = () => {
   const user = auth.currentUser;
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { clearWatchlist } = useWatchlistStore();
   const DROPDOWN_ITEMS = [
     { label: "Profile", icon: <CircleUser size={16} />, onClick: () => router.push("/profile") },
     // { label: "Settings", icon: <Settings size={16} /> },
     {
       label: "Sign Out",
       icon: <LogOut size={16} />,
-      onClick: async () => await postJSON("/api/auth/sign-out").then(() => router.push("/sign-in")),
+      onClick: async () =>
+        await postJSON("/api/auth/sign-out").then(() => {
+          router.push("/sign-in");
+          clearWatchlist();
+        }),
     },
   ];
 
