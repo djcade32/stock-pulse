@@ -535,15 +535,15 @@ export default function StockPulseLanding() {
         <Container className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <div>© {new Date().getFullYear()} Stock Pulse. All rights reserved.</div>
           <div className="flex items-center gap-6">
-            {/* <a href="/privacy" className="hover:text-white">
+            <a href="/privacy" className="hover:text-white">
               Privacy
             </a>
             <a href="/terms" className="hover:text-white">
               Terms
             </a>
-            <a href="mailto:support@stockpulse.app" className="hover:text-white">
+            <a href="mailto:support@stockpulse.com" className="hover:text-white">
               Contact
-            </a> */}
+            </a>
           </div>
         </Container>
       </footer>
