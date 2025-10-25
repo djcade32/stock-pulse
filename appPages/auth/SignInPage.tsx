@@ -73,7 +73,7 @@ const SignInPage = () => {
         <p className="text-xl font-semibold text-center my-4">Sign in to your account</p>
         <AuthForm show="sign-in" />
 
-        {/* <div className="flex items-center my-6">
+        <div className="flex items-center my-6">
           <div className="divider" />
           <span className="px-3 text-(--secondary-text-color)">Or continue with</span>
           <div className="divider" />
@@ -97,7 +97,7 @@ const SignInPage = () => {
           >
             <BsTwitterX />X
           </Button>
-        </div> */}
+        </div>
 
         <p className="text-center text-(--secondary-text-color) mt-6">
           Don&apos;t have an account?{" "}
