@@ -53,12 +53,11 @@ const QuickChartsSection = () => {
   const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(INDEXES, {
     enabled: true,
     marketRefetchMs: 30_000,
-    afterHoursRefetchMs: 600_000,
   });
   useQuoteStreamPatcher(INDEXES);
 
   // if (isLoading || loading || isPending)
-  if (isLoading || loading)
+  if (isLoading || loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
         {INDEXES.map((symbol) => (
@@ -66,6 +65,7 @@ const QuickChartsSection = () => {
         ))}
       </div>
     );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">

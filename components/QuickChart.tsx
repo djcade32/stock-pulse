@@ -43,7 +43,9 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
   useEffect(() => {
     setChartData((prev) => {
       const base = prev.length === 0 ? stock.price : prev[prev.length - 1].desktop;
-      if (base === prev[prev.length - 1]?.desktop) return prev; // no change
+      if (base === stock.price) {
+        return prev;
+      } // no change
       const delta = stock.price - base;
       return [
         ...prev,
@@ -55,10 +57,6 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
       ].slice(-WINDOW);
     });
   }, [stock.price]);
-
-  // useEffect(() => {
-  //   console.log("Chart data updated for", stock.ticker, chartData);
-  // }, [chartData]);
 
   const handleRemove = async () => {
     const { ticker } = stock;
