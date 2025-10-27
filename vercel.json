@@ -2,8 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/ensure-watchlists",
-      "schedule": "0 9 * * *",
-      "method": "POST"
+      "schedule": "0 9 * * *"
     }
   ]
 }

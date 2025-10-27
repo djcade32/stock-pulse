@@ -8,8 +8,17 @@ export const dynamic = "force-dynamic";
 
 const db = getFirestore();
 
-export async function POST(req: Request) {
+// function verifyCronAuth(req: Request) {
+//   const auth = req.headers.get("authorization") || "";
+//   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+//   return token === process.env.CRON_SECRET;
+// }
+
+export async function GET(req: Request) {
   console.log("Ensuring watchlists are up to date...");
+  // if (!verifyCronAuth(req)) {
+  //   return new Response("Unauthorized", { status: 401 });
+  // }
   try {
     const host = req.headers.get("host") || "";
     const isDev = process.env.NODE_ENV !== "production";
