@@ -12,7 +12,8 @@ export const revalidate = 300;
 const TTL = 24 * 60 * 60 * 1000;
 
 export async function GET(_: Request, context: any) {
-  const t = normalizeSymbol(context.params?.ticker);
+  const ticker = await context.params?.ticker;
+  const t = normalizeSymbol(ticker);
   if (!isValidSymbol(t)) return NextResponse.json({ error: "Invalid symbol" }, { status: 400 });
 
   const key = `logo:${t}`;
