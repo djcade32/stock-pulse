@@ -43,9 +43,8 @@ async function fetchBatchQuotes(
   symbols: string[],
   signal?: AbortSignal
 ): Promise<BatchQuotesResponse> {
-  const baseUrl = getApiBaseUrl();
   const params = new URLSearchParams({ symbols: symbols.join(",") });
-  const url = `${baseUrl}/api/quotes?${params.toString()}`;
+  const url = `/api/quotes?${params.toString()}`;
 
   const response = await fetch(url, { signal });
   if (!response.ok) {

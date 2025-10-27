@@ -27,8 +27,7 @@ export async function fetchCompanyLogo(
   stock: string,
   signal?: AbortSignal
 ): Promise<{ data: string | null; cached: boolean }> {
-  const baseUrl = getApiBaseUrl();
-  const url = `${baseUrl}/api/stock/logo/${stock}`;
+  const url = `/api/stock/logo/${stock}`;
   const response = await fetch(url, { signal });
   if (!response.ok) {
     const text = await response.text().catch(() => "");

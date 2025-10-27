@@ -15,8 +15,7 @@ async function fetchStockSymbols(
   stock: string,
   signal?: AbortSignal
 ): Promise<StockSymbolsResponse> {
-  const baseUrl = getApiBaseUrl();
-  const url = `${baseUrl}/api/stocks?q=${stock}`;
+  const url = `/api/stocks?q=${stock}`;
 
   const response = await fetch(url, { signal });
   if (!response.ok) {
