@@ -1,3 +1,4 @@
+// app/api/quote/[symbol]/route.ts
 import { NextResponse } from "next/server";
 import {
   fetchQuote,
@@ -12,20 +13,23 @@ export const revalidate = 0;
 
 const TTL = 10_000;
 
-export async function GET(_: Request, { params }: { params: { symbol: string } }) {
-  const sym = normalizeSymbol(params.symbol);
-  if (!isValidSymbol(sym)) return NextResponse.json({ error: "Invalid symbol" }, { status: 400 });
+export async function GET(req: Request, context: { params: Record<string, string> }) {
+  const symbol = normalizeSymbol(context.params.symbol);
+  if (!isValidSymbol(symbol)) {
+    return NextResponse.json({ error: "Invalid symbol" }, { status: 400 });
+  }
 
-  const key = `q:${sym}`;
+  const key = `q:${symbol}`;
   const cached = getCache<any>(key);
-  if (cached) return NextResponse.json({ data: cached, cached: true, symbol: sym });
+  if (cached) {
+    return NextResponse.json({ data: cached, cached: true, symbol });
+  }
 
-  const data = await fetchQuote(sym);
+  const data = await fetchQuote(symbol);
   setCache(key, data, TTL);
+
   return NextResponse.json(
-    { data, cached: false, symbol: sym },
-    {
-      headers: { "cache-control": "s-maxage=10, stale-while-revalidate=20" },
-    }
+    { data, cached: false, symbol },
+    { headers: { "cache-control": "s-maxage=10, stale-while-revalidate=20" } }
   );
 }
