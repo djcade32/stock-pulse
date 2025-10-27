@@ -6,12 +6,15 @@ import { ensureTickersLatest } from "@/lib/server/reports/ensure";
 const db = getFirestore();
 
 export async function POST(req: Request) {
+  console.log("Ensuring watchlists are up to date...");
   try {
     const host = req.headers.get("host") || "";
     const isDev = process.env.NODE_ENV !== "production";
 
+    console.log("Host:", host, "isDev:", isDev);
+
     if (!isDev) {
-      const allowed = host.endsWith("vercel.app") || host.includes("yourcustomdomain.com"); // replace with your domain
+      const allowed = host.endsWith("vercel.app") || host.includes("stock-pulse.com");
 
       if (!allowed) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
