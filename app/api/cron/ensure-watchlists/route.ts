@@ -8,30 +8,21 @@ export const dynamic = "force-dynamic";
 
 const db = getFirestore();
 
-// function verifyCronAuth(req: Request) {
-//   const auth = req.headers.get("authorization") || "";
-//   const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-//   return token === process.env.CRON_SECRET;
-// }
-
 export async function GET(req: Request) {
   console.log("Ensuring watchlists are up to date...");
-  // if (!verifyCronAuth(req)) {
-  //   return new Response("Unauthorized", { status: 401 });
-  // }
   try {
     const host = req.headers.get("host") || "";
     const isDev = process.env.NODE_ENV !== "production";
 
     console.log("Host:", host, "isDev:", isDev);
 
-    // if (!isDev) {
-    //   const allowed = host.endsWith("vercel.app") || host.includes("stock-pulse.com");
+    if (!isDev) {
+      const allowed = host.endsWith("vercel.app") || host.includes("stock-pulse.com");
 
-    //   if (!allowed) {
-    //     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    //   }
-    // }
+      if (!allowed) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
 
     // List all watchlists (IDs are userIds)
     const snap = await db.collection("watchlists").select("stocks").get();
@@ -52,7 +43,7 @@ export async function GET(req: Request) {
         summary.push({ userId, count: 0, error: e?.message || "failed" });
       }
     }
-
+    console.log("Completed ensuring watchlists for users:", summary);
     return NextResponse.json({ ok: true, users: summary });
   } catch (e: any) {
     return NextResponse.json({ error: e?.message || "Server error" }, { status: 500 });
