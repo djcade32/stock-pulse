@@ -211,7 +211,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
         <div className="flex items-center gap-4">
           <div className="hidden lg:inline-flex items-center gap-2 text-xs px-2 py-1 rounded-md bg-(--secondary-color) text-(--secondary-text-color) max-h-fit w-full">
             <span className="inline-block h-2 w-2 rounded-full bg-(--accent-color)" />
-            <span>Delay 30s</span>
+            <span>Delayed 30s</span>
           </div>
           <div className="flex items-center gap-4">
             <Select

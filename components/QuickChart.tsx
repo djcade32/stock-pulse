@@ -1,26 +1,15 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowDown, ArrowUp, Ellipsis, Trash2 } from "lucide-react";
 import { ChartConfig, ChartContainer } from "./ui/chart";
 import { ComposedChart, Line, Area } from "recharts";
 import { toKebabCase } from "@/lib/utils";
-import { useCandles } from "@/lib/client/hooks/useCandles";
 import DropdownMenu from "./general/DropdownMenu";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import { db } from "@/firebase/client";
 import { doc, setDoc } from "firebase/firestore";
 import { useUid } from "@/hooks/useUid";
-import { set } from "date-fns";
-
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
 
 const chartConfig = {
   desktop: {
@@ -40,16 +29,36 @@ interface QuickChartProps {
   deletable?: boolean;
 }
 
+const WINDOW = 120; // keep last N points so domain stays tight
+
 const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
   const { removeFromQuickChartList, quickChartList } = useQuickChartStore();
   const { uid } = useUid();
-  const [chartData, setChartData] = React.useState<{ time: number; desktop: number }[]>([]);
+  const [chartData, setChartData] = useState<{ time: number; desktop: number; delta: number }[]>(
+    []
+  );
   const chartId = `quick-chart-${toKebabCase(stock.ticker)}`;
   const lineColor = stock.change >= 0 ? "var(--success-color)" : "var(--danger-color)";
 
   useEffect(() => {
-    setChartData((prev) => [...prev, { time: Date.now(), desktop: stock.price }]);
+    setChartData((prev) => {
+      const base = prev.length === 0 ? stock.price : prev[prev.length - 1].desktop;
+      if (base === prev[prev.length - 1]?.desktop) return prev; // no change
+      const delta = stock.price - base;
+      return [
+        ...prev,
+        {
+          time: Date.now(),
+          desktop: stock.price,
+          delta,
+        },
+      ].slice(-WINDOW);
+    });
   }, [stock.price]);
+
+  // useEffect(() => {
+  //   console.log("Chart data updated for", stock.ticker, chartData);
+  // }, [chartData]);
 
   const handleRemove = async () => {
     const { ticker } = stock;
@@ -114,7 +123,7 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
             {/* Area first so the line renders on top */}
             <Area
               type="monotone"
-              dataKey="desktop"
+              dataKey="delta"
               stroke="none"
               fill={`url(#${chartId})`}
               isAnimationActive
@@ -122,7 +131,7 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
 
             <Line
               type="monotone"
-              dataKey="desktop"
+              dataKey="delta"
               stroke={lineColor}
               strokeWidth={2}
               dot={false}

@@ -13,11 +13,12 @@ import {
   persistLatestEarningsDate,
 } from "@/lib/server/persistReports";
 import { sha256 } from "@/lib/server/crypto";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { db } from "@/firebase/admin";
 import { okTicker } from "@/lib/utils";
 
 export async function POST(req: Request) {
+  console.log("Received analyze-ticker request");
   try {
     const body = await req.json().catch(() => ({}));
     const ticker = okTicker(body.ticker);
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
     if (hashSnap.exists) {
       const { eventId: existingId } = hashSnap.data() as any;
       const dto = await toFeedRowDTO(existingId, ticker, docUrl, filing);
+      console.log("Duplicate analysis detected, returning existing data: ", filing);
       return NextResponse.json({ eventId: existingId, ...dto, deduped: true });
     }
 
@@ -115,7 +117,11 @@ async function toFeedRowDTO(
 
   const name = a.name || ticker;
 
-  const date = format(new Date(filing.filingDate), "MMM d, yyyy");
+  const d = parse(filing.filingDate, "yyyy-MM-dd", new Date()); // parsed in local time
+  const date = format(d, "MMM d, yyyy");
+
+  console.log("Preparing DTO for", ticker, "with filing date", filing.filingDate);
+  console.log("formated date:", date);
   const quarter =
     filing.form === "10-Q"
       ? `10-Q ${a?.quarter || inferQuarterLabel(filing.filingDate)}`

@@ -52,7 +52,7 @@ const QuickChartsSection = () => {
 
   const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(INDEXES, {
     enabled: true,
-    marketRefetchMs: 300_000,
+    marketRefetchMs: 30_000,
     afterHoursRefetchMs: 600_000,
   });
   useQuoteStreamPatcher(INDEXES);
