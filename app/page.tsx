@@ -20,9 +20,14 @@ import WatchlistCardPreview from "@/components/WatchlistCardPreview";
 import { ReportRowDTO, WatchlistCard } from "@/types";
 import EarningsRowPreview from "@/components/EarningsRowPreview";
 
-const WATCHLIST_DATA: WatchlistCard[] = [
+type WatchlistCardPreview = WatchlistCard & {
+  logoUrl: string;
+};
+
+const WATCHLIST_DATA: WatchlistCardPreview[] = [
   {
     name: "ADVANCED MICRO DEVICES",
+    logoUrl: "/amd_logo.jpeg",
     ticker: "AMD",
     type: "Common Stock",
     price: 233.76,
@@ -57,6 +62,7 @@ const WATCHLIST_DATA: WatchlistCard[] = [
   },
   {
     name: "NVIDIA CORPORATION",
+    logoUrl: "/nvda_logo.jpeg",
     ticker: "NVDA",
     type: "Common Stock",
     price: 469.23,
@@ -87,11 +93,16 @@ const WATCHLIST_DATA: WatchlistCard[] = [
   },
 ];
 
-const EARNINGS_DATA: ReportRowDTO[] = [
+type ReportRowDTOPreview = ReportRowDTO & {
+  logoUrl: string;
+};
+
+const EARNINGS_DATA: ReportRowDTOPreview[] = [
   {
     id: "TSLA-8025045968",
     date: "Oct 23, 2025",
     ticker: "TSLA",
+    logoUrl: "/tsla_logo.jpeg",
     name: "TSLA",
     quarter: "10-Q Q3 2025",
     insights:
@@ -127,6 +138,7 @@ const EARNINGS_DATA: ReportRowDTO[] = [
     date: "Jun 11, 2025",
     ticker: "AAPL",
     name: "AAPL",
+    logoUrl: "/aapl_logo.jpeg",
     quarter: "10-Q Q2 2025",
     insights:
       "Apple reported Q2 2025 revenues of $94.68B, up 8% YoY, driven by strong iPhone sales and growth in services and wearables segments. Net income was $25.01B, reflecting a 6% YoY increase, supported by operational efficiencies and a favorable product mix. The company is focusing on innovation in AI and AR technologies to drive future growth...",

@@ -29,13 +29,17 @@ const AiTag = ({ tag, className }: AiTagProps) => {
   );
 };
 
+type ReportRowDTOPreview = ReportRowDTO & {
+  logoUrl: string;
+};
+
 interface EarningsRowProps {
-  earnings: ReportRowDTO;
+  earnings: ReportRowDTOPreview;
 }
 
 const EarningsRowPreview = ({ earnings }: EarningsRowProps) => {
-  const { date, ticker, name, quarter, insights, aiTags, overallSentiment, url } = earnings;
-  const { url: logoUrl } = useCompanyLogo(ticker);
+  const { date, ticker, name, quarter, insights, aiTags, overallSentiment, url, logoUrl } =
+    earnings;
 
   const getSentiment = (sentiment: string): "Positive" | "Neutral" | "Negative" => {
     switch (sentiment) {
@@ -55,12 +59,8 @@ const EarningsRowPreview = ({ earnings }: EarningsRowProps) => {
       <div className="flex justify-between">
         <div className="flex gap-2">
           <div>
-            {logoUrl.data ? (
-              <img
-                src={logoUrl.data}
-                alt={`${ticker} logo`}
-                className="w-7 h-7 rounded-lg bg-white"
-              />
+            {logoUrl ? (
+              <img src={logoUrl} alt={`${ticker} logo`} className="w-7 h-7 rounded-lg bg-white" />
             ) : (
               <div className="w-7 h-7 rounded-lg bg-(--secondary-text-color) text-foreground font-bold flex items-center justify-center">
                 <p>{ticker[0]}</p>

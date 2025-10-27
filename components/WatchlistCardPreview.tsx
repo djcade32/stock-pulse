@@ -37,14 +37,18 @@ const AiTag = ({ tag, className }: AiTagProps) => {
   );
 };
 
+type WatchlistCardTypePreview = WatchlistCardType & {
+  logoUrl: string;
+};
+
 interface WatchlistCardProps {
-  stock: WatchlistCardType;
-  fullDetails?: boolean;
+  stock: WatchlistCardTypePreview;
 }
 
-export const WatchlistCardPreview = ({ stock, fullDetails = true }: WatchlistCardProps) => {
+export const WatchlistCardPreview = ({ stock }: WatchlistCardProps) => {
   const {
     name,
+    logoUrl,
     ticker,
     price,
     percentChange,
@@ -57,7 +61,6 @@ export const WatchlistCardPreview = ({ stock, fullDetails = true }: WatchlistCar
     latestEarningsDate,
   } = stock;
 
-  const { url: logoUrl } = useCompanyLogo(ticker);
   const { removeFromWatchlist, watchlist } = useWatchlistStore();
   const { uid } = useUid();
 
@@ -91,9 +94,9 @@ export const WatchlistCardPreview = ({ stock, fullDetails = true }: WatchlistCar
         <div className="flex justify-between w-full">
           <div className="flex gap-2 w-full items-center">
             <div className="flex-shrink-0">
-              {logoUrl.data ? (
+              {logoUrl ? (
                 <img
-                  src={logoUrl.data}
+                  src={logoUrl}
                   alt={`${ticker} logo`}
                   className="!w-7 h-7 rounded-sm bg-white bg-cover"
                 />
