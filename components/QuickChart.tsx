@@ -42,7 +42,7 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
 
   useEffect(() => {
     setChartData((prev) => {
-      const base = prev.length === 0 ? stock.price : prev[prev.length - 1].desktop;
+      const base = prev.length === 0 ? stock.price : prev[0].desktop;
       if (base === stock.price) {
         if (prev.length === 0) {
           return [
