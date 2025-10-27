@@ -13,8 +13,8 @@ export const revalidate = 0;
 
 const TTL = 10_000;
 
-export async function GET(req: Request, context: { params: Record<string, string> }) {
-  const symbol = normalizeSymbol(context.params.symbol);
+export async function GET(req: Request, context: any) {
+  const symbol = normalizeSymbol(context.params?.symbol);
   if (!isValidSymbol(symbol)) {
     return NextResponse.json({ error: "Invalid symbol" }, { status: 400 });
   }
