@@ -3,6 +3,9 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getUserWatchlistTickers } from "@/lib/server/watchlist";
 import { ensureTickersLatest } from "@/lib/server/reports/ensure";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 const db = getFirestore();
 
 export async function POST(req: Request) {
@@ -13,13 +16,13 @@ export async function POST(req: Request) {
 
     console.log("Host:", host, "isDev:", isDev);
 
-    if (!isDev) {
-      const allowed = host.endsWith("vercel.app") || host.includes("stock-pulse.com");
+    // if (!isDev) {
+    //   const allowed = host.endsWith("vercel.app") || host.includes("stock-pulse.com");
 
-      if (!allowed) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-    }
+    //   if (!allowed) {
+    //     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    //   }
+    // }
 
     // List all watchlists (IDs are userIds)
     const snap = await db.collection("watchlists").select("stocks").get();
