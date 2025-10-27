@@ -458,6 +458,8 @@ const AuthForm = ({ show }: AuthFormProps) => {
       const code = error?.code as string | undefined;
       if (show === "sign-up" && code === "auth/email-already-in-use") {
         toast.error("Email already in use. Please Sign In.");
+      } else if (code === "auth/invalid-credential") {
+        toast.error("Invalid credentials provided. Try again.");
       } else {
         toast.error(error?.message || "Something went wrong. Please try again.");
       }
