@@ -44,6 +44,15 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
     setChartData((prev) => {
       const base = prev.length === 0 ? stock.price : prev[prev.length - 1].desktop;
       if (base === stock.price) {
+        if (prev.length === 0) {
+          return [
+            {
+              time: Date.now(),
+              desktop: stock.price,
+              delta: 0,
+            },
+          ];
+        }
         return prev;
       } // no change
       const delta = stock.price - base;
