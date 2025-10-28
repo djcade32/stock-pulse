@@ -20,6 +20,7 @@ import WatchlistCardPreview from "@/components/WatchlistCardPreview";
 import { ReportRowDTO, WatchlistCard } from "@/types";
 import EarningsRowPreview from "@/components/EarningsRowPreview";
 import { GoogleAnalytics } from "nextjs-google-analytics";
+import { Analytics } from "@vercel/analytics/next";
 import { usePathname } from "next/navigation";
 
 declare global {
@@ -254,6 +255,7 @@ export default function StockPulseLanding() {
   return (
     <div className={`relative min-h-screen bg-[#0e1116] text-white ${gradient}`}>
       <GoogleAnalytics trackPageViews gaMeasurementId="G-K72F44DGY4" />
+      <Analytics />
 
       {/* Glow accents */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
