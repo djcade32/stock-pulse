@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ChartLine,
@@ -19,6 +19,14 @@ import {
 import WatchlistCardPreview from "@/components/WatchlistCardPreview";
 import { ReportRowDTO, WatchlistCard } from "@/types";
 import EarningsRowPreview from "@/components/EarningsRowPreview";
+import { GoogleAnalytics } from "nextjs-google-analytics";
+import { usePathname } from "next/navigation";
+
+declare global {
+  interface Window {
+    gtag?: (command: string, id: string, config: { page_path: string }) => void;
+  }
+}
 
 type WatchlistCardPreview = WatchlistCard & {
   logoUrl: string;
@@ -233,8 +241,20 @@ const Step = ({ n, title, desc }: { n: number; title: string; desc: string }) =>
 );
 
 export default function StockPulseLanding() {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("config", "G-J2YND7L37W", {
+        page_path: pathname,
+      });
+    }
+  }, [pathname]);
+
   return (
     <div className={`relative min-h-screen bg-[#0e1116] text-white ${gradient}`}>
+      <GoogleAnalytics trackPageViews gaMeasurementId="G-K72F44DGY4" />
+
       {/* Glow accents */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute left-1/2 top-[-10%] h-72 w-72 -translate-x-1/2 rounded-full bg-[#2187fe]/20 blur-[120px]" />
