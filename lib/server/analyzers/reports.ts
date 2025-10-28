@@ -37,7 +37,8 @@ Filing: ${params.formLabel}
 
 Goals:
 - Summarize MD&A and overall performance drivers in 4–6 bullets.
-- Extract explicit KPIs throughout the report such as, (revenue, EPS, gross margin, operating margin, FCF, cash, debt, segment revenue, backlog) if stated; put null for deltas if not stated. Only include string with number percentages for YoY or QoQ. Do not use sentences with words like "increased" or "decreased".
+- Extract explicit KPIs throughout the report such as, (revenue, EPS, gross margin, operating margin, FCF, cash, debt, segment revenue, backlog) if stated; put null for deltas if not stated. Do not use sentences with words like "increased" or "decreased".
+- Only include string with number percentages for YoY or QoQ. (e.g. "5.2%", "-3.1%"). A bad example would be "increased significantly" or "Increase from 1,721 million at Dec 28, 2024". 
 - Identify major themes throughout the report using simple phrases or single words. For example (Ad Revenue, Increased Spending, demand, pricing, margins, AI, capex, competition, supply chain, regulatory). Identify with sentiment between 1..10. 1 being very negative, 10 being very positive.
 - Provide an overall sentiment of the report based on the themes and bullets. (e.g. "Bullish", "Bearish", "Neutral")
 - List top risks (legal, supply, customer concentration, leverage, macro).
