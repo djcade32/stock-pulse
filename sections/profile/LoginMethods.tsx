@@ -162,7 +162,7 @@ const LoginMethods = () => {
         />
 
         {/* Google */}
-        {/* <ProfileSettingRow
+        <ProfileSettingRow
           title="Google"
           actionText={isConnected("google.com") ? "Disconnect" : "Connect"}
           onActionClick={
@@ -179,7 +179,7 @@ const LoginMethods = () => {
             isConnected("google.com") ? "success-color" : "secondary-text-color"
           }
           descriptionClassName={isConnected("google.com") ? "text-(--success-color)" : ""}
-        /> */}
+        />
 
         {/* Twitter/X */}
         <ProfileSettingRow
