@@ -1,3 +1,4 @@
+import MarketOpenOrClosed from "@/components/MarketOpenOrClosed";
 import DashboardHeader from "@/sections/dashboard/DashboardHeader";
 import EarningsSection from "@/sections/dashboard/EarningsSection";
 import NewsSection from "@/sections/dashboard/NewsSection";
@@ -10,7 +11,10 @@ const DashboardPage = () => {
     <div className="page">
       <DashboardHeader />
 
-      <QuickChartsSection />
+      <div>
+        <MarketOpenOrClosed />
+        <QuickChartsSection />
+      </div>
       <WatchlistSection />
       <EarningsSection />
       <NewsSection />
