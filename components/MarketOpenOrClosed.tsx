@@ -26,7 +26,7 @@ const MarketOpenOrClosed = () => {
         {data.isOpen ? (
           <span className="text-(--success-color) ml-1">Open</span>
         ) : (
-          <span className="text-(--error-color)">Closed</span>
+          <span className="text-(--danger-color) ml-1">Closed</span>
         )}
       </span>
       {marketTime && <span className="ml-1">{`• ${marketTime} EDT`}</span>}
