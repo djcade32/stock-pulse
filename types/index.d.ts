@@ -222,3 +222,19 @@ export type PromiseResolveType = {
   message?: string;
   success: boolean;
 };
+
+type MacroEvent = {
+  id: string; // hash
+  title: string; // e.g., "Consumer Price Index (CPI)"
+  category: "FOMC" | "CPI" | "PPI" | "JOBS" | "GDP" | "PCE" | "TRADE" | "OTHER";
+  date: string; // ISO (yyyy-mm-dd) for single-day events
+  time?: string; // "08:30"
+  tz?: "America/New_York";
+  span?: { start: string; end: string }; // for multi-day (FOMC)
+  source: "BLS" | "BEA" | "FED";
+  sourceUrl: string;
+  importance?: 1 | 2 | 3;
+  lastCheckedAt: string; // ISO timestamp
+  raw?: any; // original ICS/HTML snippet
+  hash: string;
+};
