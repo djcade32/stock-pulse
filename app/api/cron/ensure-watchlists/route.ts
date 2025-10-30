@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getFirestore } from "firebase-admin/firestore";
-import { getUserWatchlistTickers } from "@/lib/server/watchlist";
+import { getUserWatchlistStocks } from "@/lib/server/watchlist";
 import { ensureTickersLatest } from "@/lib/server/reports/ensure";
 
 export const runtime = "nodejs";
@@ -32,12 +32,12 @@ export async function GET(req: Request) {
 
     for (const userId of userIds) {
       try {
-        const tickers = await getUserWatchlistTickers(userId);
-        if (!tickers.length) {
+        const stocks = await getUserWatchlistStocks(userId);
+        if (!stocks.length) {
           summary.push({ userId, count: 0 });
           continue;
         }
-        const { results, partial } = await ensureTickersLatest(tickers);
+        const { results, partial } = await ensureTickersLatest(stocks);
         summary.push({ userId, count: results.length, partial });
       } catch (e: any) {
         summary.push({ userId, count: 0, error: e?.message || "failed" });

@@ -14,6 +14,7 @@ import {
 import { sha256 } from "@/lib/server/crypto";
 import { db } from "@/firebase/admin";
 import { format } from "date-fns";
+import { WatchlistStock } from "@/types";
 
 type FilingMeta = {
   form: "10-Q" | "10-K";
@@ -28,8 +29,8 @@ function inferQuarterLabel(iso: string): string {
   return `Q${q} ${d.getFullYear()}`;
 }
 
-export async function analyzeLatestReportForTicker(tickerInput: string) {
-  const ticker = tickerInput.trim().toUpperCase();
+export async function analyzeLatestReportForTicker(stock: WatchlistStock) {
+  const ticker = stock.symbol.trim().toUpperCase();
   if (!ticker) throw new Error("ticker required");
 
   const cik10 = await getCikFromTicker(ticker);
@@ -66,6 +67,7 @@ export async function analyzeLatestReportForTicker(tickerInput: string) {
     filingDate: filing.filingDate,
     docUrl,
     status: "ingesting",
+    name: stock.description || ticker,
   });
 
   const facts = await fetchCompanyFacts(cik10).catch(() => null);
@@ -87,6 +89,7 @@ export async function analyzeLatestReportForTicker(tickerInput: string) {
       contentHash,
       retrievedAt: new Date().toISOString(),
     },
+    name: stock.description || ticker,
   });
   await persistLatestEarningsDate(ticker, filing.filingDate);
 
