@@ -5,13 +5,13 @@ import { FieldValue } from "firebase-admin/firestore";
 /**
  * Read tickers (symbols) from watchlists/<userId>.stocks
  */
-export async function getUserWatchlistTickers(userId: string): Promise<string[]> {
+export async function getUserWatchlistStocks(userId: string): Promise<WatchlistStock[]> {
   const ref = db.collection("watchlists").doc(userId);
   const snap = await ref.get();
   if (!snap.exists) return [];
   const data = snap.data() as { stocks?: WatchlistStock[] };
   const arr = Array.isArray(data?.stocks) ? data.stocks : [];
-  return [...new Set(arr.map((s) => (s.symbol || "").toUpperCase()).filter(Boolean))];
+  return arr;
 }
 
 /**

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
         if (timeLeft() <= 0) return;
         const s = queue.shift()!;
         try {
-          const analyzed = await analyzeLatestReportForTicker(s.symbol);
+          const analyzed = await analyzeLatestReportForTicker(s);
           results.push({ symbol: s.symbol, eventId: analyzed.eventId, deduped: analyzed.deduped });
         } catch (e: any) {
           results.push({ symbol: s.symbol, error: e?.message || "failed" });
