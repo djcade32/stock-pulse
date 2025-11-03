@@ -13,7 +13,7 @@ const LoaderComponent = ({
   children,
   height,
   width,
-  loading,
+  loading = true,
   className,
   rounded,
 }: LoaderComponentProps) => {

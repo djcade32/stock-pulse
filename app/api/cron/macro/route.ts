@@ -4,7 +4,7 @@ import { fetchBeaFromFred } from "@/lib/server/macro/sources/bea_fallback";
 import { fetchBlsEvents } from "@/lib/server/macro/sources/bls";
 import { fetchTradeFromCensus } from "@/lib/server/macro/sources/census_trade";
 import { fetchFomcMeetings } from "@/lib/server/macro/sources/fomc";
-import { replaceMonthEvents, upsertChangedOnly } from "@/lib/server/macro/store";
+import { replaceMonthEvents } from "@/lib/server/macro/store";
 import dayjs from "dayjs";
 import { NextRequest, NextResponse } from "next/server";
 

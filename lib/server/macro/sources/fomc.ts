@@ -4,21 +4,6 @@ import dayjs, { Dayjs } from "dayjs";
 
 const FOMC_URL = process.env.FOMC_URL!;
 
-const monthMap: { [key: number]: string } = {
-  0: "January",
-  1: "February",
-  2: "March",
-  3: "April",
-  4: "May",
-  5: "June",
-  6: "July",
-  7: "August",
-  8: "September",
-  9: "October",
-  10: "November",
-  11: "December",
-};
-
 export async function fetchFomcMeetings(
   now = dayjs(),
   windowStart?: Dayjs,
@@ -33,8 +18,8 @@ export async function fetchFomcMeetings(
   const panelEl = $("div.panel-default").first();
 
   const all: MacroEvent[] = [];
-  panelEl.find("div.row").each((index, el) => {
-    const currentMonth = monthMap[index];
+  panelEl.find("div.row").each((_, el) => {
+    const currentMonth = $(el).find("div.fomc-meeting__month").first().text().trim();
     const currentYear = now.year();
     if (!currentMonth) return;
 

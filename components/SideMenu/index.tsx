@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { BiSolidHome } from "react-icons/bi";
-import { FaEye, FaBell, FaMicrophoneAlt } from "react-icons/fa";
+import { FaEye, FaBell, FaMicrophoneAlt, FaCalendar } from "react-icons/fa";
 import { FaNewspaper } from "react-icons/fa6";
 import { IoSettingsSharp } from "react-icons/io5";
 
@@ -40,6 +40,11 @@ const data = {
       title: "Earnings",
       url: "/earnings",
       icon: FaMicrophoneAlt,
+    },
+    {
+      title: "Upcoming Events",
+      url: "/upcoming-events",
+      icon: FaCalendar,
     },
     {
       title: "News",
