@@ -238,3 +238,16 @@ type MacroEvent = {
   raw?: any; // original ICS/HTML snippet
   hash: string;
 };
+
+export type EarningsEvent = {
+  date: string; // '2025-10-29'
+  epsActual: number;
+  epsEstimate: number;
+  hour: string; // 'bmo' | 'amc' | 'tbd'
+  quarter: number;
+  revenueActual: number;
+  revenueEstimate: number;
+  symbol: string;
+  name?: string;
+  year: number;
+};
