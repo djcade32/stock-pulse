@@ -1,9 +1,11 @@
 "use client";
 
+import LoaderComponent from "@/components/general/LoaderComponent";
 import Tabs from "@/components/general/Tabs";
 import UpcomingEventsDayPanel from "@/components/upcomingEvents/UpcomingEventsDayPanel";
 import { db } from "@/firebase/client";
 import { useUid } from "@/hooks/useUid";
+import { useFetchUpcomingEvents } from "@/lib/client/hooks/useFetchUpcomingEvents";
 import { useFetchWatchlistEarnings } from "@/lib/client/hooks/useFetchWatchlistEarnings";
 import { useMacroEvents } from "@/lib/client/hooks/useMacroEvents";
 import { EarningsEvent, MacroEvent, WatchlistStock } from "@/types";
@@ -31,17 +33,20 @@ const UpcomingEventsPage = () => {
     }[]
   >([]);
 
-  const { data: macroEvents } = useMacroEvents(currentDateRangeTab as DateRange);
+  const { data: weeklyAnalysis, isLoading: isLoadingWeeklyAnalysis } = useFetchUpcomingEvents();
+  const { data: macroEvents, isLoading: isLoadingMacroEvents } = useMacroEvents(
+    currentDateRangeTab as DateRange
+  );
   const { data: watchlistEarnings, isLoading: loadingWatchlistEarnings } =
     useFetchWatchlistEarnings(
       watchlist.map((w) => w.symbol),
       currentDateRangeTab as DateRange
     );
+  const isLoading = loadingWatchlistEarnings || isLoadingMacroEvents;
 
-  const { isPending: isPendingWatchlist } = useQuery({
+  useQuery({
     queryKey: ["watchlist", uid], // include uid in key so it refetches per user
     queryFn: async () => {
-      console.log("uid", uid);
       const watchlisttDoc = doc(db, `watchlists/${uid}`);
       const fetchedDoc = await getDoc(watchlisttDoc);
 
@@ -56,8 +61,6 @@ const UpcomingEventsPage = () => {
     },
     enabled: !!uid && !loading, // prevent running before uid is ready
   });
-
-  const isLoading = isPendingWatchlist || loadingWatchlistEarnings;
 
   const byDayEvents = useMemo(() => {
     const eventsByDay: { [date: string]: (MacroEvent | EarningsEvent)[] } = {};
@@ -135,10 +138,9 @@ const UpcomingEventsPage = () => {
         return ta!.localeCompare(tb!);
       });
     });
-    console.log("byDayEvents", eventsByDay);
 
     return eventsByDay;
-  }, [macroEvents, watchlistEarnings, currentEventTab, watchlist]);
+  }, [currentEventTab, macroEvents, watchlistEarnings, watchlist]);
 
   return (
     <div className="page">
@@ -155,6 +157,12 @@ const UpcomingEventsPage = () => {
           tabClassName="data-[state=active]:bg-(--gray-accent-color)"
           onValueChange={setCurrentDateRangeTab}
         />
+      </div>
+      <div className="bg-(--secondary-color) rounded-lg p-4">
+        <h2 className="font-bold text-lg mb-2">Week Analysis</h2>
+        <LoaderComponent loading={isLoadingWeeklyAnalysis} height="35px" width="100%" rounded="lg">
+          <p className="text-(--secondary-text-color)">{weeklyAnalysis}</p>
+        </LoaderComponent>
       </div>
       <div className="flex flex-col gap-6">
         {isLoading ? (

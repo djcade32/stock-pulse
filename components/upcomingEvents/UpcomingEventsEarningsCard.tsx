@@ -10,7 +10,7 @@ interface UpcomingEventsEarningsCardProps {
 
 const UpcomingEventsEarningsCard = ({ earnings }: UpcomingEventsEarningsCardProps) => {
   const { symbol: ticker, name, quarter, year, hour } = earnings;
-  const { url: logoUrl } = useCompanyLogo(ticker);
+  const { url: logoUrl, isLoading } = useCompanyLogo(ticker);
 
   const marketTimeMap: { [key: string]: string } = {
     bmo: "Before Market Open",
@@ -23,7 +23,7 @@ const UpcomingEventsEarningsCard = ({ earnings }: UpcomingEventsEarningsCardProp
       <div className="flex justify-between">
         <div className="flex gap-3 items-center">
           <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0">
-            {logoUrl.data ? (
+            {logoUrl.data && !isLoading ? (
               <img
                 src={logoUrl.data}
                 alt={`${ticker} logo`}

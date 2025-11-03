@@ -32,6 +32,5 @@ export async function fetchWatchlistEarnings(
     const dateB = dayjs(b.date);
     return dateA.isBefore(dateB) ? -1 : dateA.isAfter(dateB) ? 1 : 0;
   });
-
   return watchlistEarnings as EarningsEvent[];
 }

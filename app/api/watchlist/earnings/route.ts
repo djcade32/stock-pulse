@@ -20,7 +20,6 @@ export async function GET(req: NextRequest) {
     .split(",")
     .map((s) => s.trim())
     .filter((s) => s);
-  console.log("symbolsParam", symbols);
 
   try {
     const earnings = await fetchWatchlistEarnings(now, symbols, windowStart, windowEnd);

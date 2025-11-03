@@ -31,7 +31,6 @@ export function useFetchWatchlistEarnings(
     start = today.startOf("month").format("YYYY-MM-DD");
     end = today.endOf("month").format("YYYY-MM-DD");
   }
-
   return useQuery({
     queryKey: ["watchlist-earnings", start, end],
     queryFn: async () => {
