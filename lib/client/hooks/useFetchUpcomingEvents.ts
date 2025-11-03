@@ -27,5 +27,6 @@ export function useFetchUpcomingEvents() {
       if (!r.ok) throw new Error(await r.text());
       return (await r.json()).week_analysis as string;
     },
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours
   });
 }
