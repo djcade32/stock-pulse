@@ -110,3 +110,18 @@ export function isUsMarketOpen(now: Date = new Date()): boolean {
   const close = 16 * 60; // 16:00
   return minutesSinceMidnight >= open && minutesSinceMidnight < close;
 }
+
+export function formatMilitaryTime(timeStr: string): string {
+  // Split the time string into hours and minutes
+  const [hourStr, minuteStr] = timeStr.split(":");
+  const hour = parseInt(hourStr, 10);
+
+  // Determine AM or PM
+  const period = hour >= 12 ? "PM" : "AM";
+
+  // Convert 24-hour to 12-hour format
+  const standardHour = hour % 12 === 0 ? 12 : hour % 12;
+
+  // Return formatted time with EST
+  return `${standardHour}:${minuteStr.padStart(2, "0")} ${period} EST`;
+}

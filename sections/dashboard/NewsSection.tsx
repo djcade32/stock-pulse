@@ -24,10 +24,6 @@ const NewsSection = () => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">Recent Market News</h2>
         <div className="flex items-center gap-4">
-          {/* <Button className="!bg-(--secondary-color) flex-1/2 font-bold">
-            <FaFilter />
-            Filter
-          </Button> */}
           <Button
             className="font-bold !text-(--secondary-text-color)"
             variant="ghost"
