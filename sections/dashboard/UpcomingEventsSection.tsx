@@ -3,12 +3,11 @@
 import AiTag from "@/components/AiTag";
 import { Button as RootButton } from "@/components/ui/button";
 import UpcomingEventsEarningsCard from "@/components/upcomingEvents/UpcomingEventsEarningsCard";
-import { useUid } from "@/hooks/useUid";
 import { useFetchWatchlistEarnings } from "@/lib/client/hooks/useFetchWatchlistEarnings";
 import { useMacroEvents } from "@/lib/client/hooks/useMacroEvents";
 import { cn, formatMilitaryTime } from "@/lib/utils";
 import useWatchlistStore from "@/stores/watchlist-store";
-import { EarningsEvent, MacroEvent, SentimentLabel, WatchlistStock } from "@/types";
+import { EarningsEvent, MacroEvent, SentimentLabel } from "@/types";
 import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import React, { useMemo } from "react";
