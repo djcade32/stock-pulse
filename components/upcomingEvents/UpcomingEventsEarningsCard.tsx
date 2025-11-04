@@ -3,13 +3,16 @@ import { cn } from "@/lib/utils";
 import { EarningsEvent } from "@/types";
 import Link from "next/link";
 import React from "react";
+import { format, parseISO } from "date-fns";
 
 interface UpcomingEventsEarningsCardProps {
   earnings: EarningsEvent;
+  dashboard?: boolean;
 }
 
-const UpcomingEventsEarningsCard = ({ earnings }: UpcomingEventsEarningsCardProps) => {
-  const { symbol: ticker, name, quarter, year, hour } = earnings;
+const UpcomingEventsEarningsCard = ({ earnings, dashboard }: UpcomingEventsEarningsCardProps) => {
+  const { symbol: ticker, name, quarter, year, hour, date } = earnings;
+  const dateObj = parseISO(date);
   const { url: logoUrl, isLoading } = useCompanyLogo(ticker);
 
   const marketTimeMap: { [key: string]: string } = {
@@ -19,7 +22,12 @@ const UpcomingEventsEarningsCard = ({ earnings }: UpcomingEventsEarningsCardProp
   };
 
   return (
-    <div className="bg-(--secondary-color) p-4 rounded-lg border-l-4 border-l-(--success-color) ">
+    <div
+      className={cn(
+        "bg-(--secondary-color) p-4 rounded-lg ",
+        !dashboard && "border-l-4 border-l-(--success-color)"
+      )}
+    >
       <div className="flex justify-between">
         <div className="flex gap-3 items-center">
           <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0">
@@ -37,11 +45,15 @@ const UpcomingEventsEarningsCard = ({ earnings }: UpcomingEventsEarningsCardProp
           </Link>
           <div>
             <h3 className="font-bold">{`${name} (${ticker}) Q${quarter} ${year} Earnings`}</h3>
-            <p className="text-(--secondary-text-color) text-xs">Earnings Call</p>
+            <p className="text-(--secondary-text-color) text-xs">
+              {dashboard ? marketTimeMap[hour] : "Earnings Call"}
+            </p>
           </div>
         </div>
         <div>
-          <p className="font-semibold text-sm">{marketTimeMap[hour]}</p>
+          <p className="font-semibold text-sm">
+            {dashboard ? format(dateObj, "MMM d") : marketTimeMap[hour]}
+          </p>
         </div>
       </div>
     </div>

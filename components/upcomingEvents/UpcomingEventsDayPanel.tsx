@@ -3,7 +3,7 @@ import { format, parseISO } from "date-fns";
 import React from "react";
 import { FaChartLine, FaLandmark } from "react-icons/fa6";
 import AiTag from "../AiTag";
-import { cn } from "@/lib/utils";
+import { cn, formatMilitaryTime } from "@/lib/utils";
 import UpcomingEventsEarningsCard from "./UpcomingEventsEarningsCard";
 
 interface UpcomingEventsDayPanelProps {
@@ -13,21 +13,6 @@ interface UpcomingEventsDayPanelProps {
 
 const UpcomingEventsDayPanel = ({ date, events }: UpcomingEventsDayPanelProps) => {
   const dateObj = parseISO(date);
-
-  function formatMilitaryTime(timeStr: string): string {
-    // Split the time string into hours and minutes
-    const [hourStr, minuteStr] = timeStr.split(":");
-    const hour = parseInt(hourStr, 10);
-
-    // Determine AM or PM
-    const period = hour >= 12 ? "PM" : "AM";
-
-    // Convert 24-hour to 12-hour format
-    const standardHour = hour % 12 === 0 ? 12 : hour % 12;
-
-    // Return formatted time with EST
-    return `${standardHour}:${minuteStr.padStart(2, "0")} ${period} EST`;
-  }
 
   return (
     <div className="flex gap-2">

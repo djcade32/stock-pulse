@@ -4,6 +4,7 @@ import EarningsSection from "@/sections/dashboard/EarningsSection";
 import NewsSection from "@/sections/dashboard/NewsSection";
 import QuickChartsSection from "@/sections/dashboard/QuickChartsSection";
 import WatchlistSection from "@/sections/dashboard/WatchlistSection";
+import UpcomingEventsSection from "@/sections/dashboard/UpcomingEventsSection";
 import React from "react";
 
 const DashboardPage = () => {
@@ -17,6 +18,7 @@ const DashboardPage = () => {
       </div>
       <WatchlistSection />
       <EarningsSection />
+      <UpcomingEventsSection />
       <NewsSection />
     </div>
   );
