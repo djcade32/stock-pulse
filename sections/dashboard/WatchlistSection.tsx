@@ -277,10 +277,11 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
                 if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
                 if (!quote) console.warn(`No quote data for ${stock.ticker}`);
                 if (!quote || error) {
+                  const loading = isLoading || isPending || isSentFetching;
                   return (
                     <WatchlistCard
                       key={stock.ticker}
-                      stock={backupWatchlist[stock.ticker]}
+                      stock={loading ? stock : backupWatchlist[stock.ticker]}
                       isLoading={isLoading}
                     />
                   );
