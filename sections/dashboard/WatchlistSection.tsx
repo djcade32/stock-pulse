@@ -1,7 +1,7 @@
 "use client";
 
 import WatchlistCard from "@/components/WatchlistCard";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 import { useUid } from "@/hooks/useUid";
@@ -49,6 +49,8 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
   const { uid, loading } = useUid();
   const { watchlist, setWatchlist } = useWatchlistStore();
   const [filteredWatchlist, setFilteredWatchlist] = useState(watchlist);
+  // const [backupWatchlist, setBackupWatchlist] = useState<Record<string, WatchlistCardType>>({});
+  const backupWatchlist: Record<string, WatchlistCardType> = useMemo(() => ({}), []);
   const { isPending } = useQuery({
     queryKey: ["watchlist", uid], // include uid in key so it refetches per user
     queryFn: async () => {
@@ -268,12 +270,20 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
               sentimentSummary: "Loading sentiment…",
               aiTags: [] as AITag[],
             };
-
+            if (isLoading)
+              return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isLoading} />;
             const quote = quotesBySymbol[stock.ticker];
             const error = errorsBySymbol[stock.ticker];
             if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
             if (!quote) console.warn(`No quote data for ${stock.ticker}`);
-            if (!quote || error) return null;
+            if (!quote || error)
+              return (
+                <WatchlistCard
+                  key={stock.ticker}
+                  stock={backupWatchlist[stock.ticker]}
+                  isLoading={isLoading}
+                />
+              );
 
             stock.price = Number(quote.c.toFixed(2)) || 0;
             stock.dollarChange =
@@ -286,6 +296,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
               stock.sentimentSummary = s.summary;
               stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, topic: t.topic }));
               latestEarningsDate && (stock.latestEarningsDate = latestEarningsDate);
+              backupWatchlist[stock.ticker] = stock;
             } else {
               // fallback while loading
               stock.sentimentScore = 50;
