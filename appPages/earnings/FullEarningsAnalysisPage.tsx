@@ -23,9 +23,7 @@ const FullEarningsAnalysisPage = () => {
   const { data, isLoading } = useReportsFeedInfinite(30, symbol);
   const rows = useMemo(() => (data?.pages ?? []).flatMap((p) => p.rows), [data]);
 
-  const [yearFilter, setYearFilter] = useState(() =>
-    date ? new Date(date).getFullYear().toString() : ""
-  );
+  const [yearFilter, setYearFilter] = useState("");
   const [quarterFilter, setQuarterFilter] = useState("");
   const [currentReport, setCurrentReport] = useState<ReportRowDTO | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -34,6 +32,7 @@ const FullEarningsAnalysisPage = () => {
     const validDate = date && !isNaN(new Date(date).getTime());
     if (!symbol || !date || !validDate) {
       router.push("/earnings");
+      return;
     }
 
     if (!!rows.length) {
@@ -41,10 +40,11 @@ const FullEarningsAnalysisPage = () => {
       setCurrentReport(foundReport ?? null);
       if (foundReport) {
         setQuarterFilter(foundReport.quarter.split(" ")[1]);
+        setYearFilter(foundReport.quarter.split(" ")[2]);
       }
     }
     setIsInitialLoad(false);
-  }, [date, symbol, rows, router]);
+  }, [date, symbol, rows]);
 
   useEffect(() => {
     const yearAndQuarterString = `${quarterFilter} ${yearFilter}`;
@@ -66,7 +66,7 @@ const FullEarningsAnalysisPage = () => {
   const getAvailableYears = (rows: ReportRowDTO[]) => {
     const years: string[] = [];
     rows.forEach((row) => {
-      const year = new Date(row.date).getFullYear().toString();
+      const year = row.quarter.split(" ")[2];
       if (!years.includes(year)) years.push(year);
     });
     // Convert to options
@@ -82,7 +82,7 @@ const FullEarningsAnalysisPage = () => {
   const getAvailableQuarters = (rows: ReportRowDTO[], year: string) => {
     const quarters: string[] = [];
     rows
-      .filter((row) => new Date(row.date).getFullYear().toString() === year)
+      .filter((row) => row.quarter.split(" ")[2] === year)
       .forEach((row) => {
         const quarter = row.quarter.split(" ")[1];
         if (!quarters.includes(quarter)) quarters.push(quarter);

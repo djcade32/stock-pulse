@@ -80,7 +80,7 @@ const ListAnalyzedEarningsPage = () => {
   // Grab the last 3 years as options
   const getYearFilterOptions = () => {
     const options = [];
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear() + 1;
     let i = 0;
     while (i < 3) {
       const option = (currentYear - i).toString();

@@ -43,7 +43,7 @@ Goals:
 - Provide an overall sentiment of the report based on the themes and bullets. (e.g. "Bullish", "Bearish", "Neutral")
 - List top risks (legal, supply, customer concentration, leverage, macro).
 - Flags: mark guidanceChange if guidance was raised/lowered/introduced; liquidityConcern if cash burn, covenant risks, going concern; marginInflection if gross/operating margin materially turned.
-- Provide the quarter that the report covers (e.g., Q2 2024).
+- Provide the quarter that the report covers. Do not just based this off of the filing date because the fiscal year for some companies could be different. So get this value based off the specific companies fiscal year. (e.g., Q2 2024).
 - Do not repeat the same KPI with the same or different names (e.g., "total revenue" and "revenues")
 - The words I provided in parentheses are examples only. Use what you see fit according to the actual report.
 - For revenue_performance, risk_factors, management_tone: provide a concise summary in 1-2 sentences if that information is explicitly stated in the report; otherwise use contextual clues to infer it.
@@ -55,8 +55,8 @@ ${params.text}
 `;
 
   const completion = await client.chat.completions.create({
-    model: "gpt-4.1-mini",
-    temperature: 0.2,
+    model: "gpt-5-mini",
+    // temperature: 0.2,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: system },
