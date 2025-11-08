@@ -240,10 +240,6 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {(isLoading || isPending) &&
-          [1, 2, 3, 4, 5, 6].map((_, index) => (
-            <div key={index} className="card h-[247px] animate-pulse" />
-          ))}
         {filteredWatchlist.length === 0 &&
           !(isLoading || isPending || isSentFetching) &&
           !!watchlist.length && (
@@ -256,57 +252,64 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
             <p>Your watchlist is empty. Add some stocks to see them here!</p>
           </div>
         )}
-        {(isWatchlistPage ? filteredWatchlist : filteredWatchlist.slice(0, 6)).map(
-          ({ symbol, description, type, latestEarningsDate }) => {
-            const stock: WatchlistCardType = {
-              name: description,
-              ticker: symbol,
-              type: type || "N/A",
-              price: 0,
-              percentChange: 0,
-              dollarChange: "",
-              sentimentScore: 50,
-              numOfNews: 0,
-              sentimentSummary: "Loading sentiment…",
-              aiTags: [] as AITag[],
-            };
-            if (isLoading)
-              return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isLoading} />;
-            const quote = quotesBySymbol[stock.ticker];
-            const error = errorsBySymbol[stock.ticker];
-            if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
-            if (!quote) console.warn(`No quote data for ${stock.ticker}`);
-            if (!quote || error)
-              return (
-                <WatchlistCard
-                  key={stock.ticker}
-                  stock={backupWatchlist[stock.ticker]}
-                  isLoading={isLoading}
-                />
-              );
+        {isLoading || isPending
+          ? [1, 2, 3, 4, 5, 6].map((_, index) => (
+              <div key={index} className="card h-[247px] animate-pulse" />
+            ))
+          : (isWatchlistPage ? filteredWatchlist : filteredWatchlist.slice(0, 6)).map(
+              ({ symbol, description, type, latestEarningsDate }) => {
+                const stock: WatchlistCardType = {
+                  name: description,
+                  ticker: symbol,
+                  type: type || "N/A",
+                  price: 0,
+                  percentChange: 0,
+                  dollarChange: "",
+                  sentimentScore: 50,
+                  numOfNews: 0,
+                  sentimentSummary: "Loading sentiment…",
+                  aiTags: [] as AITag[],
+                };
+                if (isLoading)
+                  return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isLoading} />;
+                const quote = quotesBySymbol[stock.ticker];
+                const error = errorsBySymbol[stock.ticker];
+                if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
+                if (!quote) console.warn(`No quote data for ${stock.ticker}`);
+                if (!quote || error)
+                  return (
+                    <WatchlistCard
+                      key={stock.ticker}
+                      stock={backupWatchlist[stock.ticker]}
+                      isLoading={isLoading}
+                    />
+                  );
 
-            stock.price = Number(quote.c.toFixed(2)) || 0;
-            stock.dollarChange =
-              `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
-            stock.percentChange = Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
-            const s = sentimentByTicker[stock.ticker];
-            if (s) {
-              stock.sentimentScore = s.score;
-              stock.numOfNews = s.numOfNews;
-              stock.sentimentSummary = s.summary;
-              stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, topic: t.topic }));
-              latestEarningsDate && (stock.latestEarningsDate = latestEarningsDate);
-              backupWatchlist[stock.ticker] = stock;
-            } else {
-              // fallback while loading
-              stock.sentimentScore = 50;
-              stock.numOfNews = 0;
-              stock.sentimentSummary = "Loading sentiment…";
-              stock.aiTags = [];
-            }
-            return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isSentFetching} />;
-          }
-        )}
+                stock.price = Number(quote.c.toFixed(2)) || 0;
+                stock.dollarChange =
+                  `$${(quote.c - quote.pc).toFixed(2).replace("-", "")}` || stock.dollarChange;
+                stock.percentChange =
+                  Number((((quote.c - quote.pc) / quote.pc) * 100).toFixed(2)) || 0;
+                const s = sentimentByTicker[stock.ticker];
+                if (s) {
+                  stock.sentimentScore = s.score;
+                  stock.numOfNews = s.numOfNews;
+                  stock.sentimentSummary = s.summary;
+                  stock.aiTags = s.tags.map((t) => ({ sentiment: t.sentiment, topic: t.topic }));
+                  latestEarningsDate && (stock.latestEarningsDate = latestEarningsDate);
+                  backupWatchlist[stock.ticker] = stock;
+                } else {
+                  // fallback while loading
+                  stock.sentimentScore = 50;
+                  stock.numOfNews = 0;
+                  stock.sentimentSummary = "Loading sentiment…";
+                  stock.aiTags = [];
+                }
+                return (
+                  <WatchlistCard key={stock.ticker} stock={stock} isLoading={isSentFetching} />
+                );
+              }
+            )}
       </div>
     </div>
   );
