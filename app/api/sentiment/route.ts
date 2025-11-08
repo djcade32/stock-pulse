@@ -4,8 +4,9 @@ import { analyzeStockToJson } from "@/lib/server/analyzers/stocks";
 import { TickerSentiment } from "@/types";
 
 // ----- Config knobs
-const STALE_MINUTES = 4320; // recompute sentiment if older than 3 daysa (minutes)
-const LOOKBACK_DAYS = 3; // how far back to fetch news
+// recompute sentiment if older than 3 days (minutes)
+const STALE_MINUTES = 2 * 24 * 60;
+const LOOKBACK_DAYS = 2; // how far back to fetch news
 
 // ----- Fetch company news (Finnhub or your provider)
 async function fetchCompanyNews(ticker: string) {
