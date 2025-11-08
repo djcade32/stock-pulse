@@ -252,7 +252,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
             <p>Your watchlist is empty. Add some stocks to see them here!</p>
           </div>
         )}
-        {isLoading || isPending
+        {isLoading || isPending || isSentFetching
           ? [1, 2, 3, 4, 5, 6].map((_, index) => (
               <div key={index} className="card h-[247px] animate-pulse" />
             ))
@@ -276,7 +276,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
                 const error = errorsBySymbol[stock.ticker];
                 if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
                 if (!quote) console.warn(`No quote data for ${stock.ticker}`);
-                if (!quote || error)
+                if (!quote || error) {
                   return (
                     <WatchlistCard
                       key={stock.ticker}
@@ -284,6 +284,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
                       isLoading={isLoading}
                     />
                   );
+                }
 
                 stock.price = Number(quote.c.toFixed(2)) || 0;
                 stock.dollarChange =
