@@ -32,9 +32,12 @@ const PrivacyPolicy = () => {
             improve our product.
           </li>
           <li>
-            <strong>Analytics Data:</strong> We use Google Analytics to collect anonymized traffic
-            and usage data. This data may include your device type, browser, location (city-level),
-            and session duration.
+            <strong>Analytics Data:</strong> We use Google Analytics and Mixpanel to collect usage
+            data and help us understand how users interact with StockWisp. This data may include
+            your device type, browser, operating system, session duration, actions taken within the
+            app (such as searches or feature usage), and general location (city-level). This
+            information helps us improve product performance, user experience, and new feature
+            development.
           </li>
         </ul>
 
@@ -64,6 +67,19 @@ const PrivacyPolicy = () => {
           <li>
             With service providers that help us operate our website (e.g., Firebase, Google
             Analytics).
+          </li>
+          <li>
+            With Mixpanel, which helps us analyze how users engage with the platform. Mixpanel
+            processes data on our behalf in accordance with their{" "}
+            <a
+              href="https://mixpanel.com/legal/privacy-policy/"
+              className="text-blue-400 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Privacy Policy
+            </a>
+            .
           </li>
           <li>When required by law, legal process, or government request.</li>
         </ul>

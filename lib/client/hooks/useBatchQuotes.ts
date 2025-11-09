@@ -140,5 +140,6 @@ export function useBatchQuotes(
     error: query.error as Error | null,
     /** Manual controls */
     refetch: query.refetch,
+    isFetchedAfterMount: query.isFetchedAfterMount,
   };
 }
