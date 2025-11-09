@@ -281,8 +281,10 @@ const BetaBanner: React.FC = () => {
 };
 
 export default function StockWispLanding() {
-  track("viewed_landing_page");
   const pathname = usePathname();
+  useEffect(() => {
+    track("viewed_landing_page");
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.gtag) {
