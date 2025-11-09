@@ -23,6 +23,7 @@ import { GoogleAnalytics } from "nextjs-google-analytics";
 import { Analytics } from "@vercel/analytics/next";
 import { usePathname } from "next/navigation";
 import BetaBadge from "@/components/BetaBadge";
+import { track } from "@/lib/analytics";
 
 declare global {
   interface Window {
@@ -280,6 +281,7 @@ const BetaBanner: React.FC = () => {
 };
 
 export default function StockWispLanding() {
+  track("viewed_landing_page");
   const pathname = usePathname();
 
   useEffect(() => {
