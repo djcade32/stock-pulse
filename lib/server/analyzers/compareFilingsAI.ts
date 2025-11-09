@@ -6,7 +6,7 @@ export async function compareFilingsToJson(
   textA: string,
   textB: string
 ): Promise<CompareFilingsAIResult> {
-  const system = `You are Stock Pulse’s financial filings analyst. I want you to analyze and compare the overall *outlook* of two SEC filings. Return STRICT JSON only and match the schema.`;
+  const system = `You are StockWisp’s financial filings analyst. I want you to analyze and compare the overall *outlook* of two SEC filings. Return STRICT JSON only and match the schema.`;
   const schema = `
 {
   "comparisonTitle": string, // e.g. "COMPANY_A (Q2 2025) vs COMPANY_B (Q1 2025)"
@@ -50,7 +50,7 @@ Formatting rules:
 - Keep all text in professional analyst tone.
 - Use direct evidence or phrasing from the filings where possible (management tone, guidance, commentary).
 - Limit response to outlook-level insights only — no full financial breakdowns.
-- Keep output clean, factual, and ready for insertion into StockPulse’s AI Verdict card.
+- Keep output clean, factual, and ready for insertion into StockWisp’s AI Verdict card.
 
 Company A filing text (verbatim from SEC, normalized):
 ${textA}

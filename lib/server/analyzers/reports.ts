@@ -8,7 +8,7 @@ export async function analyzeFilingToJson(params: {
   text: string;
   facts?: { [k: string]: any } | null; // optional XBRL
 }): Promise<FilingAnalysis> {
-  const system = `You are Stock Pulse’s financial filings analyst. Return STRICT JSON only and match the schema. Do not guess KPIs: only include figures explicitly present in the text (or XBRL facts if provided).`;
+  const system = `You are StockWisp’s financial filings analyst. Return STRICT JSON only and match the schema. Do not guess KPIs: only include figures explicitly present in the text (or XBRL facts if provided).`;
   const schema = `
 {
   "summary": { "tldr": string, "bullets": [{"bullet": string, "sentiment": "Positive" | "Negative" | "Neutral" }] },

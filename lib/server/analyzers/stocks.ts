@@ -7,7 +7,7 @@ export async function analyzeStockToJson(params: {
   text: string;
   facts?: { [k: string]: any } | null; // optional XBRL
 }): Promise<ArticlePred> {
-  const system = `You are Stock Pulse’s financial analyst. Return STRICT JSON only and match the schema.`;
+  const system = `You are StockWisp’s financial analyst. Return STRICT JSON only and match the schema.`;
   const schema = `
 {
   "sentiment": "positive" | "neutral" | " negative",

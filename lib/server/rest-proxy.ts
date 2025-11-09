@@ -145,7 +145,7 @@ app.use(express.json());
 
 // Health check
 app.get("/api/health", (_req: Request, res: Response) => {
-  res.json({ ok: true, service: "stock-pulse-rest-proxy" });
+  res.json({ ok: true, service: "stock-wisp-rest-proxy" });
 });
 
 /**
