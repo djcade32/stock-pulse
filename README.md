@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="./public/stock_pulse_logo.png" alt="Stock Pulse Logo" width="180" />
+  <img src="./public/stock_pulse_logo.png" alt="StockWisp Logo" width="180" />
 </p>
 
-<h1 align="center">🧠 Stock Pulse</h1>
+<h1 align="center">🧠 StockWisp</h1>
 <p align="center">
   <strong>AI-powered stock insight dashboard</strong> that analyzes and compares 10-Q filings, tracks watchlists, and provides real-time (30-second-delayed) market data — built for everyday investors who want institutional-grade clarity.
 </p>
@@ -20,7 +20,7 @@
 
 ## 🌐 Overview
 
-**Stock Pulse** makes financial analysis accessible, fast, and intelligent.
+**StockWisp** makes financial analysis accessible, fast, and intelligent.
 It uses AI to interpret and compare 10-Q filings, summarize sentiment and risk, and track watchlist performance in one seamless dashboard.
 
 ---
@@ -88,7 +88,7 @@ FIREBASE_CLIENT_EMAIL=""
 FIREBASE_PRIVATE_KEY=""
 FINNHUB_KEY=""
 OPENAI_API_KEY=""
-SEC_USER_AGENT="StockPulse/1.0 (contact: your_email@example.com)"
+SEC_USER_AGENT="StockWisp/1.0 (contact: your_email@example.com)"
 ```
 
 > ⚠️ **Note:** Never commit your `.env.local` file.
@@ -106,7 +106,7 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🧠 AI Insights
 
-Stock Pulse uses proprietary AI models to:
+StockWisp uses proprietary AI models to:
 
 - Parse and summarize SEC 10-Q filings
 - Highlight sentiment, tone, and risk language

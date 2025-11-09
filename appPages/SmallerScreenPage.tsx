@@ -7,7 +7,7 @@ const SmallerScreenPage = () => {
         Oops! We’re Too Powerful for Smaller Screens
       </p>
       <p className="max-w-md text-lg text-center text-(--secondary-text-color)">
-        StockPulse is built to thrive on desktop. For the best experience, hop on your computer and
+        StockWisp is built to thrive on desktop. For the best experience, hop on your computer and
         let the analysis begin!
       </p>
     </div>

@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "StockPulse",
+  title: "StockWisp",
   description: "Real-Time Stock Market Insights and Analytics",
   verification: {
     google: "1y153xPlmDjtazvK50sbgOr1gZ6BJvk7ZGGc9L2vdZg",

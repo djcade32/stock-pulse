@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
 // Required by SEC. Keep it in env and always send it.
-const SEC_UA = process.env.SEC_USER_AGENT || "StockPulse/1.0 (contact: missing@example.com)";
+const SEC_UA = process.env.SEC_USER_AGENT || "StockWisp/1.0 (contact: missing@example.com)";
 
 async function secJson(url: string) {
   const r = await fetch(url, {
