@@ -18,7 +18,7 @@ export async function analyzeWeekEvents(params: {
 
   // System prompt: keep the model focused on a concise, readable weekly recap.
   const system = [
-    "You are Stock Pulse’s market recap writer.",
+    "You are StockWisp’s market recap writer.",
     "Your job is to produce ONE short paragraph (3–6 sentences) that summarizes the week’s key economic events and company earnings.",
     "Be professional but conversational, like a financial newsletter.",
     "Focus on: what happened, why it matters, and which items stood out.",

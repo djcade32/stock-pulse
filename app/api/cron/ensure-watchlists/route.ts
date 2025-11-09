@@ -17,7 +17,10 @@ export async function GET(req: Request) {
     console.log("Host:", host, "isDev:", isDev);
 
     if (!isDev) {
-      const allowed = host.endsWith("vercel.app") || host.includes("stock-pulse.com");
+      const allowed =
+        host.endsWith("vercel.app") ||
+        host.includes("stock-pulse.com") ||
+        host.includes("stockwisp.com");
 
       if (!allowed) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

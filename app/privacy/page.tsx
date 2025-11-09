@@ -13,13 +13,13 @@ const PrivacyPolicy = () => {
 
       <section className="space-y-4">
         <p>
-          Welcome to <strong>Stock Pulse</strong>. This Privacy Policy explains how we collect, use,
-          and protect your information when you use our website and services. By using Stock Pulse,
+          Welcome to <strong>StockWisp</strong>. This Privacy Policy explains how we collect, use,
+          and protect your information when you use our website and services. By using StockWisp,
           you agree to the terms outlined in this policy.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 text-white">1. Information We Collect</h2>
-        <p>We collect the following types of information when you use Stock Pulse:</p>
+        <p>We collect the following types of information when you use StockWisp:</p>
         <ul className="list-disc ml-6 space-y-2">
           <li>
             <strong>Account Information:</strong> When you sign in using Google, X (Twitter), or
@@ -28,7 +28,7 @@ const PrivacyPolicy = () => {
           </li>
           <li>
             <strong>Usage Data:</strong> We collect non-identifiable information about how you use
-            Stock Pulse, such as which pages you visit and interactions you make. This helps us
+            StockWisp, such as which pages you visit and interactions you make. This helps us
             improve our product.
           </li>
           <li>
@@ -41,7 +41,7 @@ const PrivacyPolicy = () => {
         <h2 className="text-xl font-semibold mt-8 text-white">2. How We Use Your Information</h2>
         <p>We use the information we collect to:</p>
         <ul className="list-disc ml-6 space-y-2">
-          <li>Provide and maintain the functionality of Stock Pulse.</li>
+          <li>Provide and maintain the functionality of StockWisp.</li>
           <li>Analyze stock sentiment and financial reports using AI.</li>
           <li>Improve user experience and platform performance.</li>
           <li>Respond to user inquiries and support requests.</li>
@@ -70,18 +70,18 @@ const PrivacyPolicy = () => {
 
         <h2 className="text-xl font-semibold mt-8 text-white">5. Cookies and Tracking</h2>
         <p>
-          Stock Pulse uses cookies through Google Analytics to understand how users interact with
-          our site. Cookies help us analyze web traffic and usage patterns but do not identify you
+          StockWisp uses cookies through Google Analytics to understand how users interact with our
+          site. Cookies help us analyze web traffic and usage patterns but do not identify you
           personally.
         </p>
         <p>
           You can control or delete cookies through your browser settings. Disabling cookies may
-          limit certain features of Stock Pulse.
+          limit certain features of StockWisp.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 text-white">6. AI-Generated Insights</h2>
         <p>
-          Stock Pulse uses AI to analyze financial reports and generate sentiment insights about
+          StockWisp uses AI to analyze financial reports and generate sentiment insights about
           companies and stocks. These analyses are automated and not based on personal information.
           No user data is processed for AI training or third-party AI use.
         </p>
@@ -91,8 +91,8 @@ const PrivacyPolicy = () => {
           Depending on your location, you may have the right to access, correct, or delete your
           personal information. To exercise these rights or request data deletion, please contact us
           at{" "}
-          <a href="mailto:support@stockpulse.com" className="text-blue-400 underline">
-            support@stockpulse.com
+          <a href="mailto:support@stockwisp.com" className="text-blue-400 underline">
+            support@stockwisp.com
           </a>
           .
         </p>
@@ -106,7 +106,7 @@ const PrivacyPolicy = () => {
 
         <h2 className="text-xl font-semibold mt-8 text-white">9. Children’s Privacy</h2>
         <p>
-          Stock Pulse is not intended for use by children under 18 years of age. We do not knowingly
+          StockWisp is not intended for use by children under 18 years of age. We do not knowingly
           collect personal information from children. If we learn that a child has provided personal
           data, we will delete it promptly.
         </p>
@@ -114,7 +114,7 @@ const PrivacyPolicy = () => {
         <h2 className="text-xl font-semibold mt-8 text-white">10. Changes to This Policy</h2>
         <p>
           We may update this Privacy Policy from time to time. When we do, we will revise the “Last
-          updated” date above. Your continued use of Stock Pulse after changes are made constitutes
+          updated” date above. Your continued use of StockWisp after changes are made constitutes
           acceptance of the updated policy.
         </p>
 
@@ -122,8 +122,8 @@ const PrivacyPolicy = () => {
         <p>
           If you have any questions or concerns about this Privacy Policy or your data, please
           contact us at{" "}
-          <a href="mailto:support@stockpulse.com" className="text-blue-400 underline">
-            support@stockpulse.com
+          <a href="mailto:support@stockwisp.com" className="text-blue-400 underline">
+            support@stockwisp.com
           </a>
           .
         </p>

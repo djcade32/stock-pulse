@@ -79,7 +79,7 @@ export const SideMenu = ({ ...props }: React.ComponentProps<typeof Sidebar>) => 
     <Sidebar collapsible="icon" {...props} className="border-none w-[300px]">
       <SidebarHeader className="py-2">
         <div className="flex items-center justify-center py-3">
-          <Image src="/stock_pulse_icon.png" alt="Stock Pulse logo" width={35} height={35} />
+          <Image src="/stock_pulse_icon.png" alt="StockWisp logo" width={32} height={32} />
           {/* <a
             href="#"
             className={cn(
@@ -90,7 +90,7 @@ export const SideMenu = ({ ...props }: React.ComponentProps<typeof Sidebar>) => 
             onMouseOver={() => !menuOpened && setHideLogo(true)}
           >
             <div className="w-[28px] h-[28px] flex items-center justify-center">
-              <Image src="/stock_pulse_icon.png" alt="Stock Pulse logo" width={45} height={45} />
+              <Image src="/stock_pulse_icon.png" alt="StockWisp logo" width={45} height={45} />
             </div>
           </a>
           <SidebarTrigger

@@ -13,7 +13,7 @@ const Header = () => {
   return (
     <nav className="border-b-2 border-(--secondary-color) bg-(--background) py-3 px-10 flex items-center fixed top-0 md:left-[64px] right-0 z-50 ">
       <div className="flex items-center gap-10 flex-1">
-        <p className="font-black text-2xl tracking-tighter">StockPulse</p>
+        <p className="font-black text-2xl tracking-tighter">StockWisp</p>
         <StockSearch
           className="w-[275px] min-w[100px]"
           onSelect={(stock) => handleSelectingStock(stock.symbol)}

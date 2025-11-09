@@ -241,7 +241,54 @@ const Step = ({ n, title, desc }: { n: number; title: string; desc: string }) =>
   </div>
 );
 
-export default function StockPulseLanding() {
+const BetaBadge = () => (
+  <span
+    className="ml-2 inline-flex items-center rounded-md border border-[#2187fe]/30 bg-[#2187fe]/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[#9ec9ff]"
+    aria-label="Beta"
+    title="Beta"
+  >
+    BETA
+  </span>
+);
+
+const BetaBanner: React.FC = () => {
+  const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    const dismissed =
+      typeof window !== "undefined" && localStorage.getItem("sw_betaBanner_dismissed");
+    if (!dismissed) setOpen(true);
+  }, []);
+
+  if (!open) return null;
+
+  return (
+    <div className="z-[60] w-full border-b border-white/10 bg-[#0e1116]">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-2 text-xs sm:text-sm">
+        <div className="flex items-center gap-2 text-white/80">
+          <span className="inline-flex items-center rounded-sm bg-[#2187fe]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[#9ec9ff]">
+            BETA
+          </span>
+          <span>
+            StockWisp is in beta. Features may change, data may be delayed, and quirks may appear.
+          </span>
+        </div>
+        <button
+          onClick={() => {
+            localStorage.setItem("sw_betaBanner_dismissed", "1");
+            setOpen(false);
+          }}
+          className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-white/70 hover:bg-white/10"
+          aria-label="Dismiss beta banner"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default function StockWispLanding() {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -267,8 +314,11 @@ export default function StockPulseLanding() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0e1116]/80 backdrop-blur">
         <Container className="flex h-16 items-center justify-between">
           <a href="#home" className="flex items-center gap-2">
-            <ChartLine className="h-6 w-6 text-[#2187fe]" />
-            <span className="text-lg font-bold tracking-wide">StockPulse</span>
+            <img src="/stock_pulse_icon.png" alt="StockWisp Icon" width={24} height={24} />
+            <span className="text-lg font-bold tracking-wide flex items-center">
+              StockWisp
+              <BetaBadge />
+            </span>
           </a>
           <nav className="hidden items-center gap-6 md:flex">
             <a href="#features" className="text-sm text-white/70 hover:text-white">
@@ -292,6 +342,9 @@ export default function StockPulseLanding() {
         </Container>
       </header>
 
+      {/* Added: BetaBanner right under the header */}
+      <BetaBanner />
+
       {/* Hero */}
       <Section className="pt-16" id="home">
         <Container className="grid items-center gap-10 py-12 md:grid-cols-2 md:py-20">
@@ -306,15 +359,15 @@ export default function StockPulseLanding() {
               transition={{ duration: 0.6 }}
               className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl"
             >
-              Understand filings. Feel the market’s <span className="text-[#2187fe]">pulse</span>.
+              See beyond the numbers. Hear the market{" "}
+              <span className="text-[#2187fe]">whispers</span>.
             </motion.h1>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-white/70">
-              Stock Pulse analyzes 10‑Q filings and market news to surface clean, actionable
-              signals:
+              StockWisp analyzes 10-Q filings and market news to surface clean, actionable signals:
               <span className="text-white"> Bullish</span>,{" "}
               <span className="text-white">Bearish</span>, or{" "}
               <span className="text-white">Neutral</span>. Build watchlists, compare companies
-              side‑by‑side, and cut through the noise.
+              side-by-side, and cut through the noise.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a
@@ -357,7 +410,7 @@ export default function StockPulseLanding() {
             <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-950">
               <img
                 src="/stock_pulse_hero.png"
-                alt="Stock Pulse dashboard screenshot"
+                alt="StockWisp dashboard screenshot"
                 className="block h-auto w-full"
               />
             </div>
@@ -373,7 +426,7 @@ export default function StockPulseLanding() {
               Signals that actually help you decide
             </h2>
             <p className="mt-3 text-base text-white/70">
-              Inspired by crisp, developer‑grade UX, tailored for investors.
+              Inspired by crisp, developer-grade UX, tailored for investors.
             </p>
           </div>
 
@@ -381,7 +434,7 @@ export default function StockPulseLanding() {
             <FeatureCard
               icon={Brain}
               title="AI filing analysis"
-              desc="Parse 10‑Q language to quantify tone and risk. Summaries you can read in seconds, not hours."
+              desc="Parse 10-Q language to quantify tone and risk. Summaries you can read in seconds, not hours."
             />
             <FeatureCard
               icon={BotMessageSquare}
@@ -391,7 +444,7 @@ export default function StockPulseLanding() {
             <FeatureCard
               icon={GitCompareArrows}
               title="AI Comparison Mode"
-              desc="Compare filings side‑by‑side—highlighting tone shifts, guidance changes, and risk wording."
+              desc="Compare filings side-by-side—highlighting tone shifts, guidance changes, and risk wording."
             />
             <FeatureCard
               icon={Search}
@@ -405,7 +458,7 @@ export default function StockPulseLanding() {
             />
             <FeatureCard
               icon={ShieldCheck}
-              title="Privacy‑respecting"
+              title="Privacy-respecting"
               desc="No ads and minimal tracking. Your research stays yours."
             />
           </div>
@@ -421,14 +474,14 @@ export default function StockPulseLanding() {
               <Step
                 n={2}
                 title="Run analysis"
-                desc="We process 10‑Qs and curated news, then compute a sentiment score and label."
+                desc="We process 10-Qs and curated news, then compute a sentiment score and label."
               />
               <Step
                 n={3}
                 title="Act with clarity"
-                desc="Skim the summary, dive deeper on highlights, or compare companies side‑by‑side."
+                desc="Skim the summary, dive deeper on highlights, or compare companies side-by-side."
               />
-              <div className="pt-2 text-xs text-white/50">Real‑time pricing may be delayed 30s</div>
+              <div className="pt-2 text-xs text-white/50">Real-time pricing may be delayed 30s</div>
             </div>
             <div className="space-y-2">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -450,7 +503,7 @@ export default function StockPulseLanding() {
             <div>
               <h3 className="text-2xl font-bold">Simple flow, serious depth</h3>
               <p className="mt-3 text-white/70">
-                Select a company. We parse the latest 10‑Q and relevant news. Our models score tone
+                Select a company. We parse the latest 10-Q and relevant news. Our models score tone
                 and extract key factors, then present a clean summary with citations so you can
                 verify.
               </p>
@@ -459,7 +512,7 @@ export default function StockPulseLanding() {
                   <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Filing tone & risk deltas
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Headline‑weighted sentiment
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Headline-weighted sentiment
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Confidence score with
@@ -501,14 +554,27 @@ export default function StockPulseLanding() {
             <p className="mt-3 text-white/70">Short, honest answers.</p>
           </div>
           <div className="mx-auto mt-10 grid max-w-3xl gap-4">
+            {/* Added: Beta FAQ item */}
             <details className="group rounded-xl border border-white/10 bg-white/5 p-5">
               <summary className="flex cursor-pointer list-none items-center justify-between text-left font-medium text-white/90">
-                Is Stock Pulse free?
+                What does “beta” mean here?
                 <span className="ml-4 text-white/50 group-open:rotate-180">▾</span>
               </summary>
               <p className="mt-3 text-sm text-white/70">
-                Yes. Stock Pulse is currently free for everyone while we iterate. Real‑time prices
-                may be delayed on free data tiers.
+                You’re getting early access while we iterate quickly. Expect frequent updates,
+                occasional rough edges, and possible data delays. Your feedback helps shape what we
+                build next.
+              </p>
+            </details>
+
+            <details className="group rounded-xl border border-white/10 bg-white/5 p-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between text-left font-medium text-white/90">
+                Is StockWisp free?
+                <span className="ml-4 text-white/50 group-open:rotate-180">▾</span>
+              </summary>
+              <p className="mt-3 text-sm text-white/70">
+                Yes. StockWisp is currently free for everyone while we iterate. Real-time prices may
+                be delayed on free data tiers.
               </p>
             </details>
             <details className="group rounded-xl border border-white/10 bg-white/5 p-5">
@@ -517,7 +583,7 @@ export default function StockPulseLanding() {
                 <span className="ml-4 text-white/50 group-open:rotate-180">▾</span>
               </summary>
               <p className="mt-3 text-sm text-white/70">
-                Right now we focus on 10‑Q filings and curated headlines. Earnings‑call analysis is
+                Right now we focus on 10-Q filings and curated headlines. Earnings-call analysis is
                 on our roadmap.
               </p>
             </details>
@@ -549,7 +615,7 @@ export default function StockPulseLanding() {
                 href="/dashboard"
                 className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black hover:bg-white/90"
               >
-                Open Stock Pulse <ArrowRight className="h-4 w-4" />
+                Open StockWisp <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href="https://github.com/djcade32/stock-pulse"
@@ -567,7 +633,7 @@ export default function StockPulseLanding() {
       {/* Footer */}
       <footer className="border-t border-white/10 py-10 text-sm text-white/60">
         <Container className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <div>© {new Date().getFullYear()} Stock Pulse. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} StockWisp. All rights reserved.</div>
           <div className="flex items-center gap-6">
             <a href="/privacy" className="hover:text-white">
               Privacy
@@ -575,7 +641,7 @@ export default function StockPulseLanding() {
             <a href="/terms" className="hover:text-white">
               Terms
             </a>
-            <a href="mailto:support@stockpulse.com" className="hover:text-white">
+            <a href="mailto:support@stockwisp.com" className="hover:text-white">
               Contact
             </a>
           </div>

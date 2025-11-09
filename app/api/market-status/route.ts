@@ -41,7 +41,7 @@ export async function GET() {
 
     const raw: FinnhubMarketStatus = await res.json();
 
-    // Normalize a compact shape Stock Pulse can rely on
+    // Normalize a compact shape StockWisp can rely on
     const now = Date.now();
     const serverEpochMs = (raw.t ?? 0) * 1000;
 
