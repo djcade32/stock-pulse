@@ -241,7 +241,7 @@ const Step = ({ n, title, desc }: { n: number; title: string; desc: string }) =>
   </div>
 );
 
-const BetaBadge = () => (
+export const BetaBadge = () => (
   <span
     className="ml-2 inline-flex items-center rounded-md border border-[#2187fe]/30 bg-[#2187fe]/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[#9ec9ff]"
     aria-label="Beta"
