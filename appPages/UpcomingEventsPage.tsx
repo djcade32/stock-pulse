@@ -5,6 +5,7 @@ import Tabs from "@/components/general/Tabs";
 import UpcomingEventsDayPanel from "@/components/upcomingEvents/UpcomingEventsDayPanel";
 import { db } from "@/firebase/client";
 import { useUid } from "@/hooks/useUid";
+import { track } from "@/lib/analytics";
 import { useFetchUpcomingEvents } from "@/lib/client/hooks/useFetchUpcomingEvents";
 import { useFetchWatchlistEarnings } from "@/lib/client/hooks/useFetchWatchlistEarnings";
 import { useMacroEvents } from "@/lib/client/hooks/useMacroEvents";
@@ -16,6 +17,7 @@ import React, { useMemo, useState } from "react";
 type DateRange = "this month" | "next week" | "this week";
 
 const UpcomingEventsPage = () => {
+  track("opened_upcoming_events_page");
   const tabEventValues = [{ label: "All" }, { label: "Economic" }, { label: "My Watchlist" }];
   const tabDateRangeValues = [
     { label: "This Week" },

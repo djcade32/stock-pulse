@@ -23,7 +23,6 @@ export default function AnalyzeLatestButton({ setAnalysisData }: AnalyzeLatestBu
       return;
     }
     if (data && setAnalysisData) {
-      toast.success(`Analysis for ${data.ticker} added to feed`);
       setAnalysisData((prev) => {
         // Avoid duplicates
         if (prev.find((r) => r.ticker === data.ticker)) return prev;
