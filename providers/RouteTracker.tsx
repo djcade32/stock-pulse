@@ -15,7 +15,7 @@ export default function RouteTracker() {
     if (prevPathRef.current === path) return;
     prevPathRef.current = path;
 
-    track("viewed_route", { path }, { key: `viewed_route:${path}` });
+    // track("viewed_route", { path }, { key: `viewed_route:${path}` });
   }, [pathname, search]);
 
   return null;
