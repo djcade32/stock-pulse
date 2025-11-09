@@ -1,4 +1,5 @@
 import mixpanel from "mixpanel-browser";
+import { getAnalyticsConsent } from "./consent";
 
 declare global {
   interface Window {
@@ -15,12 +16,23 @@ const TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN as string;
 export function initAnalytics() {
   if (!isProd) console.warn("Analytics not initialized in non-production environment"); // never in dev
   if (!TOKEN) console.error("Mixpanel token not set; analytics will not function");
+  // Only init if consent granted
+  if (getAnalyticsConsent() !== "accepted") return;
   if (window.__SW_ANALYTICS__?.initialized) return;
   mixpanel.init(TOKEN, {
     debug: false,
     track_pageview: false,
     persistence: "localStorage",
   });
+
+  // Respect Global Privacy Control (GPC) if present
+  // If GPC is enabled, opt-out immediately.
+  // @ts-expect-error nonstandard
+  if (typeof navigator !== "undefined" && navigator.globalPrivacyControl) {
+    try {
+      mixpanel.opt_out_tracking();
+    } catch {}
+  }
 
   window.__SW_ANALYTICS__ = { initialized: true };
   if (!window.__SW_EVENT_CACHE__) window.__SW_EVENT_CACHE__ = {};
@@ -79,4 +91,16 @@ export function resetAnalytics() {
   console.log("Resetting analytics data");
   mixpanel.reset();
   if (window.__SW_EVENT_CACHE__) window.__SW_EVENT_CACHE__ = {};
+}
+
+export function optOutAnalytics() {
+  try {
+    mixpanel.opt_out_tracking();
+  } catch {}
+}
+
+export function optInAnalytics() {
+  try {
+    mixpanel.opt_in_tracking();
+  } catch {}
 }

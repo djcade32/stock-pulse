@@ -7,6 +7,7 @@ import AuthBridge from "@/components/AuthBridge";
 import AnalyticsBoot from "@/providers/AnalyticsBoot";
 import { Suspense } from "react";
 import RouteTracker from "@/providers/RouteTracker";
+import ConsentBanner from "@/components/ConsentBanner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Toaster />
           {children}
         </QueryProvider>
+        <ConsentBanner />
       </body>
     </html>
   );
