@@ -1,3 +1,4 @@
+import { track } from "@/lib/analytics";
 import { WatchlistStock } from "@/types";
 import { create } from "zustand";
 
@@ -18,12 +19,14 @@ const useWatchlistStore = create<WatchlistState>((set, get) => ({
   addToWatchlist: (stock: WatchlistStock) => {
     const currentWatchlist = get().watchlist;
     if (!currentWatchlist.find((s) => s.symbol === stock.symbol)) {
+      track("added_to_watchlist", { ticker: stock.symbol });
       set({ watchlist: [...currentWatchlist, stock] });
     }
   },
 
   removeFromWatchlist: (symbol: string) => {
     const currentWatchlist = get().watchlist;
+    track("removed_from_watchlist", { ticker: symbol });
     set({ watchlist: currentWatchlist.filter((s) => s.symbol !== symbol) });
   },
 

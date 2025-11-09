@@ -46,18 +46,6 @@ const StockNextEarningsSection = ({ symbol }: StockNextEarningsSectionProps) => 
     }
   }, [yearFilter, quarterFilter, symbol]);
 
-  useEffect(() => {
-    if (error) {
-      toast.error((error as Error).message);
-      return;
-    }
-    if (analyzedEarning) {
-      toast.success(`Analysis for ${symbol} completed`);
-      refetch();
-      return;
-    }
-  }, [error, analyzedEarning]);
-
   const convertEarningsHourToString = (hour: string) => {
     switch (hour) {
       case "bmo":

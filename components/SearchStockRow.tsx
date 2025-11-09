@@ -16,7 +16,7 @@ interface SearchStockRowProps {
 const SearchStockRow = ({ stock, onSelect, isSelected }: SearchStockRowProps) => {
   const { existInWatchlist } = useWatchlistStore();
   const { existInQuickChartList } = useQuickChartStore();
-  const existInBothLists = existInWatchlist(stock.symbol) && existInQuickChartList(stock.symbol);
+  const existInBothLists = existInWatchlist(stock.symbol);
   const [selected, setSelected] = useState(isSelected);
   const toggleSelected = () => {
     if (existInBothLists) return;
