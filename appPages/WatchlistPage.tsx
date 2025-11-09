@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/general/Button";
+import { track } from "@/lib/analytics";
 import AddStockModal from "@/modals/AddStockModal";
 import WatchlistSection from "@/sections/dashboard/WatchlistSection";
 import WatchlistSummarySection from "@/sections/watchlist/WatchlistSummarySection";
@@ -8,7 +9,9 @@ import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 
 const WatchlistPage = () => {
+  track("opened_watchlist_page");
   const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
+
   return (
     <>
       <div className="page">

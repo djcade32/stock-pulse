@@ -29,7 +29,7 @@ const MarketOpenOrClosed = () => {
           <span className="text-(--danger-color) ml-1">Closed</span>
         )}
       </span>
-      {marketTime && <span className="ml-1">{`• ${marketTime} EDT`}</span>}
+      {marketTime && <span className="ml-1">{`• ${marketTime} ET`}</span>}
     </p>
   );
 };

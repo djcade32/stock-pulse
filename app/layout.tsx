@@ -3,6 +3,10 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import QueryProvider from "@/providers/QueryProvider";
+import AuthBridge from "@/components/AuthBridge";
+import AnalyticsBoot from "@/providers/AnalyticsBoot";
+import { Suspense } from "react";
+import RouteTracker from "@/providers/RouteTracker";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,6 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
+        <AuthBridge />
+        <AnalyticsBoot />
+        <Suspense fallback={null}>
+          <RouteTracker />
+        </Suspense>
         <QueryProvider>
           <Toaster />
           {children}

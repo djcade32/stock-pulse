@@ -22,6 +22,7 @@ import EarningsRowPreview from "@/components/EarningsRowPreview";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import { Analytics } from "@vercel/analytics/next";
 import { usePathname } from "next/navigation";
+import BetaBadge from "@/components/BetaBadge";
 
 declare global {
   interface Window {
@@ -239,16 +240,6 @@ const Step = ({ n, title, desc }: { n: number; title: string; desc: string }) =>
       <p className="mt-1 text-sm text-white/70 leading-relaxed">{desc}</p>
     </div>
   </div>
-);
-
-const BetaBadge = () => (
-  <span
-    className="ml-2 inline-flex items-center rounded-md border border-[#2187fe]/30 bg-[#2187fe]/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[#9ec9ff]"
-    aria-label="Beta"
-    title="Beta"
-  >
-    BETA
-  </span>
 );
 
 const BetaBanner: React.FC = () => {

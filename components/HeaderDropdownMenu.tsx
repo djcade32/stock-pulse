@@ -9,6 +9,7 @@ import { useUid } from "@/hooks/useUid";
 import { auth } from "@/firebase/client";
 import LoaderComponent from "./general/LoaderComponent";
 import useWatchlistStore from "@/stores/watchlist-store";
+import { resetAnalytics } from "@/lib/analytics";
 
 async function postJSON<T = any>(url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -38,6 +39,7 @@ const HeaderDropdownMenu = () => {
       icon: <LogOut size={16} />,
       onClick: async () =>
         await postJSON("/api/auth/sign-out").then(() => {
+          resetAnalytics();
           router.push("/sign-in");
           clearWatchlist();
         }),

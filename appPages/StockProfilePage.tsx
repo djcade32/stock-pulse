@@ -9,6 +9,7 @@ import StockKeyFinancialMetricsSection from "@/sections/stockProfile/StockKeyFin
 import StockNextEarningsSection from "@/sections/stockProfile/StockNextEarningsSection";
 import StockAnalystRatingsSection from "@/sections/stockProfile/StockAnalystRatingsSection";
 import StockNewsSection from "@/sections/stockProfile/StockNewsSection";
+import { track } from "@/lib/analytics";
 
 // prevent build-time prerender so hooks run in a client context
 export const dynamic = "force-dynamic";
@@ -23,6 +24,12 @@ const StockProfilePage = () => {
   }, [searchParams]);
 
   const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Track page view
+  useEffect(() => {
+    if (!symbol) return;
+    track("viewed_stock_page", { symbol });
+  }, [symbol]);
 
   useEffect(() => {
     if (!symbol) {
