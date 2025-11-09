@@ -4,7 +4,7 @@ import { Bell } from "lucide-react";
 import HeaderDropdownMenu from "./HeaderDropdownMenu";
 import StockSearch from "./StockSearch";
 import { useRouter } from "next/navigation";
-import { BetaBadge } from "@/app/page";
+import BetaBadge from "./BetaBadge";
 
 const Header = () => {
   const router = useRouter();
