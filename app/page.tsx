@@ -241,7 +241,6 @@ const Step = ({ n, title, desc }: { n: number; title: string; desc: string }) =>
   </div>
 );
 
-/* ------------------ Added: BetaBadge ------------------ */
 const BetaBadge = () => (
   <span
     className="ml-2 inline-flex items-center rounded-md border border-[#2187fe]/30 bg-[#2187fe]/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-[#9ec9ff]"
@@ -252,7 +251,6 @@ const BetaBadge = () => (
   </span>
 );
 
-/* ------------------ Added: BetaBanner (dismissible) ------------------ */
 const BetaBanner: React.FC = () => {
   const [open, setOpen] = React.useState(false);
 
@@ -317,7 +315,7 @@ export default function StockWispLanding() {
         <Container className="flex h-16 items-center justify-between">
           <a href="#home" className="flex items-center gap-2">
             <img src="/stock_pulse_icon.png" alt="StockWisp Icon" width={24} height={24} />
-            <span className="text-lg font-bold tracking-wide">
+            <span className="text-lg font-bold tracking-wide flex items-center">
               StockWisp
               <BetaBadge />
             </span>
