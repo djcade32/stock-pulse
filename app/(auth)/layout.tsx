@@ -1,6 +1,7 @@
 import "../globals.css";
 import Ticker, { Item } from "@/components/Ticker";
 import { isAuthenticated } from "@/lib/actions/auth.server.action";
+import { track } from "@/lib/analytics";
 import MobileViewProvider from "@/providers/MobileViewProvider";
 import { redirect } from "next/navigation";
 
@@ -9,6 +10,7 @@ export default async function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  track("viewed_auth_page");
   const isUserAuthenticated = await isAuthenticated();
   if (isUserAuthenticated) {
     redirect("/dashboard");
