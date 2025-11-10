@@ -118,19 +118,12 @@ export function useBatchQuotes(
     } => {
       const bySymbol: Record<string, FinnhubQuote | null> = {};
       const errors: Record<string, string> = {};
-      let apiLimitHit = false;
       for (const symbol of raw.symbols) {
         const entry = raw.quotes[symbol];
         bySymbol[symbol] = entry?.data ?? null;
-        if (entry?.error) {
-          errors[symbol] = entry.error;
-          apiLimitHit = entry.error.toLowerCase().includes("429");
-        }
+        if (entry?.error) errors[symbol] = entry.error;
       }
-      if (apiLimitHit) {
-        console.warn("API rate limit hit while fetching batch quotes.");
-        toast.warning("API rate limit hit. Some quotes may take time to show.");
-      }
+
       return { bySymbol, errors, raw };
     },
   });
