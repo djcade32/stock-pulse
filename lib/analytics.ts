@@ -76,7 +76,6 @@ export function setUserProps(props: Record<string, any>) {
 
 export function resetAnalytics() {
   if (!isProd) return;
-  console.log("Resetting analytics data");
   mixpanel.reset();
   if (window.__SW_EVENT_CACHE__) window.__SW_EVENT_CACHE__ = {};
 }

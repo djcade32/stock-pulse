@@ -2,6 +2,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { isUsMarketOpen } from "@/lib/utils";
+import { toast } from "sonner";
 
 /** Shape of a single quote as Finnhub returns it (simplified). */
 export type FinnhubQuote = {
@@ -102,7 +103,7 @@ export function useBatchQuotes(
     // AbortController lets the request cancel if the component unmounts or the symbols change mid-flight.
     queryFn: async ({ signal }) => fetchBatchQuotes(normalizedSymbols, signal),
     // Quotes change fast; consider them stale quickly so UI is ok refetching when focused.
-    staleTime: 1_000,
+    staleTime: 60_000, // 1 minute
     refetchInterval,
     refetchOnWindowFocus: true, // set true if you like "jump to live" when tab refocuses
     retry: 2,
@@ -117,10 +118,18 @@ export function useBatchQuotes(
     } => {
       const bySymbol: Record<string, FinnhubQuote | null> = {};
       const errors: Record<string, string> = {};
+      let apiLimitHit = false;
       for (const symbol of raw.symbols) {
         const entry = raw.quotes[symbol];
         bySymbol[symbol] = entry?.data ?? null;
-        if (entry?.error) errors[symbol] = entry.error;
+        if (entry?.error) {
+          errors[symbol] = entry.error;
+          apiLimitHit = entry.error.toLowerCase().includes("429");
+        }
+      }
+      if (apiLimitHit) {
+        console.warn("API rate limit hit while fetching batch quotes.");
+        toast.warning("API rate limit hit. Some quotes may take time to show.");
       }
       return { bySymbol, errors, raw };
     },

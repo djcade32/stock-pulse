@@ -4,8 +4,7 @@ import AiTag from "@/components/AiTag";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 import { useSentiment } from "@/lib/client/hooks/useSentiment";
 import useWatchlistStore from "@/stores/watchlist-store";
-import { is } from "cheerio/dist/commonjs/api/traversing";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 const WatchlistSummarySection = () => {
   const { watchlist } = useWatchlistStore();
@@ -17,6 +16,7 @@ const WatchlistSummarySection = () => {
     quotesBySymbol = {},
     isLoading: isQuotesLoading,
     isFetchedAfterMount: isQuotesFetched,
+    errorsBySymbol = {},
   } = useBatchQuotes(symbols, {
     enabled: totalNumberOfStocks > 0,
   });
@@ -82,9 +82,10 @@ const WatchlistSummarySection = () => {
       biggestGainer: gainer,
       biggestLoser: loser,
     };
-  }, [symbols, sentimentByTicker, quotesBySymbol, totalNumberOfStocks]);
+  }, [symbols, sentimentByTicker, quotesBySymbol, totalNumberOfStocks, errorsBySymbol]);
 
-  const loading = isQuotesLoading || isSentLoading || !isQuotesFetched || !isSentFetched;
+  const isError = Object.keys(errorsBySymbol).length > 0;
+  const loading = isQuotesLoading || isSentLoading || isError;
 
   const getTag = (sentiment: string): "Neutral" | "Bullish" | "Bearish" => {
     switch (sentiment) {
