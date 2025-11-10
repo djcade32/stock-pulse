@@ -39,7 +39,6 @@ export function useIndexSeries(symbols: string[]) {
     const today = etDate();
     let cancelled = false;
     const unsubs: Array<() => void> = [];
-
     async function attachForDate(dateKey: string) {
       setDisplayDate(dateKey);
       setPreviousSession(dateKey !== today);
@@ -74,9 +73,8 @@ export function useIndexSeries(symbols: string[]) {
       setLoading(true);
 
       // Try today's trading day first
-      const todayRef = doc(db, `indexSeries/${today}`);
+      const todayRef = doc(db, `indexSeries/${today}/symbols/${symbols[0]}`);
       const todaySnap = await getDoc(todayRef);
-
       if (todaySnap.exists()) {
         await attachForDate(today);
       } else {

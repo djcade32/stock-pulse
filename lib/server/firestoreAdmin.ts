@@ -1,17 +1,25 @@
-import * as admin from "firebase-admin";
+// server/lib/firebaseAdmin.ts
+import { cert, getApp, getApps, initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
-let app: admin.app.App | null = null;
+let dbSingleton: ReturnType<typeof getFirestore> | null = null;
 
 export function firestoreAdmin() {
-  if (!app) {
-    // Prefer a single JSON env var; fall back to individual vars if needed.
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-    if (!raw) throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON missing");
+  if (dbSingleton) return dbSingleton;
 
-    const creds = JSON.parse(raw);
-    app = admin.initializeApp({
-      credential: admin.credential.cert(creds),
-    });
-  }
-  return admin.firestore();
+  // Parse once; keep tiny surface area to avoid bundler duplications.
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+  if (!raw) throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON missing");
+
+  const creds = JSON.parse(raw);
+
+  // Only initialize if no apps exist in this process
+  const app = getApps().length
+    ? getApp()
+    : initializeApp({
+        credential: cert(creds),
+      });
+
+  dbSingleton = getFirestore(app);
+  return dbSingleton;
 }
