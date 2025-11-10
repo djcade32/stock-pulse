@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import NewsDisplay from "./NewsDisplay";
 import { useFetchMarketNews, useRefreshMarketNews } from "@/lib/client/queries/markeNews";
 import { useFetchCompanyNews, useRefreshCompanyNews } from "@/lib/client/hooks/useFetchCompanyNews";
@@ -13,6 +13,7 @@ import { Select } from "@/components/general/Select";
 import Button from "@/components/general/Button";
 import { RefreshCcw } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { track } from "@/lib/analytics";
 
 const selectItems = [
   { label: "All News", value: "all" },
@@ -65,6 +66,11 @@ const NewsContent = () => {
     setCompanyFilter(stock || sorted[0]?.symbol);
     return sorted.map((item) => ({ label: item.symbol, value: item.symbol.toLocaleLowerCase() }));
   }, [watchlist, isPending]);
+
+  // Track page open
+  useEffect(() => {
+    track("opened_news_page");
+  }, []);
 
   const handleSelectChange = (value: string) => {
     setSelectedFilter(value);
