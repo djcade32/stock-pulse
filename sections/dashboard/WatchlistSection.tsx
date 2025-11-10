@@ -15,6 +15,7 @@ import Button from "@/components/general/Button";
 import Link from "next/link";
 import { GalleryVerticalEnd } from "lucide-react";
 import { AITag, WatchlistCard as WatchlistCardType, WatchlistStock } from "@/types";
+import { toast } from "sonner";
 
 const DEFAULT_WATCHLIST: WatchlistStock[] = [
   { symbol: "AAPL", description: "Apple Inc.", type: "Technology" },
@@ -49,6 +50,8 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
   const { uid, loading } = useUid();
   const { watchlist, setWatchlist } = useWatchlistStore();
   const [filteredWatchlist, setFilteredWatchlist] = useState(watchlist);
+  const [showingApiLimitToast, setShowingApiLimitToast] = useState(false);
+
   const backupWatchlist: Record<string, WatchlistCardType> = useMemo(() => ({}), []);
   const { isPending } = useQuery({
     queryKey: ["watchlist", uid], // include uid in key so it refetches per user
@@ -207,6 +210,17 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
       handleFilterChange(filterBy, res).then((final) => setFilteredWatchlist(final))
     );
   }, [watchlist, sortBy, filterBy]);
+
+  useEffect(() => {
+    if (Object.keys(errorsBySymbol).length > 0 && !showingApiLimitToast) {
+      toast.warning("API rate limit hit. Some quotes may take time to show.", {
+        duration: 10_000,
+      });
+      setShowingApiLimitToast(true);
+    } else if (Object.keys(errorsBySymbol).length === 0 && showingApiLimitToast) {
+      setShowingApiLimitToast(false);
+    }
+  }, [errorsBySymbol]);
 
   return (
     <div>
