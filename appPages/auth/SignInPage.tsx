@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Button from "@/components/general/Button";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import { signInWithPopup, GoogleAuthProvider, TwitterAuthProvider } from "fireba
 import { auth } from "@/firebase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { track } from "@/lib/analytics";
 
 // Providers can be created once (avoid re-instantiating on each render)
 const googleProvider = new GoogleAuthProvider();
@@ -31,6 +32,10 @@ async function postJSON<T>(url: string, body: unknown): Promise<T> {
 const SignInPage = () => {
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
+
+  useEffect(() => {
+    track("viewed_sign_in_page");
+  }, []);
 
   const handleOauthSignin = useCallback(
     async (provider: GoogleAuthProvider | TwitterAuthProvider) => {
