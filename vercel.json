@@ -6,6 +6,7 @@
     },
     { "path": "/api/cron/macro", "schedule": "0 21 * * 5" },
     { "path": "/api/cron/macro", "schedule": "10 11 * * *" },
-    { "path": "/api/cron/macro", "schedule": "0 05 1 * *" }
+    { "path": "/api/cron/macro", "schedule": "0 05 1 * *" },
+    { "path": "/api/cron/index-series", "schedule": "* 14-21 * * 1-5" }
   ]
 }
