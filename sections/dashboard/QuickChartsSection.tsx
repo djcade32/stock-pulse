@@ -2,22 +2,17 @@
 
 import QuickChart from "@/components/QuickChart";
 import React from "react";
-import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
-import { useQuoteStreamPatcher } from "@/lib/client/hooks/useQuoteStreamPatcher";
 import { useUid } from "@/hooks/useUid";
+import { useIndexSeries } from "@/lib/client/hooks/useIndexSeries"; // <- new hook
 
 const INDEXES = ["SPY", "QQQ", "IWM"];
 
 const QuickChartsSection = () => {
-  const { loading } = useUid();
+  const { loading: authLoading } = useUid();
+  const { seriesBySymbol, latestBySymbol, loading, errorsBySymbol, previousSession, displayDate } =
+    useIndexSeries(INDEXES);
 
-  const { quotesBySymbol, isLoading, errorsBySymbol } = useBatchQuotes(INDEXES, {
-    enabled: true,
-    marketRefetchMs: 30_000,
-  });
-  useQuoteStreamPatcher(INDEXES);
-
-  if (isLoading || loading) {
+  if (loading || authLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
         {INDEXES.map((symbol) => (
@@ -29,19 +24,27 @@ const QuickChartsSection = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
+      {/* {previousSession && displayDate && (
+        <p className="text-(--secondary-text-color) text-xs mb-2">
+          Showing previous session: {displayDate}
+        </p>
+      )} */}
       {INDEXES.map((symbol) => {
-        const quote = quotesBySymbol[symbol];
-        const error = errorsBySymbol[symbol];
-        if (error) console.error(`Error loading quote for ${symbol}: ${error}`);
-        if (!quote) console.warn(`No quote data for ${symbol}`);
-        if (!quote || error) return null;
+        const err = errorsBySymbol[symbol];
+        const ser = seriesBySymbol[symbol] ?? [];
+        const latest = latestBySymbol[symbol];
+
+        if (err) console.error(`Error for ${symbol}: ${err}`);
+        if (!ser.length) return null;
 
         const stock = {
           ticker: symbol,
-          price: Number(quote.c.toFixed(2)) || 0,
-          change: Number(quote.dp.toFixed(2)) || 0, // use change percentage if available
+          price: Number((latest?.price ?? 0).toFixed(2)) || 0,
+          change: Number((latest?.changePct ?? 0).toFixed(2)) || 0, // intraday % from first point
         };
-        return <QuickChart key={symbol} stock={stock} deletable={false} />;
+
+        // ⬇️ Add `series` prop to QuickChart (optional but recommended for consistent sparkline)
+        return <QuickChart key={symbol} stock={stock} series={ser} deletable={false} />;
       })}
     </div>
   );

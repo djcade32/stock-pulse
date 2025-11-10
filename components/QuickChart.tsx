@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Ellipsis, Trash2 } from "lucide-react";
 import { ChartConfig, ChartContainer } from "./ui/chart";
 import { ComposedChart, Line, Area } from "recharts";
@@ -12,67 +12,106 @@ import { doc, setDoc } from "firebase/firestore";
 import { useUid } from "@/hooks/useUid";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-  },
-  mobile: {
-    label: "Mobile",
-  },
+  desktop: { label: "Desktop" },
+  mobile: { label: "Mobile" },
 } satisfies ChartConfig;
 
 interface QuickChartProps {
   stock: {
     ticker: string;
     price: number;
-    change: number;
+    change: number; // parent computes intraday % change
   };
   deletable?: boolean;
+  series?: { t: number; p: number }[]; // canonical intraday series (authoritative)
 }
 
+type ChartPoint = { time: number; desktop: number; delta: number };
 const WINDOW = 120; // keep last N points so domain stays tight
 
-const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
+function toChartData(series: { t: number; p: number }[]): ChartPoint[] {
+  if (!series?.length) return [];
+  const base = series[0].p;
+  return series.map(({ t, p }) => ({
+    time: t,
+    desktop: p,
+    delta: p - base,
+  }));
+}
+
+const QuickChart = ({ stock, deletable = true, series }: QuickChartProps) => {
   const { removeFromQuickChartList, quickChartList } = useQuickChartStore();
   const { uid } = useUid();
-  const [chartData, setChartData] = useState<{ time: number; desktop: number; delta: number }[]>(
-    []
-  );
+  const [chartData, setChartData] = useState<ChartPoint[]>([]);
   const chartId = `quick-chart-${toKebabCase(stock.ticker)}`;
   const lineColor = stock.change >= 0 ? "var(--success-color)" : "var(--danger-color)";
 
+  // Keep refs for base price and last timestamp so we can append smoothly
+  const baseRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number | null>(null);
+
+  // 1) HYDRATE from authoritative series when it changes
   useEffect(() => {
+    if (!series || series.length === 0) return;
+
+    // If the incoming series is older than what we already have, or it looks like a new day, just replace.
+    const incoming = toChartData(series);
+    const incomingLastTime = incoming[incoming.length - 1].time;
+    const currentLastTime = lastTimeRef.current;
+
+    const shouldReplace =
+      !currentLastTime ||
+      !chartData.length ||
+      incoming[0].time > (chartData[0]?.time ?? 0) || // new day or later start
+      incomingLastTime >= (currentLastTime ?? 0); // server has progressed
+
+    if (shouldReplace) {
+      setChartData(incoming.slice(-WINDOW));
+      baseRef.current = series[0].p;
+      lastTimeRef.current = incomingLastTime;
+    }
+    // If not replacing, we keep local data (e.g., brief crossover), but generally server is canonical.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [series?.length]); // depend on length so we don't thrash on same-length shallow changes
+
+  // 2) APPEND from live price (between server writes)
+  useEffect(() => {
+    const now = Date.now();
+
     setChartData((prev) => {
-      const base = prev.length === 0 ? stock.price : prev[0].desktop;
-      if (base === stock.price) {
-        if (prev.length === 0) {
-          return [
-            {
-              time: Date.now(),
-              desktop: stock.price,
-              delta: 0,
-            },
-          ];
-        }
-        return prev;
-      } // no change
-      const delta = stock.price - base;
-      return [
-        ...prev,
-        {
-          time: Date.now(),
-          desktop: stock.price,
-          delta,
-        },
-      ].slice(-WINDOW);
+      // Establish base if missing (e.g., no server series yet)
+      let base = baseRef.current ?? (prev.length ? prev[0].desktop : stock.price);
+      if (baseRef.current == null && prev.length === 0) {
+        baseRef.current = base;
+      }
+
+      const lastTime = lastTimeRef.current ?? (prev.length ? prev[prev.length - 1].time : 0);
+
+      // Avoid appending twice within the same millisecond window,
+      // and avoid duplicates if server write already covered this instant.
+      if (now <= lastTime) return prev;
+
+      const next: ChartPoint = {
+        time: now,
+        desktop: stock.price,
+        delta: stock.price - (base ?? stock.price),
+      };
+
+      const updated = [...prev, next].slice(-WINDOW);
+      lastTimeRef.current = next.time;
+      return updated;
     });
   }, [stock.price]);
 
+  // Keep numeric display stable: prefer latest series price if provided, else stock.price
+  const displayPrice = useMemo(() => {
+    if (series?.length) return Number(series[series.length - 1].p.toFixed(2));
+    return Number(stock.price.toFixed(2));
+  }, [series, stock.price]);
+
   const handleRemove = async () => {
     const { ticker } = stock;
-    // Implement the logic to remove the stock from the quick chart
-    console.log(`Removing ${ticker} from quick chart`);
     removeFromQuickChartList(ticker);
-    // Remove from firebase as well
     const ref = doc(db, "quickCharts", uid!);
     await setDoc(
       ref,
@@ -102,9 +141,10 @@ const QuickChart = ({ stock, deletable = true }: QuickChartProps) => {
           side="right"
         />
       )}
+
       <div className="flex flex-col items-start justify-center gap-[0.5]">
         <p className="text-(--secondary-text-color) font-semibold">{stock.ticker}</p>
-        <h2 className="text-2xl font-bold">{stock.price}</h2>
+        <h2 className="text-2xl font-bold">{displayPrice}</h2>
         <div className="flex items-center">
           {stock.change >= 0 ? (
             <ArrowUp color="var(--success-color)" />
