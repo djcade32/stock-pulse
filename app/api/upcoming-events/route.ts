@@ -5,6 +5,9 @@ import dayjs from "dayjs";
 import { getAuth } from "firebase-admin/auth";
 import { NextResponse } from "next/server";
 
+const NO_ANALYSIS_RESULT =
+  "This week was notably quiet on the economic and earnings front, with no major data releases or corporate reports to move the markets. Investors may find this lull an opportunity to digest recent developments and prepare for upcoming events. While the absence of fresh catalysts can lead to subdued trading, it also sets the stage for potential volatility once new information emerges. Keep an eye on next week’s calendar for key indicators and earnings that could reshape market sentiment.";
+
 export async function GET(req: Request) {
   try {
     // get uid from auth header if needed in future
@@ -45,6 +48,17 @@ export async function GET(req: Request) {
     }
     const watchlistEarningsJson = (await earningsRes.json()).items as EarningsEvent[];
 
+    if (!macroEventsJson.length && !watchlistEarningsJson.length) {
+      console.warn("No macro events or watchlist earnings found for analysis");
+      return NextResponse.json({
+        week_analysis: NO_ANALYSIS_RESULT,
+        range: { start, end },
+      });
+    }
+    console.log("analyze-week-events: running analysis with", {
+      macroEventsCount: macroEventsJson.length,
+      watchlistEarningsCount: watchlistEarningsJson.length,
+    });
     const weekAnalysis = await analyzeWeekEvents({
       macroEvents: macroEventsJson,
       watchlistEarnings: watchlistEarningsJson,

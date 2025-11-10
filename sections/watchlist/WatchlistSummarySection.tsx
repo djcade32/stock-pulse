@@ -4,99 +4,102 @@ import AiTag from "@/components/AiTag";
 import { useBatchQuotes } from "@/lib/client/hooks/useBatchQuotes";
 import { useSentiment } from "@/lib/client/hooks/useSentiment";
 import useWatchlistStore from "@/stores/watchlist-store";
-import React, { useEffect, useState } from "react";
+import { is } from "cheerio/dist/commonjs/api/traversing";
+import React, { useEffect, useMemo, useState } from "react";
 
 const WatchlistSummarySection = () => {
   const { watchlist } = useWatchlistStore();
-  const [avgSentiment, setAvgSentiment] = useState<number | null>(null);
-  const [biggestGainer, setBiggestGainer] = useState<{
-    symbol: string;
-    change: number;
-  } | null>(null);
-  const [biggestLoser, setBiggestLoser] = useState<{
-    symbol: string;
-    change: number;
-  } | null>(null);
-  const [isFirstRun, setIsFirstRun] = useState(true);
-  const totalNumberOfStocks = watchlist.length;
+  const symbols = useMemo(() => watchlist.map((s) => s.symbol), [watchlist]);
+  const totalNumberOfStocks = symbols.length;
 
-  // Fetch quotes for all stocks in watchlist
-  const { quotesBySymbol, isLoading } = useBatchQuotes(
-    watchlist.map((s) => s.symbol),
-    {
-      enabled: true,
-    }
+  // Quotes refresh every minute
+  const {
+    quotesBySymbol = {},
+    isLoading: isQuotesLoading,
+    isFetchedAfterMount: isQuotesFetched,
+  } = useBatchQuotes(symbols, {
+    enabled: totalNumberOfStocks > 0,
+  });
+
+  // Sentiment refresh every minute (tweak as needed)
+  const {
+    data: sentiments = [],
+    isLoading: isSentLoading,
+    isFetchedAfterMount: isSentFetched,
+  } = useSentiment(symbols, {
+    enabled: totalNumberOfStocks > 0,
+  });
+
+  const sentimentByTicker = useMemo(
+    () => Object.fromEntries(sentiments.map((s) => [s.ticker, s])),
+    [sentiments]
   );
 
-  const { data: sentiments = [], isFetching: isSentFetching } = useSentiment(
-    watchlist.map((s) => s.symbol),
-    {
-      enabled: true,
+  const summary = useMemo(() => {
+    if (totalNumberOfStocks === 0) {
+      return {
+        avgSentiment: 0,
+        biggestGainer: null as null | { symbol: string; change: number },
+        biggestLoser: null as null | { symbol: string; change: number },
+      };
     }
-  );
 
-  const sentimentByTicker = Object.fromEntries(sentiments.map((s) => [s.ticker, s]));
-
-  useEffect(() => {
-    if (watchlist.length === 0) {
-      setAvgSentiment(0);
-      setBiggestGainer(null);
-      setBiggestLoser(null);
-      return;
-    }
     let totalSentiment = 0;
+    let countSentiment = 0;
+
     let maxGainer = -Infinity;
     let maxLoser = Infinity;
-    let gainerSymbol = null;
-    let loserSymbol = null;
+    let gainer: null | { symbol: string; change: number } = null;
+    let loser: null | { symbol: string; change: number } = null;
 
-    watchlist.forEach((stock) => {
-      const sentiment = sentimentByTicker[stock.symbol];
-      if (sentiment) {
-        totalSentiment += sentiment.score;
+    for (const symbol of symbols) {
+      const sent = sentimentByTicker[symbol];
+      if (sent && typeof sent.score === "number") {
+        totalSentiment += sent.score;
+        countSentiment += 1;
       }
 
-      const quote = quotesBySymbol[stock.symbol];
-      if (quote) {
-        const percentChange = ((quote.c - quote.pc) / quote.pc) * 100;
-        if (percentChange > maxGainer) {
-          maxGainer = percentChange;
-          gainerSymbol = {
-            symbol: stock.symbol,
-            change: percentChange,
-          };
+      const quote = quotesBySymbol[symbol];
+      const c = quote?.c;
+      const pc = quote?.pc;
+      if (typeof c === "number" && typeof pc === "number" && pc !== 0) {
+        const pct = ((c - pc) / pc) * 100;
+        if (pct > maxGainer) {
+          maxGainer = pct;
+          gainer = { symbol, change: pct };
         }
-        if (percentChange < maxLoser) {
-          maxLoser = percentChange;
-          loserSymbol = {
-            symbol: stock.symbol,
-            change: percentChange,
-          };
+        if (pct < maxLoser) {
+          maxLoser = pct;
+          loser = { symbol, change: pct };
         }
       }
-    });
+    }
 
-    setAvgSentiment((totalSentiment / watchlist.length).toFixed(2) as unknown as number);
-    setBiggestGainer(gainerSymbol ? gainerSymbol : null);
-    setBiggestLoser(loserSymbol ? loserSymbol : null);
-    setIsFirstRun(false);
-  }, [isSentFetching, isLoading]);
+    const avg = countSentiment ? Number((totalSentiment / countSentiment).toFixed(2)) : 0;
+
+    return {
+      avgSentiment: avg,
+      biggestGainer: gainer,
+      biggestLoser: loser,
+    };
+  }, [symbols, sentimentByTicker, quotesBySymbol, totalNumberOfStocks]);
+
+  const loading = isQuotesLoading || isSentLoading || !isQuotesFetched || !isSentFetched;
 
   const getTag = (sentiment: string): "Neutral" | "Bullish" | "Bearish" => {
     switch (sentiment) {
       case "Positive":
         return "Bullish";
-      case "Neutral":
-        return "Neutral";
       case "Negative":
         return "Bearish";
       default:
         return "Neutral";
     }
   };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {isLoading || isSentFetching || isFirstRun ? (
+      {loading ? (
         [...Array(4)].map((_, i) => (
           <div
             key={i}
@@ -109,35 +112,26 @@ const WatchlistSummarySection = () => {
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Total Stocks</h3>
             <div className="flex items-center gap-2">
               <p className="text-2xl font-bold">{totalNumberOfStocks}</p>
-              {/* <AiTag
-            tag={{
-              sentiment: "Positive",
-              topic: "+2 this week",
-            }}
-          /> */}
             </div>
           </div>
 
           <div className="watchlist-summary-card">
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Average Sentiment</h3>
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{avgSentiment}</p>
+              <p className="text-2xl font-bold">{summary.avgSentiment}</p>
               <AiTag
                 tag={{
-                  sentiment: avgSentiment
-                    ? avgSentiment >= 70
+                  sentiment:
+                    summary.avgSentiment >= 70
                       ? "Positive"
-                      : avgSentiment < 50
+                      : summary.avgSentiment < 50
                       ? "Negative"
-                      : "Neutral"
-                    : "Neutral",
+                      : "Neutral",
                   topic: getTag(
-                    avgSentiment
-                      ? avgSentiment >= 70
-                        ? "Positive"
-                        : avgSentiment < 50
-                        ? "Negative"
-                        : "Neutral"
+                    summary.avgSentiment >= 70
+                      ? "Positive"
+                      : summary.avgSentiment < 50
+                      ? "Negative"
                       : "Neutral"
                   ),
                 }}
@@ -148,17 +142,18 @@ const WatchlistSummarySection = () => {
           <div className="watchlist-summary-card">
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Biggest Gainer</h3>
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{biggestGainer?.symbol}</p>
+              <p className="text-2xl font-bold">{summary.biggestGainer?.symbol}</p>
               <AiTag
                 tag={{
-                  sentiment: biggestGainer?.change
-                    ? biggestGainer.change > 0
+                  sentiment:
+                    (summary.biggestGainer?.change ?? 0) > 0
                       ? "Positive"
-                      : biggestGainer.change < 0
+                      : (summary.biggestGainer?.change ?? 0) < 0
                       ? "Negative"
-                      : "Neutral"
-                    : "Neutral",
-                  topic: biggestGainer?.change ? `+${biggestGainer.change.toFixed(2)}%` : "0%",
+                      : "Neutral",
+                  topic: summary.biggestGainer
+                    ? `+${summary.biggestGainer.change.toFixed(2)}%`
+                    : "0%",
                 }}
               />
             </div>
@@ -167,17 +162,16 @@ const WatchlistSummarySection = () => {
           <div className="watchlist-summary-card">
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Biggest Loser</h3>
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{biggestLoser?.symbol}</p>
+              <p className="text-2xl font-bold">{summary.biggestLoser?.symbol}</p>
               <AiTag
                 tag={{
-                  sentiment: biggestLoser?.change
-                    ? biggestLoser.change < 0
+                  sentiment:
+                    (summary.biggestLoser?.change ?? 0) < 0
                       ? "Negative"
-                      : biggestLoser.change > 0
+                      : (summary.biggestLoser?.change ?? 0) > 0
                       ? "Positive"
-                      : "Neutral"
-                    : "Neutral",
-                  topic: biggestLoser?.change ? `${biggestLoser.change.toFixed(2)}%` : "0%",
+                      : "Neutral",
+                  topic: summary.biggestLoser ? `${summary.biggestLoser.change.toFixed(2)}%` : "0%",
                 }}
               />
             </div>

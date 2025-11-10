@@ -82,10 +82,10 @@ const TermsAndConditions = () => {
 
         <h2 className="text-xl font-semibold mt-8 text-white">8. Third-Party Services</h2>
         <p>
-          StockWisp integrates with third-party services such as Google Analytics and Firebase. We
-          are not responsible for the content, privacy practices, or reliability of these
-          third-party providers. Your use of third-party services is subject to their respective
-          terms and policies.
+          StockWisp integrates with third-party services such as Google Analytics, Mixpanel, and
+          Firebase. We are not responsible for the content, privacy practices, or reliability of
+          these third-party providers. Your use of third-party services is subject to their
+          respective terms and policies.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 text-white">9. Limitation of Liability</h2>
