@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import tz from "dayjs/plugin/timezone";
-import { getFirestore } from "firebase-admin/firestore";
 import { getQuotes } from "../quotes-core";
+import { firestoreAdmin } from "../firestoreAdmin";
 dayjs.extend(utc);
 dayjs.extend(tz);
 
@@ -33,7 +33,7 @@ export async function ingestIndexSeries() {
   const tsMinute = now.second(0).millisecond(0).valueOf();
 
   const quotes = await getQuotes(SYMBOLS as unknown as string[]);
-  const db = getFirestore();
+  const db = firestoreAdmin();
 
   const batch = db.batch();
   for (const q of quotes) {
