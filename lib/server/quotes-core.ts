@@ -69,3 +69,25 @@ export async function fetchLogo(ticker: string) {
   if (!r.ok) throw new Error(`logo ${ticker}: ${r.status}`);
   return r.url;
 }
+
+type Q = { symbol: string; last: number };
+export async function getQuotes(symbols: string[]): Promise<Q[]> {
+  // Simple REST “quote” endpoint; one call per symbol (free-tier friendly)
+  // If you want tighter batching, you can parallelize and/or add minimal delay.
+  const out: Q[] = [];
+  await Promise.all(
+    symbols.map(async (s) => {
+      const res = await fetch(
+        `${FINNHUB_BASE_URL}?symbol=${encodeURIComponent(s)}&token=${FINNHUB_KEY}`,
+        {
+          cache: "no-store",
+        }
+      );
+      if (!res.ok) throw new Error(`Finnhub ${s} ${res.status}`);
+      const j = await res.json();
+      // j.c = current/last price
+      out.push({ symbol: s, last: Number(j?.c ?? 0) });
+    })
+  );
+  return out;
+}
