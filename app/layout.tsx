@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "StockWisp",
   description: "Real-Time Stock Market Insights and Analytics",
   verification: {
-    google: "1y153xPlmDjtazvK50sbgOr1gZ6BJvk7ZGGc9L2vdZg",
+    google: "0J0HabpI1IpQcWNsKwiEFBMCzHUBF2LaakAOASj9-UY",
   },
 };
 

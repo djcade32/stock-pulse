@@ -213,6 +213,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
 
   useEffect(() => {
     if (Object.keys(errorsBySymbol).length > 0 && !showingApiLimitToast) {
+      console.warn("API rate limit hit while fetching batch quotes.");
       toast.warning("API rate limit hit. Some quotes may take time to show.", {
         duration: 10_000,
       });
@@ -292,8 +293,8 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
                   return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isLoading} />;
                 const quote = quotesBySymbol[stock.ticker];
                 const error = errorsBySymbol[stock.ticker];
-                if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
-                if (!quote) console.warn(`No quote data for ${stock.ticker}`);
+                // if (error) console.error(`Error loading quote for ${stock.ticker}: ${error}`);
+                // if (!quote) console.warn(`No quote data for ${stock.ticker}`);
                 if (!quote || error) {
                   const loading = isLoading || isPending || isSentFetching;
                   if (backupWatchlist[stock.ticker]) {
