@@ -49,7 +49,6 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
   const { uid, loading } = useUid();
   const { watchlist, setWatchlist } = useWatchlistStore();
   const [filteredWatchlist, setFilteredWatchlist] = useState(watchlist);
-  // const [backupWatchlist, setBackupWatchlist] = useState<Record<string, WatchlistCardType>>({});
   const backupWatchlist: Record<string, WatchlistCardType> = useMemo(() => ({}), []);
   const { isPending } = useQuery({
     queryKey: ["watchlist", uid], // include uid in key so it refetches per user
@@ -111,7 +110,12 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
   const [filterBy, setFilterBy] = React.useState("all");
 
   // Patch real-time updates to quotes
-  useQuoteStreamPatcher(watchlist.map((s) => s.symbol));
+  useQuoteStreamPatcher(
+    watchlist.map((s) => s.symbol),
+    {
+      patchDebounceMs: 60 * 1000, // 1 minute
+    }
+  );
 
   // Fetch sentiment data for all stocks in watchlist
   const { data: sentiments = [], isFetching: isSentFetching } = useSentiment(
@@ -278,13 +282,17 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
                 if (!quote) console.warn(`No quote data for ${stock.ticker}`);
                 if (!quote || error) {
                   const loading = isLoading || isPending || isSentFetching;
-                  return (
-                    <WatchlistCard
-                      key={stock.ticker}
-                      stock={loading ? stock : backupWatchlist[stock.ticker]}
-                      isLoading={isLoading}
-                    />
-                  );
+                  if (backupWatchlist[stock.ticker]) {
+                    return (
+                      <WatchlistCard
+                        key={stock.ticker}
+                        stock={loading ? stock : backupWatchlist[stock.ticker]}
+                        isLoading={isLoading}
+                      />
+                    );
+                  } else {
+                    return <WatchlistCard key={stock.ticker} stock={stock} isLoading={isLoading} />;
+                  }
                 }
 
                 stock.price = Number(quote.c.toFixed(2)) || 0;

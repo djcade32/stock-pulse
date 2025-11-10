@@ -50,7 +50,7 @@ export function useQuoteStreamPatcher(
   options?: { enabled?: boolean; patchDebounceMs?: number }
 ) {
   const isEnabled = options?.enabled ?? true;
-  const patchDebounceMs = options?.patchDebounceMs ?? 100;
+  const patchDebounceMs = options?.patchDebounceMs ?? 100; // ms
 
   const queryClient = useQueryClient();
   const symbols = useMemo(() => normalizeSymbols(inputSymbols), [inputSymbols]);
