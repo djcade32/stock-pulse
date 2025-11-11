@@ -47,7 +47,13 @@ const HeaderDropdownMenu = () => {
   ];
 
   return (
-    <LoaderComponent loading={loading} height="40px" width="140px" rounded="lg">
+    <LoaderComponent
+      loading={loading}
+      height="40px"
+      width="140px"
+      rounded="lg"
+      loadingClassName="bg-(--secondary-color)"
+    >
       <DropdownMenu
         items={DROPDOWN_ITEMS}
         sideOffset={10}

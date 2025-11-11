@@ -38,7 +38,6 @@ const NewsDisplay = ({
   const [sentimentFilter, setSentimentFilter] = useState("all");
   const filteredNews = useMemo(() => {
     let filtered = news || [];
-    console.log("company: ", companyFilter);
     if (companyFilter) {
       filtered = filtered.filter((item) => item.related.includes(companyFilter.toUpperCase()));
     }

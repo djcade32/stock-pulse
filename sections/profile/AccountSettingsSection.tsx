@@ -136,6 +136,7 @@ const AccountSettingsSection = () => {
         loading={loading}
         rounded="lg"
         className="bg-(--secondary-color) p-6 rounded-lg flex flex-col gap-4"
+        loadingClassName="bg-(--secondary-color)"
       >
         <h2 className="text-xl font-bold">Account Settings</h2>
 

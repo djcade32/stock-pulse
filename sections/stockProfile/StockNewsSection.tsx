@@ -21,6 +21,7 @@ const StockNewsSection = ({ symbol }: StockNewsSectionProps) => {
         loading={isLoading}
         className="bg-(--secondary-color) px-6 py-4 rounded-lg flex flex-col gap-4"
         rounded="lg"
+        loadingClassName="bg-(--secondary-color)"
       >
         {data && data.length > 0 ? (
           data

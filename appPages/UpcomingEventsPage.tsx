@@ -162,7 +162,7 @@ const UpcomingEventsPage = () => {
       </div>
       <div className="bg-(--secondary-color) rounded-lg p-4">
         <h2 className="font-bold text-lg mb-2">Week Analysis</h2>
-        <LoaderComponent loading={isLoadingWeeklyAnalysis} height="35px" width="100%" rounded="lg">
+        <LoaderComponent loading={isLoadingWeeklyAnalysis} height="50px" width="100%" rounded="lg">
           <p className="text-(--secondary-text-color)">{weeklyAnalysis}</p>
         </LoaderComponent>
       </div>

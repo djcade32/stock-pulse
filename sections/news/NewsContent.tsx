@@ -81,7 +81,6 @@ const NewsContent = () => {
   };
 
   const handleRefresh = () => {
-    console.log("Refreshing news...");
     setIsRefreshing(true);
     const promises = [];
     if (selectedFilter === "all" || selectedFilter === "market") {
