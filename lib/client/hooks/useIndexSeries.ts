@@ -10,12 +10,12 @@ import {
   orderBy,
   query,
   limit,
-  where,
 } from "firebase/firestore";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import tz from "dayjs/plugin/timezone";
 import { useEffect, useMemo, useState } from "react";
+import { isUsMarketOpen } from "@/lib/utils";
 
 dayjs.extend(utc);
 dayjs.extend(tz);
@@ -75,16 +75,17 @@ export function useIndexSeries(symbols: string[]) {
       // Try today's trading day first
       const todayRef = doc(db, `indexSeries/${today}/symbols/${symbols[0]}`);
       const todaySnap = await getDoc(todayRef);
-      if (todaySnap.exists()) {
+      if (todaySnap.exists() && isUsMarketOpen()) {
         await attachForDate(today);
       } else {
         // fallback: last available trading day
+        const prevday = dayjs().tz(TZ).subtract(1, "day").format("YYYY-MM-DD");
         const q = query(
-          collection(db, "indexSeries"),
-          where("date", "<=", today),
+          collection(db, `indexSeries/${prevday}/symbols`),
           orderBy("date", "desc"),
           limit(1)
         );
+
         const qs = await getDocs(q);
         if (!qs.empty) {
           const lastDate = (qs.docs[0].data() as any).date as string;
