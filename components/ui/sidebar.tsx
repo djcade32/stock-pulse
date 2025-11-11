@@ -519,7 +519,7 @@ function SidebarMenuButton({
         align="center"
         hidden={state !== "collapsed" || isMobile}
         {...tooltip}
-        className="bg-[#1a1f29]"
+        className="bg-[#1a1f29] border border-[#374151] shadow-lg"
         sideOffset={20}
       />
     </Tooltip>

@@ -83,6 +83,7 @@ const UserInfoSection = () => {
       loading={loading}
       rounded="lg"
       className="bg-(--secondary-color) p-6 rounded-lg flex items-center justify-between"
+      loadingClassName="bg-(--secondary-color)"
     >
       <div className="flex items-center gap-4">
         <CircleUser size={48} color="var(--secondary-text-color)" />

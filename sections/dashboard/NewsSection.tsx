@@ -14,7 +14,6 @@ const NewsSection = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = () => {
-    console.log("Refreshing market news...");
     setIsRefreshing(true);
     refreshMarketNews().finally(() => setIsRefreshing(false));
   };

@@ -2,13 +2,17 @@ import { MacroEvent } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
-export function useMacroEvents(dateRange: "this month" | "next week" | "this week" = "this month") {
+export function useMacroEvents(
+  dateRange: "today" | "this month" | "next week" | "this week" = "this month"
+) {
   let start: string;
   let end: string;
 
   const today = dayjs();
-
-  if (dateRange === "this week") {
+  if (dateRange === "today") {
+    start = today.format("YYYY-MM-DD");
+    end = today.format("YYYY-MM-DD");
+  } else if (dateRange === "this week") {
     start = today.startOf("week").format("YYYY-MM-DD");
     end = today.endOf("week").format("YYYY-MM-DD");
   } else if (dateRange === "next week") {
