@@ -128,7 +128,7 @@ const StockKeyFinancialMetricsSection = ({ symbol }: StockKeyFinancialMetricsSec
             {[...Array(8)].map((_, index) => (
               <div
                 key={index}
-                className="w-full h-20 bg-(--gray-accent-color) rounded-lg animate-pulse"
+                className="w-full h-20 bg-(--secondary-color) rounded-lg animate-pulse"
               />
             ))}
           </>

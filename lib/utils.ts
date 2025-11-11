@@ -14,12 +14,12 @@ export function toKebabCase(str: string): string {
 }
 
 export function getApiBaseUrl(): string {
-  // Prefer env var so production can point to Railway/Fly/etc.
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
+  const isProd = process.env.NEXT_PUBLIC_BASE_URL_PROD && process.env.NODE_ENV === "production";
+  if (isProd) {
+    return process.env.NEXT_PUBLIC_BASE_URL_PROD!;
   }
   // Dev fallback
-  return "http://localhost:8080";
+  return process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 }
 
 // Fetch brand logo

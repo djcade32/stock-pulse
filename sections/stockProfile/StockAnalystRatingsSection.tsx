@@ -71,6 +71,7 @@ const StockAnalystRatingsSection = ({ symbol }: StockAnalystRatingsSectionProps)
       loading={isLoading}
       className="bg-(--secondary-color) px-6 py-4 rounded-lg flex flex-col"
       rounded="lg"
+      loadingClassName="bg-(--secondary-color)"
     >
       <div className="flex items-center justify-between">
         <h2 className="font-bold ">Analyst Ratings</h2>

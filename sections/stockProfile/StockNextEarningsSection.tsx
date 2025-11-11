@@ -75,6 +75,7 @@ const StockNextEarningsSection = ({ symbol }: StockNextEarningsSectionProps) => 
       loading={isLoading || loadingAnalyzedEarnings}
       className="bg-(--secondary-color) px-6 py-4 rounded-lg"
       rounded="lg"
+      loadingClassName="bg-(--secondary-color)"
     >
       <div className="flex items-center justify-between">
         <h2 className="font-bold ">Next Earnings Call</h2>

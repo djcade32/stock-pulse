@@ -134,13 +134,25 @@ const StockProfileHeader = ({ symbol }: StockProfileHeaderProps) => {
             )}
           </div>
 
-          <LoaderComponent height="1rem" width="10rem" loading={isLoading} rounded="sm">
+          <LoaderComponent
+            height="1rem"
+            width="10rem"
+            loading={isLoading}
+            rounded="sm"
+            loadingClassName="bg-(--secondary-color)"
+          >
             <p className="text-(--secondary-text-color)">
               {data?.name || "N/A"} • {data?.exchange || "N/A"}
             </p>
           </LoaderComponent>
 
-          <LoaderComponent height="2rem" width="8rem" loading={isLoadingQuotes} rounded="sm">
+          <LoaderComponent
+            height="2rem"
+            width="8rem"
+            loading={isLoadingQuotes}
+            rounded="sm"
+            loadingClassName="bg-(--secondary-color)"
+          >
             <div className="flex items-end gap-2">
               <h1 className="text-3xl font-bold">${Number(quote?.c.toFixed(2))}</h1>
               <p

@@ -251,3 +251,23 @@ export type EarningsEvent = {
   name?: string;
   year: number;
 };
+
+export type WhisperDoc = {
+  uid: string;
+  date: string; // YYYY-MM-DD (America/New_York)
+  summary: string;
+  sentiment: "Bullish" | "Neutral" | "Bearish";
+  generatedAt: string; // ISO
+  inputs: {
+    tickers: string[];
+    macroEvents: MacroEvent[]; // ["CPI 8:30 AM ET", ...]
+    futures: {
+      spy: "up" | "down" | "flat";
+      qqq: "up" | "down" | "flat";
+      overall: "risk-on" | "risk-off" | "mixed";
+    };
+    sectorTone?: string;
+    earningsToday: EarningsEvent[];
+    watchlistSentiment: Record<string, "Bullish" | "Neutral" | "Bearish" | "Unknown">;
+  };
+};

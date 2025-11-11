@@ -6,13 +6,15 @@ import QuickChartsSection from "@/sections/dashboard/QuickChartsSection";
 import WatchlistSection from "@/sections/dashboard/WatchlistSection";
 import UpcomingEventsSection from "@/sections/dashboard/UpcomingEventsSection";
 import React from "react";
+import MarketWhisperSection from "@/sections/MarketWhisperSection";
 
 const DashboardPage = () => {
   return (
     <div className="page">
       <DashboardHeader />
 
-      <div>
+      <div className="flex flex-col gap-2">
+        <MarketWhisperSection />
         <MarketOpenOrClosed />
         <QuickChartsSection />
       </div>

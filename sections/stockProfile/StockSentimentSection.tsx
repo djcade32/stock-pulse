@@ -31,6 +31,7 @@ const StockSentimentSection = ({ symbol }: StockSentimentSectionProps) => {
       width="100%"
       loading={isFetching}
       rounded="lg"
+      loadingClassName="bg-(--secondary-color)"
     >
       <div className="w-full flex flex-col flex-1 min-h-0">
         <div>
