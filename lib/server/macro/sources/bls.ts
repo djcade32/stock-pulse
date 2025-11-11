@@ -12,14 +12,52 @@ const mapTitleToCategory = (t: string): MacroEvent["category"] => {
   return "OTHER";
 };
 
+async function fetchWithRetry(url: string, init: RequestInit, tries = 3) {
+  console.log(`fetchWithRetry: Fetching URL with up to ${tries} tries: ${url}`);
+  let lastErr: unknown;
+  for (let i = 0; i < tries; i++) {
+    console.log(`fetchWithRetry: Attempt ${i + 1} for URL: ${url}`);
+    const res = await fetch(url, init);
+    if (res.ok) return res;
+    lastErr = new Error(`BLS fetch failed: ${res.status}`);
+    if ([403, 429, 500, 502, 503, 504].includes(res.status)) {
+      await new Promise((res) => setTimeout(res, 300 * Math.pow(2, i)));
+      continue;
+    }
+    break;
+  }
+  throw lastErr;
+}
+
 export async function fetchBlsEvents(
   now = dayjs(),
   windowStart?: Dayjs, // inclusive
   windowEnd?: Dayjs // inclusive
 ): Promise<MacroEvent[]> {
-  const res = await fetch(BLS_ICS_URL, { cache: "no-store" });
-  if (!res.ok) throw new Error(`BLS fetch failed: ${res.status}`);
+  if (!BLS_ICS_URL) throw new Error("BLS_ICS_URL is not set");
+  const res = await fetchWithRetry(
+    BLS_ICS_URL,
+    {
+      method: "GET",
+      cache: "no-store",
+      redirect: "follow",
+      headers: {
+        "User-Agent": "StockWispBot/1.0 (+contact@stockwisp.app)",
+        Accept: "text/calendar, text/plain;q=0.9, */*;q=0.8",
+        // Uncomment if the host needs it:
+        // "Referer": "https://www.bls.gov/",
+      },
+    },
+    3
+  );
+
+  console.log(`fetchBlsEvents: BLS ICS fetch status: ${res.status}`, {
+    finalUrl: res.url,
+    contentType: res.headers.get("content-type"),
+  });
+
   const text = await res.text();
+
   const data = ical.parseICS(text);
 
   const out: MacroEvent[] = [];
