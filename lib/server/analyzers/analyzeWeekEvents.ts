@@ -31,7 +31,7 @@ export async function analyzeWeekEvents(params: {
     "I have an object containing economic events and company earnings for the month.",
     "Summarize only the events happening THIS WEEK in a single, concise paragraph.",
     "Make it digestible and narrative-like, as if it were a short market recap for investors.",
-    "",
+    "Do not hallucinate any events or dates — only summarize what is present in the data.",
     "Focus on what’s happening, why it matters, and which companies or data releases stand out.",
     "",
     "Tone: professional but conversational (like a financial newsletter).",
