@@ -1,9 +1,11 @@
 "use client";
 
+import AiTag from "@/components/AiTag";
 import Button from "@/components/general/Button";
 import LoaderComponent from "@/components/general/LoaderComponent";
 import Tooltip from "@/components/general/Tooltip";
 import { useMarketWhisper } from "@/lib/client/hooks/useMarketWhisper";
+import { SentimentLabel } from "@/types";
 import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -25,7 +27,16 @@ const MarketWhisperSection = () => {
           />
           The Market Whisper
         </h1>
+
         <div className="flex gap-3 items-center ">
+          {loading ? null : (
+            <AiTag
+              tag={{
+                topic: data?.sentiment || "Neutral",
+                sentiment: (data?.sentiment as SentimentLabel) || "Neutral",
+              }}
+            />
+          )}
           <Button
             className="font-bold !text-(--secondary-text-color) w-[15px] h-[15px]"
             variant="ghost"
@@ -49,7 +60,7 @@ const MarketWhisperSection = () => {
             "The Market Whisper provides daily insights into market sentiment, helping you stay ahead with concise summaries and analysis."}
         </p>
       </LoaderComponent>
-      <div className="mt-4">
+      <div className="mt-4 ">
         <p className="text-sm font-normal text-(--secondary-text-color) ">November 12, 2024</p>
       </div>
     </div>
