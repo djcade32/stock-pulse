@@ -9,7 +9,7 @@ import { useStockSymbols } from "@/lib/client/hooks/useStockSymbols";
 import { useAddToWatchlistAndAnalyze } from "@/lib/client/mutations/useAddToWatchlistAndAnalyze";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import useWatchlistStore from "@/stores/watchlist-store";
-import { ModalActionButtons, Stock, WatchlistStock } from "@/types";
+import { ModalActionButtons, Stock, StockHit, WatchlistStock } from "@/types";
 import { doc, setDoc } from "firebase/firestore";
 import { Search, ChartLine } from "lucide-react";
 import React, { useState, useEffect, useMemo, useRef } from "react";
@@ -23,6 +23,16 @@ interface AddStockModalProps {
   onSubmit?: () => void; // Optional: callback after successful submission
 }
 
+const fetcher = async (q: string, signal: AbortSignal): Promise<StockHit[]> => {
+  if (!q.trim()) return [];
+  const params = new URLSearchParams({ q });
+  const res = await fetch(`/api/search?${params.toString()}`, { signal });
+  if (!res.ok) throw new Error(`Search failed: ${res.status}`);
+  const data = await res.json();
+  // Normalize shape if needed
+  return (data?.results ?? data ?? []) as StockHit[];
+};
+
 const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModalProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<WatchlistStock[]>([]);
@@ -30,21 +40,38 @@ const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModal
   const [addQuickChart, setAddQuickChart] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debounceSearchTerm, setDebounceSearchTerm] = useState(searchTerm);
-  const [filteredStocks, setFilteredStocks] = useState<Stock[]>([]);
-  const { stocks, isLoading, isFetching } = useStockSymbols(debounceSearchTerm);
+  const [filteredStocks, setFilteredStocks] = useState<StockHit[]>([]);
+  const { stocks, isLoading, isFetching } = useStockSymbols("");
   const { addToWatchlist, existInWatchlist } = useWatchlistStore();
   const { addToQuickChartList, quickChartList, existInQuickChartList } = useQuickChartStore();
   const addMany = useAddToWatchlistAndAnalyze();
 
-  useMemo(() => {
+  // useMemo(() => {
+  //   setFilteredStocks(stocks.data);
+  // }, [isLoading, isFetching]);
+
+  useEffect(() => {
     setFilteredStocks(stocks.data);
   }, [isLoading, isFetching]);
 
   // Debounce search term input to avoid excessive filtering
   useEffect(() => {
+    if (!searchTerm) {
+      setFilteredStocks(stocks.data);
+      return;
+    }
     const handler = setTimeout(() => {
-      setDebounceSearchTerm(searchTerm);
-    }, 1000); // Adjust the delay as needed
+      // setDebounceSearchTerm(searchTerm);
+      fetcher(searchTerm, new AbortController().signal).then((results) => {
+        setFilteredStocks(
+          results.map((r) => ({
+            symbol: r.symbol,
+            description: r.description,
+            type: r.type || "N/A",
+          }))
+        );
+      });
+    }, 500); // Adjust the delay as needed
 
     return () => {
       clearTimeout(handler);
@@ -58,6 +85,7 @@ const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModal
     setAddQuickChart(false);
     setSearchTerm("");
     setDebounceSearchTerm("");
+    setFilteredStocks(stocks.data);
   }, [open]);
 
   const toggleWatchlist = () => setAddWatchlist(!addWatchlist);

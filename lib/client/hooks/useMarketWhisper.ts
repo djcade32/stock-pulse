@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { auth } from "@/firebase/client";
+import { isUsMarketOpen } from "@/lib/utils";
 // import { isUsMarketOpen } from "@/lib/utils";
 
 dayjs.extend(utc);
@@ -48,8 +49,9 @@ export function useMarketWhisper() {
       //   ? generatedAt.isAfter(marketOpenToday.add(6, "hour"))
       //   : false;
 
+      const refreshTrheshold = isUsMarketOpen() ? 60 : 120;
       // If cached data is less than 60 minutes old, use it
-      if (diffMinutes < 60) {
+      if (diffMinutes < refreshTrheshold) {
         try {
           setData(JSON.parse(cached));
         } catch {
