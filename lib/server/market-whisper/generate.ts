@@ -65,6 +65,8 @@ Watchlist sentiment: ${wlSent}
 Mention earnings only if one of the watchlist stocks reports today. If none do, omit earnings entirely.
 Earnings today (from watchlist): ${earningsStr}
 
+Don't just summarize the given data. Use the data and the current market news to give traders insight into why stocks are moving a certain way. We are trying to give traders an edge.
+
 Output Rules:
 Write 3–5 sentences maximum.
 Style: professional, natural, fast to read—similar to a trader’s ${marketTxt} morning note.
@@ -85,7 +87,8 @@ Produce a quick, high-signal-to-noise ${
   } briefing that feels like a professional market desk update placed at the top of the StockWisp dashboard.
 Use ${
     isPremarket ? "future" : isAfterMarket ? "past" : "current"
-  } tense as appropriate. (e.g., "The market is set to open higher" vs. "The market is trading higher")
+  } tense as appropriate. (e.g., "The market is set to open higher" vs. "The market is trading higher").
+  Keep in mind that this is for the retail investor. Investors should be able to easily comprehend this brief.
 `.trim();
 }
 
