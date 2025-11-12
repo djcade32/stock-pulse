@@ -1,6 +1,7 @@
 "use client";
 
 import AiTag from "@/components/AiTag";
+import { Select } from "@/components/general/Select";
 import { Button as RootButton } from "@/components/ui/button";
 import UpcomingEventsEarningsCard from "@/components/upcomingEvents/UpcomingEventsEarningsCard";
 import { useFetchWatchlistEarnings } from "@/lib/client/hooks/useFetchWatchlistEarnings";
@@ -10,16 +11,39 @@ import useWatchlistStore from "@/stores/watchlist-store";
 import { EarningsEvent, MacroEvent, SentimentLabel } from "@/types";
 import { format, parseISO } from "date-fns";
 import Link from "next/link";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { FaChartLine, FaLandmark } from "react-icons/fa6";
 
+const DATE_RANGE_OPTIONS = [
+  { label: "This Week", value: "this week" },
+  { label: "Next Week", value: "next week" },
+  { label: "This Month", value: "this month" },
+];
+
+const SORT_BY_OPTIONS = [
+  { label: "Date", value: "date" },
+  { label: "Importance", value: "importance" },
+];
+
+const FILTER_BY_OPTIONS = [
+  { label: "All Events", value: "all" },
+  { label: "Earnings", value: "earnings" },
+  { label: "Macro", value: "macro" },
+];
+
 const UpcomingEventsSection = () => {
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    "this week" | "this month" | "next week"
+  >("this week");
+  const [selectedSortBy, setSelectedSortBy] = useState<"date" | "importance">("date");
+  const [selectedFilterBy, setSelectedFilterBy] = useState<"all" | "earnings" | "macro">("all");
+
   const { watchlist } = useWatchlistStore();
-  const { data: macroEvents, isLoading: isLoadingMacroEvents } = useMacroEvents("this month");
+  const { data: macroEvents, isLoading: isLoadingMacroEvents } = useMacroEvents(selectedDateRange);
   const { data: watchlistEarnings, isLoading: isLoadingWatchlistEarnings } =
     useFetchWatchlistEarnings(
       watchlist.map((w) => w.symbol),
-      "this month"
+      selectedDateRange
     );
   const isLoading = isLoadingWatchlistEarnings || isLoadingMacroEvents;
 
@@ -43,16 +67,70 @@ const UpcomingEventsSection = () => {
       combinedEvents = combinedEvents.concat(watchlistEarnings);
     }
 
-    // Sort by date ascending
-    combinedEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    // Apply filter
+    if (selectedFilterBy === "earnings") {
+      combinedEvents = combinedEvents.filter((event) => "symbol" in event);
+    } else if (selectedFilterBy === "macro") {
+      combinedEvents = combinedEvents.filter((event) => !("symbol" in event));
+    }
+
+    // Apply sorting
+    if (selectedSortBy === "importance") {
+      // Sort by importance descending (Earnings first, then Macro by importance)
+      combinedEvents.sort((a, b) => {
+        const aImportance = "symbol" in a ? 4 : a.importance || 1;
+        const bImportance = "symbol" in b ? 4 : b.importance || 1;
+        return bImportance - aImportance;
+      });
+    } else {
+      // Sort by date ascending
+      combinedEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }
 
     return combinedEvents;
-  }, [macroEvents, watchlistEarnings, isLoading]);
+  }, [macroEvents, watchlistEarnings, isLoading, selectedSortBy, selectedFilterBy]);
+
+  const handleDateRangeChange = (value: string) => {
+    if (value === "this week" || value === "next week" || value === "this month") {
+      setSelectedDateRange(value);
+    }
+  };
+
+  const handleSortByChange = (value: string) => {
+    if (value === "date" || value === "importance") {
+      setSelectedSortBy(value);
+    }
+  };
+
+  const handleFilterByChange = (value: string) => {
+    if (value === "all" || value === "earnings" || value === "macro") {
+      setSelectedFilterBy(value);
+    }
+  };
 
   return (
     <div>
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4 justify-between">
         <h2 className="text-xl font-bold">Upcoming Events</h2>
+        <div className="flex items-center gap-2">
+          <Select
+            items={DATE_RANGE_OPTIONS}
+            value={selectedDateRange}
+            onValueChange={handleDateRangeChange}
+          />
+          <Select
+            items={FILTER_BY_OPTIONS}
+            prefix="Filter:"
+            value={selectedFilterBy}
+            onValueChange={handleFilterByChange}
+          />
+          <Select
+            items={SORT_BY_OPTIONS}
+            prefix="Sort:"
+            value={selectedSortBy}
+            onValueChange={handleSortByChange}
+          />
+        </div>
       </div>
       <div
         className={`bg-(--secondary-color) rounded-lg p-4 flex flex-col gap-4 divide-y divide-(--gray-accent-color) ${
