@@ -122,6 +122,6 @@ export function formatMilitaryTime(timeStr: string): string {
   // Convert 24-hour to 12-hour format
   const standardHour = hour % 12 === 0 ? 12 : hour % 12;
 
-  // Return formatted time with EST
-  return `${standardHour}:${minuteStr.padStart(2, "0")} ${period} EST`;
+  // Return formatted time with ET
+  return `${standardHour}:${minuteStr.padStart(2, "0")} ${period} ET`;
 }
