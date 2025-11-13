@@ -164,6 +164,14 @@ export const removeUserFromDb = async (uid: string) => {
   }
   try {
     const usersDocRef = db.collection("users").doc(uid);
+    const marketWhisperCollectionRef = db.collection("users").doc(uid).collection("marketWhisper");
+
+    // Delete all documents in the marketWhisper subcollection
+    const marketWhisperSnapshots = await marketWhisperCollectionRef.get();
+    const deletePromises = marketWhisperSnapshots.docs.map((doc) => doc.ref.delete());
+    await Promise.all(deletePromises);
+
+    // Delete user document
     await usersDocRef.delete();
     const watchlistsDocRef = db.collection("watchlists").doc(uid);
     await watchlistsDocRef.delete();
