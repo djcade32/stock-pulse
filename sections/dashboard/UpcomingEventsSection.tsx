@@ -167,7 +167,7 @@ const UpcomingEventsSection = () => {
               };
               const dateObj = parseISO(macro.date);
               return (
-                <div key={index} className="bg-(--secondary-color) p-4 rounded-lg">
+                <div key={index} className="bg-(--secondary-color) p-4">
                   <div className="flex justify-between">
                     <div className="flex items-center gap-3 tracking-tight">
                       <div
