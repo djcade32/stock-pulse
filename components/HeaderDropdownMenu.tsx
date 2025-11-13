@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CircleUser, Settings, LogOut, ChevronDown } from "lucide-react";
+import { CircleUser, Settings, LogOut, ChevronDown, MessageSquare } from "lucide-react";
 import DropdownMenu from "./general/DropdownMenu";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,11 @@ const HeaderDropdownMenu = () => {
   const DROPDOWN_ITEMS = [
     { label: "Profile", icon: <CircleUser size={16} />, onClick: () => router.push("/profile") },
     // { label: "Settings", icon: <Settings size={16} /> },
+    {
+      label: "Feedback",
+      icon: <MessageSquare size={16} />,
+      onClick: () => router.push("/feedback"),
+    },
     {
       label: "Sign Out",
       icon: <LogOut size={16} />,
