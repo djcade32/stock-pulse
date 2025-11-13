@@ -1,4 +1,3 @@
-// /app/api/auth/add-user-if-not-exists/route.ts
 import "server-only";
 import { NextResponse } from "next/server";
 import { auth } from "@/firebase/admin";

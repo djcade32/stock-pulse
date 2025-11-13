@@ -19,10 +19,9 @@ type Whisper = {
 };
 
 const TZ = "America/New_York";
-const dayKey = () => dayjs().tz(TZ).format("YYYY-MM-DD");
 
 export function useMarketWhisper() {
-  const key = `mw:${dayKey()}`;
+  const key = "mw:user";
   const [data, setData] = useState<Whisper | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);

@@ -1,6 +1,16 @@
 import "server-only";
 import { db } from "@/firebase/admin";
 import { FieldValue } from "firebase-admin/firestore";
+import { WatchlistStock } from "@/types";
+
+const DEFAULT_WATCHLIST: WatchlistStock[] = [
+  { symbol: "AAPL", description: "Apple Inc.", type: "Technology" },
+  { symbol: "MSFT", description: "Microsoft Corporation", type: "Technology" },
+  { symbol: "GOOGL", description: "Alphabet Inc.", type: "Communication Services" },
+  { symbol: "AMZN", description: "Amazon.com, Inc.", type: "Consumer Discretionary" },
+  { symbol: "TSLA", description: "Tesla, Inc.", type: "Consumer Discretionary" },
+  { symbol: "NVDA", description: "NVIDIA Corporation", type: "Technology" },
+];
 
 type DecodedToken = {
   uid: string;
@@ -18,9 +28,11 @@ type DecodedToken = {
  */
 export async function ensureUserDoc(uid: string, decoded: DecodedToken) {
   const ref = db.collection("users").doc(uid);
+  const watchlistRef = db.collection("watchlists").doc(uid);
 
   // read once; keep the function idempotent and fast
   const snap = await ref.get();
+  const watchlistSnap = await watchlistRef.get();
   const now = FieldValue.serverTimestamp();
 
   // Normalize provider
@@ -48,6 +60,13 @@ export async function ensureUserDoc(uid: string, decoded: DecodedToken) {
         watchlist: [],
       },
     });
+
+    // Create default watchlist for new user
+    if (!watchlistSnap.exists) {
+      await watchlistRef.set({
+        stocks: DEFAULT_WATCHLIST.map((stock) => ({ ...stock, createdAt: Date.now() })),
+      });
+    }
     return { created: true };
   }
 

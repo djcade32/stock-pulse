@@ -65,7 +65,7 @@ Watchlist sentiment: ${wlSent}
 Mention earnings only if one of the watchlist stocks reports today. If none do, omit earnings entirely.
 Earnings today (from watchlist): ${earningsStr}
 
-Don't just summarize the given data. Use the data and the current market news to give traders insight into why stocks are moving a certain way. We are trying to give traders an edge.
+Don't just summarize the given data. Use the data and the current market news to give investors insight into why stocks are moving a certain way. We are trying to give investors an edge.
 
 Output Rules:
 Write 3–5 sentences maximum.
