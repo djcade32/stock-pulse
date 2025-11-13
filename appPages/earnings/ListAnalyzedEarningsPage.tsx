@@ -35,7 +35,7 @@ const ListAnalyzedEarningsPage = () => {
   const [endReach, setEndReach] = useState(false);
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, isFetching } =
-    useReportsFeedInfinite(30, selectedStock, yearFilter, quarterFilter);
+    useReportsFeedInfinite(30, selectedStock, yearFilter, quarterFilter, !!selectedStock);
   const rows = (data?.pages ?? []).flatMap((p) => p.rows);
 
   useEffect(() => {

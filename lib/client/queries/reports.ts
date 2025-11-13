@@ -46,9 +46,13 @@ export function useReportsFeedInfinite(
   stock?: string,
   year?: string,
   quarter?: string,
+  search?: boolean,
   enabled = true
 ) {
-  const key = stock ? "reports-feed-infinite-" + stock : "reports-feed-infinite";
+  let key = stock ? "reports-feed-infinite-" + stock : "reports-feed-infinite";
+  if (search) {
+    key = "reports-feed-infinite-search-" + stock;
+  }
   return useInfiniteQuery<FeedPage>({
     queryKey: [key, { limit }],
     queryFn: ({ pageParam }) => {

@@ -52,10 +52,10 @@ const FullEarningsAnalysisPage = () => {
     if (!rows.length) return;
     if (isInitialLoad) return;
     if (currentReport && currentReport.quarter.includes(yearAndQuarterString)) return;
+    const sameYearReports = rows.filter((row) => row.quarter.includes(yearFilter));
+    const foundReports = sameYearReports.filter((row) => row.quarter.includes(quarterFilter));
+    const foundReport = foundReports.length > 0 ? foundReports[0] : sameYearReports[0];
 
-    const foundReport = rows.find(
-      (row) => row.quarter.includes(yearAndQuarterString) && row.ticker.toUpperCase() === symbol
-    );
     router.replace(
       `/earnings/${symbol}?q=${foundReport ? format(foundReport.date, "yyyy-MM-dd") : ""}`
     );
