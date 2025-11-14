@@ -4,7 +4,6 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/Header";
 import { isAuthenticated } from "@/lib/actions/auth.server.action";
 import { redirect } from "next/navigation";
-import MobileViewProvider from "@/providers/MobileViewProvider";
 
 export default async function RootLayout({
   children,
@@ -17,14 +16,12 @@ export default async function RootLayout({
   }
 
   return (
-    <MobileViewProvider>
-      <SidebarProvider defaultOpen={false}>
-        <SideMenu />
-        <div className="w-full relative">
-          <Header />
-          <div className="pt-[68px] h-full">{children}</div>
-        </div>
-      </SidebarProvider>
-    </MobileViewProvider>
+    <SidebarProvider defaultOpen={false}>
+      <SideMenu />
+      <Header />
+      <div className="w-full relative">
+        <div className="pt-[68px] h-full">{children}</div>
+      </div>
+    </SidebarProvider>
   );
 }

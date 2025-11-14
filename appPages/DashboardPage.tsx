@@ -11,7 +11,7 @@ import MarketWhisperSection from "@/sections/MarketWhisperSection";
 const DashboardPage = () => {
   return (
     <div className="page">
-      <DashboardHeader />
+      {/* <DashboardHeader />
 
       <div className="flex flex-col gap-2">
         <MarketWhisperSection />
@@ -21,7 +21,7 @@ const DashboardPage = () => {
       <WatchlistSection />
       <EarningsSection />
       <UpcomingEventsSection />
-      <NewsSection />
+      <NewsSection /> */}
     </div>
   );
 };

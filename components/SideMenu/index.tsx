@@ -18,6 +18,7 @@ import {
 import { NavMain } from "./NavMain";
 import Image from "next/image";
 import { useIsMobile } from "@/hooks/use-mobile";
+import BetaBadge from "../BetaBadge";
 
 const data = {
   user: {
@@ -79,7 +80,14 @@ export const SideMenu = ({ ...props }: React.ComponentProps<typeof Sidebar>) => 
     <Sidebar collapsible="icon" {...props} className="border-none w-[300px]">
       <SidebarHeader className="py-2">
         <div className="flex items-center justify-center py-3">
-          <Image src="/stock_pulse_icon.png" alt="StockWisp logo" width={32} height={32} />
+          {isMobile ? (
+            <div className="flex items-center">
+              <Image src="/stock_pulse_logo.png" alt="StockWisp Logo" width={150} height={150} />
+              <BetaBadge />
+            </div>
+          ) : (
+            <Image src="/stock_pulse_icon.png" alt="StockWisp logo" width={32} height={32} />
+          )}
           {/* <a
             href="#"
             className={cn(
