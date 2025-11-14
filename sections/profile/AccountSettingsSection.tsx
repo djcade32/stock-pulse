@@ -77,6 +77,8 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/firebase/client";
 import { signOut as fbSignOut } from "firebase/auth";
 import useWatchlistStore from "@/stores/watchlist-store";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 async function postJSON<T = any>(url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -94,6 +96,8 @@ async function postJSON<T = any>(url: string, body?: unknown): Promise<T> {
 const AccountSettingsSection = () => {
   const router = useRouter();
   const { loading } = useUid();
+  const isMobile = useIsMobile();
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const { clearWatchlist } = useWatchlistStore();
 
@@ -135,10 +139,13 @@ const AccountSettingsSection = () => {
         width="100%"
         loading={loading}
         rounded="lg"
-        className="bg-(--secondary-color) p-6 rounded-lg flex flex-col gap-4"
+        className={cn(
+          "bg-(--secondary-color) rounded-lg flex flex-col gap-4",
+          isMobile ? "p-4" : "p-6"
+        )}
         loadingClassName="bg-(--secondary-color)"
       >
-        <h2 className="text-xl font-bold">Account Settings</h2>
+        <h2 className="text-lg md:text-xl font-bold">Account Settings</h2>
 
         <ProfileSettingRow
           title="Sign Out"

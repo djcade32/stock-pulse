@@ -21,11 +21,14 @@ import { MdEmail } from "react-icons/md";
 import { IoIosCheckmarkCircle, IoIosCloseCircle } from "react-icons/io";
 import { FaGoogle } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 type CanonicalProviderId = "password" | "google.com" | "twitter.com";
 
 const LoginMethods = () => {
   const { loading } = useUid();
+  const isMobile = useIsMobile();
 
   // 1) Keep the user in React state (reactive source of truth)
   const [user, setUser] = useState(() => auth.currentUser);
@@ -139,10 +142,13 @@ const LoginMethods = () => {
         width="100%"
         loading={loading}
         rounded="lg"
-        className="bg-(--secondary-color) p-6 rounded-lg flex flex-col gap-4"
+        className={cn(
+          "bg-(--secondary-color) rounded-lg flex flex-col gap-4",
+          isMobile ? "p-4" : "p-6"
+        )}
         loadingClassName="bg-(--secondary-color)"
       >
-        <h2 className="text-xl font-bold">Login Methods</h2>
+        <h2 className="text-lg md:text-xl font-bold">Login Methods</h2>
 
         {/* Email & Password */}
         <ProfileSettingRow
