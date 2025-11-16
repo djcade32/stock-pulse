@@ -225,8 +225,8 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+        <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-0">
           {isWatchlistPage ? "Your Watchlist" : "Watchlist Sentiment"}
         </h2>
         <div className="flex items-center gap-4">
@@ -246,6 +246,7 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
               prefix="Filter:"
               value={filterBy}
               onValueChange={setFilterBy}
+              className="hidden md:inline-flex"
             />
           </div>
           {!isWatchlistPage && (

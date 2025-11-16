@@ -110,7 +110,7 @@ const UpcomingEventsSection = () => {
 
   return (
     <div>
-      <div className="flex items-center mb-4 justify-between">
+      <div className="flex  mb-4 md:justify-between md:flex-row flex-col gap-4 items-start md:items-center">
         <h2 className="text-xl font-bold">Upcoming Events</h2>
         <div className="flex items-center gap-2">
           <Select
@@ -129,11 +129,12 @@ const UpcomingEventsSection = () => {
             prefix="Sort:"
             value={selectedSortBy}
             onValueChange={handleSortByChange}
+            className="hidden md:inline-flex"
           />
         </div>
       </div>
       <div
-        className={`bg-(--secondary-color) rounded-lg p-4 flex flex-col gap-4 divide-y divide-(--gray-accent-color) ${
+        className={`bg-(--secondary-color) rounded-lg md:p-4 p-2 flex flex-col gap-4 divide-y divide-(--gray-accent-color) ${
           isLoading && "animate-pulse"
         }`}
       >
@@ -167,12 +168,12 @@ const UpcomingEventsSection = () => {
               };
               const dateObj = parseISO(macro.date);
               return (
-                <div key={index} className="bg-(--secondary-color) p-4">
-                  <div className="flex justify-between">
-                    <div className="flex items-center gap-3 tracking-tight">
+                <div key={index} className="bg-(--secondary-color) p-3 md:p-4">
+                  <div className="flex justify-between gap-2">
+                    <div className="flex items-center gap-2 md:gap-3 tracking-tight">
                       <div
                         className={cn(
-                          "flex items-center justify-center rounded-lg w-9 h-9",
+                          "flex items-center justify-center rounded-lg w-9 h-9 shrink-0",
                           macro.category === "FOMC"
                             ? "bg-(--accent-color)"
                             : "bg-(--warning-color)/20 text-(--warning-color)"
@@ -185,14 +186,14 @@ const UpcomingEventsSection = () => {
                         )}
                       </div>
                       <div>
-                        <h3 className="font-semibold">{macro.title}</h3>
+                        <h3 className="font-bold text-sm md:text-base">{macro.title}</h3>
                         <p className="text-xs text-(--secondary-text-color)">
                           {macro.time && `at ${formatMilitaryTime(macro.time)}`}
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <p className="font-semibold text-sm">{format(dateObj, "MMM d")}</p>
+                    <div className="flex flex-col items-end gap-1 shrink-0 justify-between md:justify-baseline">
+                      <p className="font-bold text-xs md:text-sm">{format(dateObj, "MMM d")}</p>
                       <AiTag
                         className="text-[10px]"
                         tag={{

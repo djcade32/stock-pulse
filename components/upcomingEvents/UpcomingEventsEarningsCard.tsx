@@ -24,12 +24,12 @@ const UpcomingEventsEarningsCard = ({ earnings, dashboard }: UpcomingEventsEarni
   return (
     <div
       className={cn(
-        "bg-(--secondary-color) p-4 rounded-lg ",
+        "bg-(--secondary-color) p-3 md:p-4 rounded-lg ",
         !dashboard && "border-l-4 border-l-(--success-color)"
       )}
     >
-      <div className="flex justify-between">
-        <div className="flex gap-3 items-center">
+      <div className="flex justify-between gap-2">
+        <div className="flex items-center gap-3">
           <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0">
             {logoUrl.data && !isLoading ? (
               <img
@@ -50,7 +50,7 @@ const UpcomingEventsEarningsCard = ({ earnings, dashboard }: UpcomingEventsEarni
             </p>
           </div>
         </div>
-        <div>
+        <div className="shrink-0">
           <p className="font-semibold text-sm">
             {dashboard ? format(dateObj, "MMM d") : marketTimeMap[hour]}
           </p>

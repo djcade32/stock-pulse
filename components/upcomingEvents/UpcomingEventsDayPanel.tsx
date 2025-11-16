@@ -26,7 +26,7 @@ const UpcomingEventsDayPanel = ({ date, events }: UpcomingEventsDayPanelProps) =
             {`${events.length} ${events.length > 1 ? "events" : "event"} scheduled ${
               events.length > 3 ? "•" : ""
             }`}{" "}
-            <span className="text-(--danger-color)">{events.length > 3 && "High Impact Day"}</span>
+            <span className="text-(--danger-color)">{events.length > 3 && " High Impact Day"}</span>
           </p>
         </div>
         <ul className="flex flex-col gap-3">

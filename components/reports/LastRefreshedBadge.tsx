@@ -31,7 +31,7 @@ export default function LastRefreshedBadge() {
   }, [last, now]);
 
   return (
-    <div className="inline-flex items-center gap-2 text-xs px-2 py-1 rounded-md bg-(--secondary-color) text-(--secondary-text-color) max-h-fit">
+    <div className="items-center gap-2 text-xs px-2 py-1 rounded-md bg-(--secondary-color) text-(--secondary-text-color) max-h-fit hidden md:inline-flex">
       <span className="inline-block h-2 w-2 rounded-full bg-(--accent-color)" />
       <span>Last refreshed: {label}</span>
     </div>

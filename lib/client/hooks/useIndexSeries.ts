@@ -79,7 +79,16 @@ export function useIndexSeries(symbols: string[]) {
         await attachForDate(today);
       } else {
         // fallback: last available trading day
-        const prevday = dayjs().tz(TZ).subtract(1, "day").format("YYYY-MM-DD");
+        // If today is Sunday or Saturday, go back to Friday
+        const weekday = dayjs().tz(TZ).day();
+        let prevday = "";
+        if (weekday === 0) {
+          // Sunday
+          prevday = dayjs().tz(TZ).subtract(2, "day").format("YYYY-MM-DD");
+        } else {
+          prevday = dayjs().tz(TZ).subtract(1, "day").format("YYYY-MM-DD");
+        }
+        // const prevday = dayjs().tz(TZ).subtract(1, "day").format("YYYY-MM-DD");
         const q = query(
           collection(db, `indexSeries/${prevday}/symbols`),
           orderBy("date", "desc"),

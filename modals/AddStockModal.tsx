@@ -5,8 +5,10 @@ import Modal from "@/components/general/Modal";
 import SearchStockRow from "@/components/SearchStockRow";
 import { Switch } from "@/components/ui/switch";
 import { auth, db } from "@/firebase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useStockSymbols } from "@/lib/client/hooks/useStockSymbols";
 import { useAddToWatchlistAndAnalyze } from "@/lib/client/mutations/useAddToWatchlistAndAnalyze";
+import { cn } from "@/lib/utils";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import useWatchlistStore from "@/stores/watchlist-store";
 import { ModalActionButtons, Stock, StockHit, WatchlistStock } from "@/types";
@@ -45,6 +47,7 @@ const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModal
   const { addToWatchlist, existInWatchlist } = useWatchlistStore();
   const { addToQuickChartList, quickChartList, existInQuickChartList } = useQuickChartStore();
   const addMany = useAddToWatchlistAndAnalyze();
+  const isMobile = useIsMobile();
 
   // useMemo(() => {
   //   setFilteredStocks(stocks.data);
@@ -177,13 +180,15 @@ const AddStockModal = ({ open, setOpen, watchlistOnly, onSubmit }: AddStockModal
         <Input
           ref={inputRef}
           type="text"
-          placeholder="Search for stocks (e.g. AAPL, Apple Inc.)"
+          placeholder={
+            isMobile ? "Search for stocks..." : "Search for stocks (e.g. AAPL, Apple Inc.)"
+          }
           preIcon={<Search color="var(--secondary-text-color)" size={20} />}
           className="bg-(--secondary-color) max-w-full border-(--gray-accent-color) py-2 "
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <div className="mt-4 flex flex-col gap-2 overflow-y-auto h-[200px]">
+        <div className={cn("mt-4 flex flex-col overflow-y-auto h-[200px] gap-2")}>
           {filteredStocks?.map(({ symbol, description, type }) => (
             <SearchStockRow
               key={symbol}
