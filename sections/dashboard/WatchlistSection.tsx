@@ -240,13 +240,13 @@ const WatchlistSection = ({ isWatchlistPage }: WatchlistSectionProps) => {
               prefix="Sort:"
               value={sortBy}
               onValueChange={setSortBy}
+              className="hidden md:inline-flex"
             />
             <Select
               items={FILTER_BY_OPTIONS}
               prefix="Filter:"
               value={filterBy}
               onValueChange={setFilterBy}
-              className="hidden md:inline-flex"
             />
           </div>
           {!isWatchlistPage && (
