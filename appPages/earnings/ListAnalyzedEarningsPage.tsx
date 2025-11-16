@@ -99,9 +99,9 @@ const ListAnalyzedEarningsPage = () => {
             <BreadcrumbLink className="page-header-text">Earnings</BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-col lg:flex-row">
           <StockSearch
-            className="w-[200px] lg:w-[430px] min-w[100px]"
+            className="lg:w-[430px] w-full"
             placeholder="Search for earnings analysis by ticker or company..."
             onSelect={(item) => handleStockChange(item.symbol)}
             onChange={(value) => {
@@ -112,27 +112,29 @@ const ListAnalyzedEarningsPage = () => {
             value={symbol || ""}
           />
 
-          <div className="flex items-center gap-4">
-            <Select
-              value={yearFilter}
-              onValueChange={(value) => {
-                setYearFilter(value);
-                router.push(
-                  `/earnings?${symbol ? symbol + "&" : ""}year=${value}&quarter=${quarterFilter}`
-                );
-              }}
-              items={getYearFilterOptions()}
-            />
-            <Select
-              value={quarterFilter}
-              onValueChange={(value) => {
-                setQuarterFilter(value);
-                router.push(
-                  `/earnings?${symbol ? symbol + "&" : ""}year=${yearFilter}&quarter=${value}`
-                );
-              }}
-              items={quarterFilterOptions}
-            />
+          <div className="flex items-center w-full gap-4 justify-between lg:w-auto ">
+            <div className="flex gap-2">
+              <Select
+                value={yearFilter}
+                onValueChange={(value) => {
+                  setYearFilter(value);
+                  router.push(
+                    `/earnings?${symbol ? symbol + "&" : ""}year=${value}&quarter=${quarterFilter}`
+                  );
+                }}
+                items={getYearFilterOptions()}
+              />
+              <Select
+                value={quarterFilter}
+                onValueChange={(value) => {
+                  setQuarterFilter(value);
+                  router.push(
+                    `/earnings?${symbol ? symbol + "&" : ""}year=${yearFilter}&quarter=${value}`
+                  );
+                }}
+                items={quarterFilterOptions}
+              />
+            </div>
             <Button className="font-bold" onClick={handleAnalyzeEarningsClick}>
               <FileChartColumn />
               <p>Analyze Earnings</p>

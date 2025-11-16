@@ -32,7 +32,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
     <div className="group py-4 flex flex-col gap-4">
       <div className="flex justify-between">
         <div className="flex gap-2">
-          <Link href={`/stock?symbol=${ticker}`}>
+          <Link href={`/stock?symbol=${ticker}`} className="shrink-0">
             {logoUrl.data ? (
               <img
                 src={logoUrl.data}

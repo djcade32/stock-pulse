@@ -42,7 +42,6 @@ ${params.text}
 
   const completion = await client.chat.completions.create({
     model: "gpt-5-mini",
-    temperature: 0.2,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: system },
