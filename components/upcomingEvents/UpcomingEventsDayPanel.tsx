@@ -16,7 +16,7 @@ const UpcomingEventsDayPanel = ({ date, events }: UpcomingEventsDayPanelProps) =
 
   return (
     <div className="flex gap-2">
-      <div className="min-h-full w-[1.5px] bg-gradient-to-b from-(--accent-color) to-transparent rounded-full relative flex flex-col items-center">
+      <div className="hidden min-h-full w-[1.5px] bg-gradient-to-b from-(--accent-color) to-transparent rounded-full relative md:flex flex-col items-center">
         <div className="bg-(--accent-color) rounded-full h-2 w-2 mt-6" />
       </div>
       <div className="w-full">
@@ -66,11 +66,11 @@ const UpcomingEventsDayPanel = ({ date, events }: UpcomingEventsDayPanelProps) =
                       : "border-l-(--gray-accent-color)"
                   )}
                 >
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2">
                     <div className="flex items-center gap-3 tracking-tight">
                       <div
                         className={cn(
-                          "flex items-center justify-center rounded-lg w-9 h-9",
+                          "items-center justify-center rounded-lg w-9 h-9 shrink-0 hidden md:flex",
                           macro.category === "FOMC"
                             ? "bg-(--accent-color)"
                             : "bg-(--warning-color)/20 text-(--warning-color)"
@@ -83,7 +83,7 @@ const UpcomingEventsDayPanel = ({ date, events }: UpcomingEventsDayPanelProps) =
                         )}
                       </div>
                       <div>
-                        <h3 className="font-semibold">{macro.title}</h3>
+                        <h3 className="font-semibold text-sm md:text-base">{macro.title}</h3>
                         <p className="text-xs text-(--secondary-text-color)">
                           {macro.category === "FOMC"
                             ? "Federal Reserve Meeting"
@@ -91,9 +91,11 @@ const UpcomingEventsDayPanel = ({ date, events }: UpcomingEventsDayPanelProps) =
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
+                    <div className="flex flex-col items-end gap-1 shrink-0">
                       {macro.category !== "FOMC" && macro.time && (
-                        <p className="font-semibold text-sm">{formatMilitaryTime(macro.time)}</p>
+                        <p className="font-semibold text-xs md:text-sm">
+                          {formatMilitaryTime(macro.time)}
+                        </p>
                       )}
                       <AiTag
                         className="text-[10px]"

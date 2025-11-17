@@ -30,7 +30,7 @@ const UpcomingEventsEarningsCard = ({ earnings, dashboard }: UpcomingEventsEarni
     >
       <div className="flex justify-between gap-2">
         <div className="flex items-center gap-3">
-          <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0">
+          <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0 hidden md:block">
             {logoUrl.data && !isLoading ? (
               <img
                 src={logoUrl.data}
