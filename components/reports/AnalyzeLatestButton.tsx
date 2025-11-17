@@ -42,7 +42,7 @@ export default function AnalyzeLatestButton({ setAnalysisData }: AnalyzeLatestBu
   };
 
   return (
-    <form className="flex items-center gap-2" onSubmit={handleAnalyzeClicked}>
+    <form className="flex flex-col md:flex-row items-center gap-2" onSubmit={handleAnalyzeClicked}>
       <StockSearch
         className="w-full"
         onSelect={(t) => {
@@ -55,7 +55,7 @@ export default function AnalyzeLatestButton({ setAnalysisData }: AnalyzeLatestBu
         disabled={!ticker || isPending}
         onClick={handleAnalyzeClicked}
         showLoading={isPending}
-        className="flex-1/3 font-bold"
+        className="w-full md:flex-1/3 font-bold"
       >
         Analyze
       </Button>

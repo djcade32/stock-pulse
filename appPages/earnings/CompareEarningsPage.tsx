@@ -73,6 +73,17 @@ const CompareEarningsPage = () => {
     }
   }, [stockARows]);
 
+  // After getting comparison, scroll to AI card
+  useEffect(() => {
+    if (!isFetchingCompare) {
+      console.log("Scrolling to AI card");
+      const aiCard = document.getElementById("compare-earnings-ai-card");
+      if (aiCard) {
+        aiCard.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [isFetchingCompare]);
+
   const getAvailableYears = (rows: ReportRowDTO[]) => {
     const years: string[] = [];
     rows.forEach((row) => {
@@ -162,7 +173,7 @@ const CompareEarningsPage = () => {
       <h1 className="page-header-text">Compare Earnings</h1>
 
       <div className="bg-(--secondary-color) p-4 rounded-lg">
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center flex-col md:flex-row">
           <div className="flex flex-col flex-1">
             <p className="mb-1">Select Company A</p>
             <StockSearch
@@ -213,7 +224,7 @@ const CompareEarningsPage = () => {
             onClick={handleCompareClick}
             disabled={!currentReportA || !currentReportB || isFetchingCompare}
             showLoading={isFetchingCompare}
-            className="w-[175px]"
+            className="md:w-auto w-full"
           >
             <FileSearch />
             <p>Compare Earnings</p>
@@ -221,19 +232,25 @@ const CompareEarningsPage = () => {
         </div>
       </div>
 
-      <div className="flex gap-4 mt-4">
-        <CompareEarningsCard
-          stock={stockA}
-          report={currentReportA}
-          isLoading={isLoadingStockAData}
-          isFetching={isFetchingStockAData}
-        />
-        <CompareEarningsCard
-          stock={stockB}
-          report={currentReportB}
-          isLoading={isLoadingStockBData}
-          isFetching={isFetchingStockBData}
-        />
+      <div className="flex gap-6 md:gap-4 mt-4 flex-col md:flex-row">
+        <div className="w-full">
+          <h2 className="font-semibold mb-2 md:hidden">Company A</h2>
+          <CompareEarningsCard
+            stock={stockA}
+            report={currentReportA}
+            isLoading={isLoadingStockAData}
+            isFetching={isFetchingStockAData}
+          />
+        </div>
+        <div className="w-full">
+          <h2 className="font-semibold mb-2 md:hidden">Company B</h2>
+          <CompareEarningsCard
+            stock={stockB}
+            report={currentReportB}
+            isLoading={isLoadingStockBData}
+            isFetching={isFetchingStockBData}
+          />
+        </div>
       </div>
       <CompareEarningsAICard currentReportA={currentReportA} currentReportB={currentReportB} />
     </div>

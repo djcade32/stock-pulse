@@ -18,6 +18,7 @@ import {
 import { NavMain } from "./NavMain";
 import Image from "next/image";
 import { useIsMobile } from "@/hooks/use-mobile";
+import BetaBadge from "../BetaBadge";
 
 const data = {
   user: {
@@ -79,24 +80,23 @@ export const SideMenu = ({ ...props }: React.ComponentProps<typeof Sidebar>) => 
     <Sidebar collapsible="icon" {...props} className="border-none w-[300px]">
       <SidebarHeader className="py-2">
         <div className="flex items-center justify-center py-3">
-          <Image src="/stock_pulse_icon.png" alt="StockWisp logo" width={32} height={32} />
-          {/* <a
-            href="#"
-            className={cn(
-              "flex items-center gap-2 w-fit",
-              hideLogo ? "hidden" : "flex",
-              menuOpened ? "pl-2" : "pl-0"
-            )}
-            onMouseOver={() => !menuOpened && setHideLogo(true)}
-          >
-            <div className="w-[28px] h-[28px] flex items-center justify-center">
-              <Image src="/stock_pulse_icon.png" alt="StockWisp logo" width={45} height={45} />
-            </div>
-          </a>
-          <SidebarTrigger
-            className={(hideLogo || menuOpened) && !isMobile ? "flex" : "hidden"}
-            onMouseLeave={() => !menuOpened && setHideLogo(false)}
-          /> */}
+          <div className="flex items-center md:hidden">
+            <Image
+              src="/stock_pulse_logo.png"
+              alt="StockWisp Logo"
+              width={150}
+              height={150}
+              priority
+            />
+            <BetaBadge />
+          </div>
+          <Image
+            src="/stock_pulse_icon.png"
+            alt="StockWisp logo"
+            width={32}
+            height={32}
+            className="hidden md:block"
+          />
         </div>
       </SidebarHeader>
       <SidebarContent>

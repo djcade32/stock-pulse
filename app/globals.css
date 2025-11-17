@@ -77,7 +77,7 @@ body {
   }
 
   .card {
-    @apply w-full bg-(--secondary-color) rounded-lg p-5 flex items-center overflow-hidden relative;
+    @apply w-full bg-(--secondary-color) rounded-lg p-3 md:p-5 flex items-center overflow-hidden relative;
   }
 
   .modal-backdrop {
@@ -85,17 +85,21 @@ body {
   }
 
   .modal-content {
-    @apply bg-(--background) rounded-lg w-[500px] max-w-full border-(--secondary-color) border shadow-lg;
+    @apply bg-(--background) rounded-lg w-[min(500px,90vw)] border-(--secondary-color) border shadow-lg;
+  }
+
+  .header {
+    @apply py-3 flex items-center fixed top-0 left-0 right-0 z-50 bg-(--background) border-b-2 border-(--secondary-color) md:left-[64px];
   }
 }
 
 @layer utilities {
   .page {
-    @apply py-2 px-10 flex flex-col gap-7 pb-4;
+    @apply py-2 md:px-10 px-5 flex flex-col gap-7 pb-4;
   }
 
   .page-header-text {
-    @apply text-2xl font-semibold;
+    @apply text-lg md:text-2xl font-semibold;
   }
 
   .page-subheader-text {
@@ -103,7 +107,7 @@ body {
   }
 
   .auth-card {
-    @apply bg-(--secondary-color) rounded-lg shadow-lg p-6 w-[400px];
+    @apply bg-(--secondary-color) rounded-lg shadow-lg p-3 md:p-6 w-[min(400px,90vw)];
   }
 
   .sign-in-socials {

@@ -152,7 +152,7 @@ const UpcomingEventsPage = () => {
           Stay informed about key market and company events.
         </p>
       </div>
-      <div className="flex gap-4">
+      <div className="gap-4 hidden md:flex">
         <Tabs values={tabEventValues} onValueChange={setCurrentEventTab} />
         <Tabs
           values={tabDateRangeValues}
@@ -163,8 +163,16 @@ const UpcomingEventsPage = () => {
       <div className="bg-(--secondary-color) rounded-lg p-4">
         <h2 className="font-bold text-lg mb-2">Week Analysis</h2>
         <LoaderComponent loading={isLoadingWeeklyAnalysis} height="50px" width="100%" rounded="lg">
-          <p className="text-(--secondary-text-color)">{weeklyAnalysis}</p>
+          <p className="text-(--secondary-text-color) leading-7">{weeklyAnalysis}</p>
         </LoaderComponent>
+      </div>
+      <div className="flex gap-4 flex-col md:hidden">
+        <Tabs values={tabEventValues} onValueChange={setCurrentEventTab} />
+        <Tabs
+          values={tabDateRangeValues}
+          tabClassName="data-[state=active]:bg-(--gray-accent-color)"
+          onValueChange={setCurrentDateRangeTab}
+        />
       </div>
       <div className="flex flex-col gap-6">
         {isLoading ? (

@@ -8,6 +8,7 @@ interface LoaderComponentProps {
   className?: string;
   rounded?: "none" | "sm" | "md" | "lg" | "full";
   loadingClassName?: string;
+  id?: string;
 }
 
 const LoaderComponent = ({
@@ -18,6 +19,7 @@ const LoaderComponent = ({
   className,
   loadingClassName,
   rounded,
+  id,
 }: LoaderComponentProps) => {
   const getRoundedClass = (rounded: string) => {
     switch (rounded) {
@@ -38,6 +40,7 @@ const LoaderComponent = ({
   if (loading) {
     return (
       <div
+        id={id}
         className={`bg-(--gray-accent-color) animate-pulse ${rounded && getRoundedClass(rounded)} ${
           loadingClassName ? loadingClassName : ""
         }`}
@@ -45,7 +48,11 @@ const LoaderComponent = ({
       />
     );
   }
-  return <div className={className}>{children}</div>;
+  return (
+    <div id={id} className={className}>
+      {children}
+    </div>
+  );
 };
 
 export default LoaderComponent;

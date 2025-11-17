@@ -25,6 +25,28 @@ export function useMarketWhisper() {
   const [data, setData] = useState<Whisper | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  // Check if day is Monday-Friday
+  const today = dayjs().tz(TZ);
+  const isWeekday = today.day() >= 1 && today.day() <= 5;
+  if (!isWeekday) {
+    // On weekends, we don't need to fetch data
+    useEffect(() => {
+      setLoading(false);
+    }, []);
+    return {
+      data: {
+        summary: "Market is closed for the weekend.",
+        sentiment: "Neutral",
+        generatedAt: today.toISOString(),
+        date: today.format("YYYY-MM-DD"),
+        cached: false,
+      },
+
+      loading: false,
+      refresh: () => {},
+      isRefreshing: false,
+    };
+  }
 
   useEffect(() => {
     const cached = localStorage.getItem(key);

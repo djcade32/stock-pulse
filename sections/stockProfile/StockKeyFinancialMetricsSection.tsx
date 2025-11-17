@@ -95,8 +95,8 @@ const StockKeyFinancialMetricsSection = ({ symbol }: StockKeyFinancialMetricsSec
   };
   return (
     <div>
-      <h2 className="text-xl font-bold ">Key Financial Statistics</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
+      <h2 className="text-lg md:text-xl font-bold ">Key Financial Statistics</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
         {Object.keys(financials).length > 0 ? (
           Object.keys(financials).map((key) => {
             if (key === "52WeekLow") return null;

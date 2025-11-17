@@ -15,7 +15,11 @@ const StockProfileFinancialCard = ({ label, value, icon }: StockProfileFinancial
         <p className="text-(--secondary-text-color) text-sm">{label}</p>
         {icon && React.createElement(icon, { className: "text-(--secondary-text-color)" })}
       </div>
-      <p className={`font-bold text-2xl ${value === "—" && "text-(--secondary-text-color)"}`}>
+      <p
+        className={`font-bold text-lg md:text-2xl ${
+          value === "—" && "text-(--secondary-text-color)"
+        }`}
+      >
         {value}
       </p>
     </div>

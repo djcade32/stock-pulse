@@ -27,8 +27,8 @@ const NewsRow = ({ news, isNewsPage }: NewsRowProps) => {
   return (
     <div className="flex items-start gap-4">
       {!isNewsPage && (
-        <div>
-          <div className="w-8 h-10 rounded-lg bg-(--accent-color)/10 flex items-center justify-center">
+        <div className="hidden md:block">
+          <div className="w-8 h-10 rounded-lg bg-(--accent-color)/10 items-center justify-center shrink-0 flex">
             <FaNewspaper color="var(--accent-color)" />
           </div>
         </div>
@@ -44,11 +44,11 @@ const NewsRow = ({ news, isNewsPage }: NewsRowProps) => {
           >
             <h3 className="font-bold">{title}</h3>
           </Link>
-          <div className="w-max flex-shrink-0">
+          <div className="w-max flex-shrink-0 hidden md:block">
             <p className="text-xs text-(--secondary-text-color) font-bold">{timeElapsed}</p>
           </div>
         </div>
-        <p className="text-sm text-(--secondary-text-color) leading-tight">{summary}</p>
+        <p className="text-sm text-(--secondary-text-color) leading-7 line-clamp-3">{summary}</p>
         <div className="flex items-center gap-4">
           <p className="text-xs text-(--secondary-text-color) font-bold">{`Source: ${source}`}</p>
           <AiTag
@@ -58,6 +58,9 @@ const NewsRow = ({ news, isNewsPage }: NewsRowProps) => {
             }}
             className="text-xs py-0"
           />
+          <div className="w-max flex-shrink-0 md:hidden ml-auto">
+            <p className="text-xs text-(--secondary-text-color) font-bold">{timeElapsed}</p>
+          </div>
         </div>
       </div>
     </div>

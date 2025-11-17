@@ -11,6 +11,7 @@ import { useUid } from "@/hooks/useUid";
 import LoaderComponent from "@/components/general/LoaderComponent";
 import { toast } from "sonner";
 import { doc, setDoc } from "firebase/firestore";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const UserInfoSection = () => {
   const { loading } = useUid();
@@ -21,6 +22,8 @@ const UserInfoSection = () => {
   const [displayName, setDisplayName] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [inputHasError, setInputHasError] = useState(false);
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (user && user.displayName) {
@@ -82,7 +85,10 @@ const UserInfoSection = () => {
       width="100%"
       loading={loading}
       rounded="lg"
-      className="bg-(--secondary-color) p-6 rounded-lg flex items-center justify-between"
+      className={cn(
+        "bg-(--secondary-color) rounded-lg flex items-center justify-between",
+        isMobile ? "flex-col gap-4 p-4" : "p-6"
+      )}
       loadingClassName="bg-(--secondary-color)"
     >
       <div className="flex items-center gap-4">
@@ -96,7 +102,7 @@ const UserInfoSection = () => {
             placeholder="Enter your name"
             type="text"
             className={cn(
-              "focus:ring-0 focus:outline-none p-0 font-bold text-2xl",
+              "focus:ring-0 focus:outline-none p-0 font-bold text-lg md:text-2xl",
               isEditing
                 ? "focus:ring-1 focus:ring-(--accent-color) pl-3"
                 : "bg-transparent cursor-text border-none rounded-none",
@@ -104,7 +110,7 @@ const UserInfoSection = () => {
             )}
           />
           {createdAt && (
-            <p className="text-(--secondary-text-color)">
+            <p className={cn("text-(--secondary-text-color)", isMobile && "text-sm")}>
               Member since
               {` ${new Date(createdAt).toLocaleString("default", { month: "long" })} ${new Date(
                 createdAt
@@ -113,11 +119,14 @@ const UserInfoSection = () => {
           )}
         </div>
       </div>
-      <div>
+      <div className={cn(isMobile ? "w-full" : "")}>
         <Button
           onClick={handleEditClick}
           variant={isEditing ? "default" : "outline"}
-          className={cn(isEditing ? "" : "bg-transparent border-(--gray-accent-color)")}
+          className={cn(
+            isEditing ? "" : "bg-transparent border-(--gray-accent-color)",
+            isMobile && "w-full"
+          )}
         >
           {isEditing ? <Save size={16} /> : <SquarePen size={16} />}
           {isEditing ? "Save" : "Edit"}

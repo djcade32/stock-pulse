@@ -123,10 +123,10 @@ const FullEarningsAnalysisPage = () => {
 
   return (
     <div className="page h-full">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h1 className="page-header-text">Earnings</h1>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 ">
           <Select
             value={yearFilter}
             onValueChange={setYearFilter}
@@ -159,13 +159,13 @@ const FullEarningsAnalysisPage = () => {
                   <div className="h-6 w-40 bg-(--gray-accent-color) rounded-lg animate-pulse" />
                 )
               ) : (
-                <h2 className="font-bold text-xl">{`${currentReport?.name} (${
+                <h2 className="font-bold text-lg md:text-xl">{`${currentReport?.name} (${
                   currentReport?.ticker
                 }) - ${currentReport?.quarter.split("10-Q")[1]}`}</h2>
               )}
               {!currentReport ? (
                 isLoading && (
-                  <div className="h-6 w-20 bg-(--gray-accent-color) rounded-full animate-pulse" />
+                  <div className="h-6 w-20 bg-(--gray-accent-color) rounded-full animate-pulse hidden md:block" />
                 )
               ) : (
                 <AiTag
@@ -173,12 +173,13 @@ const FullEarningsAnalysisPage = () => {
                     sentiment: getSentiment(currentReport?.overallSentiment!),
                     topic: currentReport?.overallSentiment!,
                   }}
+                  className="hidden md:block"
                 />
               )}
             </div>
             <Button
               onClick={() => window.open(currentReport?.url, "_blank")}
-              className="bg-(--secondary-color) border border-(--gray-accent-color)"
+              className="bg-(--secondary-color) border border-(--gray-accent-color) hidden md:flex"
             >
               <ExternalLink />
               <p>View Report</p>
@@ -187,9 +188,30 @@ const FullEarningsAnalysisPage = () => {
           <div>
             <p className="text-(--secondary-text-color)">{`10-Q Report • ${currentReport?.date}`}</p>
           </div>
+          <div className="md:hidden flex justify-between items-center mt-2">
+            {!currentReport ? (
+              isLoading && (
+                <div className="h-6 w-20 bg-(--gray-accent-color) rounded-full animate-pulse" />
+              )
+            ) : (
+              <AiTag
+                tag={{
+                  sentiment: getSentiment(currentReport?.overallSentiment!),
+                  topic: currentReport?.overallSentiment!,
+                }}
+              />
+            )}
+            <Button
+              onClick={() => window.open(currentReport?.url, "_blank")}
+              className="bg-(--secondary-color) border border-(--gray-accent-color)"
+            >
+              <ExternalLink />
+              <p>View Report</p>
+            </Button>
+          </div>
           <div className="mt-4">
             <h3 className="font-bold text-lg mb-2">Key Highlights</h3>
-            <ul className="list-none list-inside space-y-1">
+            <ul className="list-none list-inside space-y-3 md:space-y-2 leading-7">
               {!currentReport
                 ? isLoading &&
                   [...Array(6)].map((_, index) => (
@@ -204,7 +226,7 @@ const FullEarningsAnalysisPage = () => {
                       className="text-(--secondary-text-color) flex items-center gap-2"
                     >
                       <div
-                        className="w-2 h-2 rounded-full inline-block"
+                        className="w-2 h-2 rounded-full inline-block shrink-0"
                         style={{
                           backgroundColor: getListDotColor(point.sentiment),
                         }}
@@ -242,7 +264,7 @@ const FullEarningsAnalysisPage = () => {
           </div> */}
           <div className="mt-4">
             <h3 className="font-bold text-lg mb-2">Key Themes</h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3 md:gap-2">
               {!currentReport
                 ? isLoading &&
                   [...Array(6)].map((_, index) => (
@@ -256,7 +278,7 @@ const FullEarningsAnalysisPage = () => {
           </div>
           <div className="mt-4">
             <h3 className="font-bold text-lg mb-2">Summary</h3>
-            <p className="text-(--secondary-text-color) ">
+            <p className="text-(--secondary-text-color) leading-7">
               {!currentReport
                 ? isLoading && (
                     <div className="h-12 bg-(--gray-accent-color) rounded animate-pulse mb-2" />
@@ -267,13 +289,13 @@ const FullEarningsAnalysisPage = () => {
         </div>
         <div className="bg-(--secondary-color) p-4 rounded-lg ">
           <h2 className="font-bold text-xl mb-2">Key Financial Metrics</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
             {!currentReport
               ? isLoading &&
                 [...Array(4)].map((_, index) => (
                   <div
                     key={index}
-                    className="h-[92px] w-[298px] bg-(--gray-accent-color) rounded-lg animate-pulse"
+                    className="h-[92px] md:w-[298px] bg-(--gray-accent-color) rounded-lg animate-pulse"
                   />
                 ))
               : currentReport.kpis?.map((kpi, index) => (

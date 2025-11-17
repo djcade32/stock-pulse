@@ -80,7 +80,7 @@ const StockAnalystRatingsSection = ({ symbol }: StockAnalystRatingsSectionProps)
       {analystRecommendations ? (
         <div className="mt-2 flex flex-col h-full">
           <div className="flex items-center gap-4">
-            <h2 className="font-bold text-2xl">{totalRecommendations} Analyst</h2>
+            <h2 className="font-bold text-xl md:text-2xl">{totalRecommendations} Analyst</h2>
             <AiTag
               tag={{
                 sentiment:
@@ -94,10 +94,10 @@ const StockAnalystRatingsSection = ({ symbol }: StockAnalystRatingsSectionProps)
               className="text-sm mt-1"
             />
           </div>
-          <div className="h-full flex items-center ">
+          <div className="h-full flex items-center mt-2 md:mt-0">
             <div
               className={cn(
-                "text-3xl font-bold w-[90px] h-[90px] rounded-full flex items-center justify-center",
+                "text-2xl md:text-3xl font-bold w-[70px] h-[70px] md:w-[90px] md:h-[90px] rounded-full flex items-center justify-center",
                 getAnalystSentiment() === "Buy" && "bg-(--success-color)/20 text-(--success-color)",
                 getAnalystSentiment() === "Sell" && "bg-(--danger-color)/20 text-(--danger-color)",
                 getAnalystSentiment() === "Hold" && "bg-(--warning-color)/20 text-(--warning-color)"
@@ -112,7 +112,7 @@ const StockAnalystRatingsSection = ({ symbol }: StockAnalystRatingsSectionProps)
                 %
               </p>
             </div>
-            <div className="flex flex-col gap-5 flex-1 ml-4">
+            <div className="flex flex-col gap-2 md:gap-5 flex-1 ml-4">
               {Object.keys(getAnalystPercentages()).map((key) => {
                 const percentages = getAnalystPercentages();
                 const sentimentScore = percentages[key as keyof typeof percentages] || 0;

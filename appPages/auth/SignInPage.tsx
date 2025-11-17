@@ -72,8 +72,23 @@ const SignInPage = () => {
   );
 
   return (
-    <div className="absolute inset-0 z-2 flex flex-col items-center justify-center gap-9">
-      <Image src="/stock_pulse_logo.png" alt="StockWisp Logo" width={200} height={200} priority />
+    <div className="absolute inset-0 z-2 flex flex-col items-center justify-center md:gap-9 gap-3">
+      <Image
+        src="/stock_pulse_logo.png"
+        alt="StockWisp Logo"
+        width={200}
+        height={200}
+        priority
+        className="hidden"
+      />
+      <Image
+        src="/stock_pulse_logo.png"
+        alt="StockWisp Logo"
+        width={150}
+        height={150}
+        priority
+        className="md:hidden"
+      />
       <div className="auth-card">
         <p className="text-xl font-semibold text-center my-4">Sign in to your account</p>
         <AuthForm show="sign-in" />

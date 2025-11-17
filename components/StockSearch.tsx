@@ -6,6 +6,7 @@ import Input from "./general/Input";
 import { StockHit } from "@/types";
 import { useStockSymbols } from "@/lib/client/hooks/useStockSymbols";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type StockSearchProps = {
   className?: string;
@@ -51,6 +52,9 @@ export default function StockSearch({
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
   const { stocks, isLoading, isFetching } = useStockSymbols("");
+  const isMobile = useIsMobile();
+
+  const placeholderForMobile = "Search ticker...";
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   const listboxId = useMemo(
@@ -167,7 +171,7 @@ export default function StockSearch({
           }}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={isMobile ? placeholderForMobile : placeholder}
           preIcon={<Search color="var(--secondary-text-color)" size={18} />}
           className={cn(
             "bg-(--secondary-color) w-full border-(--gray-accent-color) py-2",
@@ -181,7 +185,10 @@ export default function StockSearch({
         <div
           id={listboxId}
           role="listbox"
-          className="absolute mt-2 w-[min(520px,90vw)] max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50"
+          className={cn(
+            "absolute mt-2 w-[min(300px,90vw)] max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50",
+            isMobile && "flex flex-col gap-2"
+          )}
         >
           {loading && (
             <div className="px-3 py-2 text-sm text-(--secondary-text-color)">Searching…</div>
@@ -226,7 +233,7 @@ export default function StockSearch({
                       <span className="font-semibold tracking-tight">{h.symbol}</span>
                       <span className="text-(--secondary-text-color) text-sm">{h.description}</span>
                     </div>
-                    {h.type && (
+                    {h.type && !isMobile && (
                       <span className="text-xs text-(--secondary-text-color)">{h.type}</span>
                     )}
                   </div>
