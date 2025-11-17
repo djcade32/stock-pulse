@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { ModalActionButtons } from "@/types";
 import Button from "./Button";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ModalProps {
   open: boolean;
@@ -14,6 +15,8 @@ interface ModalProps {
 }
 
 const Modal = ({ children, header, actionButtons, open, setOpen, hideFooter }: ModalProps) => {
+  const isMobile = useIsMobile();
+
   if (!children) {
     return null; // Don't render the modal if there are no children
   }
@@ -38,7 +41,7 @@ const Modal = ({ children, header, actionButtons, open, setOpen, hideFooter }: M
       <div className="modal-content">
         <div className="flex items-center justify-between border-b-2 border-(--secondary-color) p-6">
           <div className="flex flex-1">
-            <h2 className="font-bold text-xl">{header}</h2>
+            <h2 className="font-bold text-lg md:text-xl">{header}</h2>
           </div>
           <X
             className="text-(--gray-accent-color) hover:cursor-pointer hover:brightness-175 smooth-animation"

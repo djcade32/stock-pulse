@@ -66,8 +66,8 @@ const AnalyzeEarningsPage = () => {
           <div className="w-full max-w-xl">
             <div className="bg-(--secondary-color) rounded-lg px-4 pt-6 pb-2 flex flex-col justify-center items-center">
               <FileChartColumn className="text-(--secondary-text-color) mb-2" size={48} />
-              <h1 className="text-2xl font-bold">Analyze Earnings</h1>
-              <p className="mt-2 text-(--secondary-text-color)">
+              <h1 className="text-lg md:text-2xl font-bold">Analyze Earnings</h1>
+              <p className="mt-2 text-(--secondary-text-color) text-center">
                 Analyze the latest earnings reports for companies
               </p>
 
@@ -78,7 +78,7 @@ const AnalyzeEarningsPage = () => {
               <p className="mt-2 mb-2 text-(--secondary-text-color)">or</p>
 
               <Button
-                className="font-bold w-[40%]"
+                className="font-bold min-w-fit"
                 onClick={() => setIsAddStockModalOpen(true)}
                 variant="success"
                 showLoading={addingToWatchlist}
@@ -87,7 +87,7 @@ const AnalyzeEarningsPage = () => {
                 <p>Add Stock to Watchlist</p>
               </Button>
 
-              <p className="italic text-xs mt-6 text-(--secondary-text-color)">
+              <p className="italic text-xs mt-6 text-(--secondary-text-color) text-center">
                 Note: Can only analyze the latest 10-Q/10-K report for a company at this time.
               </p>
             </div>

@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { IconType } from "react-icons";
+import { cn } from "@/lib/utils";
 
 interface SidebarItem {
   title: string;
@@ -34,7 +35,7 @@ export const NavMain = ({ items }: { items: SidebarItem[] }) => {
   return (
     <SidebarGroup>
       <SidebarGroupContent>
-        <SidebarMenu className="gap-7 mt-3">
+        <SidebarMenu className={cn("mt-3", isMobile ? "gap-2" : "gap-7")}>
           {items.map((item) => (
             <SidebarMenuItem key={item.title} className="flex items-center justify-center">
               <SidebarMenuButton
@@ -46,7 +47,14 @@ export const NavMain = ({ items }: { items: SidebarItem[] }) => {
                 isActive={pathname?.includes(item.url)}
                 // isActive={pathname === item.url}
               >
-                <item.icon />
+                {isMobile ? (
+                  <a className="flex items-center gap-2">
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </a>
+                ) : (
+                  <item.icon />
+                )}
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

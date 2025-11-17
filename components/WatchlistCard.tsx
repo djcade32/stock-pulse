@@ -65,9 +65,9 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
 
   return (
     <div className="group card flex-col justify-between h-full">
-      <Ellipsis className="absolute top-0 right-4 text-(--secondary-text-color) opacity-0 group-hover:opacity-100 hover:brightness-125 cursor-pointer smooth-animation" />
+      <Ellipsis className="absolute top-0 right-4 text-(--secondary-text-color) md:opacity-0 md:group-hover:opacity-100 hover:brightness-125 cursor-pointer smooth-animation" />
       <div className="flex flex-col w-full flex-1">
-        <div className="flex justify-between w-full ">
+        <div className="flex justify-between w-full mt-2 md:mt-0">
           <div className="flex gap-2 w-full">
             <Link href={`/stock?symbol=${ticker}`} className="flex-shrink-0">
               {logoUrl.data ? (
@@ -165,7 +165,7 @@ export const WatchlistCard = ({ stock, fullDetails = true, isLoading }: Watchlis
             )}
             {!isLoading && (
               <p
-                className="text-sm text-(--secondary-text-color) leading-tight h-full overflow-hidden pr-1 text-ellipsis"
+                className="text-sm leading-6 text-(--secondary-text-color) h-full overflow-hidden pr-1 text-ellipsis"
                 style={{
                   display: "-webkit-box",
                   WebkitLineClamp: 3,

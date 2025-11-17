@@ -4,12 +4,13 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Ellipsis, Trash2 } from "lucide-react";
 import { ChartConfig, ChartContainer } from "./ui/chart";
 import { ComposedChart, Line, Area } from "recharts";
-import { toKebabCase } from "@/lib/utils";
+import { cn, toKebabCase } from "@/lib/utils";
 import DropdownMenu from "./general/DropdownMenu";
 import useQuickChartStore from "@/stores/quick-chart-store";
 import { db } from "@/firebase/client";
 import { doc, setDoc } from "firebase/firestore";
 import { useUid } from "@/hooks/useUid";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const chartConfig = {
   desktop: { label: "Desktop" },
@@ -43,6 +44,8 @@ const QuickChart = ({ stock, deletable = true, series }: QuickChartProps) => {
   const { removeFromQuickChartList, quickChartList } = useQuickChartStore();
   const { uid } = useUid();
   const [chartData, setChartData] = useState<ChartPoint[]>([]);
+  const isMobile = useIsMobile();
+
   const chartId = `quick-chart-${toKebabCase(stock.ticker)}`;
   const lineColor = stock.change >= 0 ? "var(--success-color)" : "var(--danger-color)";
 
@@ -143,23 +146,36 @@ const QuickChart = ({ stock, deletable = true, series }: QuickChartProps) => {
       )}
 
       <div className="flex flex-col items-start justify-center gap-[0.5]">
-        <p className="text-(--secondary-text-color) font-semibold">{stock.ticker}</p>
-        <h2 className="text-2xl font-bold">{displayPrice}</h2>
+        <p className={"text-(--secondary-text-color) font-semibold md:text-base text-sm"}>
+          {stock.ticker}
+        </p>
+        <h2 className="text-xl md:text-2xl font-bold">{displayPrice}</h2>
         <div className="flex items-center">
           {stock.change >= 0 ? (
-            <ArrowUp color="var(--success-color)" />
+            <ArrowUp color="var(--success-color)" size={isMobile ? 14 : 16} />
           ) : (
-            <ArrowDown color="var(--danger-color)" />
+            <ArrowDown color="var(--danger-color)" size={isMobile ? 14 : 16} />
           )}
-          <p className={stock.change >= 0 ? "text-(--success-color)" : "text-(--danger-color)"}>
+          <p
+            className={cn(
+              "text-sm md:text-base",
+              stock.change >= 0 ? "text-(--success-color)" : "text-(--danger-color)"
+            )}
+          >
             {stock.change}%
           </p>
         </div>
       </div>
 
       <div className="flex-1 flex items-center justify-center h-full">
-        <ChartContainer config={chartConfig} className="max-h-full w-full">
-          <ComposedChart data={chartData}>
+        <ChartContainer
+          config={chartConfig}
+          className={cn("max-h-full w-full", isMobile && "flex items-center")}
+        >
+          <ComposedChart
+            data={chartData}
+            margin={isMobile ? { top: 35, right: 0, bottom: 35, left: 10 } : { left: 10 }}
+          >
             <defs>
               <linearGradient id={chartId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={lineColor} stopOpacity={0.35} />

@@ -112,14 +112,14 @@ const WatchlistSummarySection = () => {
           <div className="watchlist-summary-card">
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Total Stocks</h3>
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{totalNumberOfStocks}</p>
+              <p className="text-xl md:text-2xl font-bold">{totalNumberOfStocks}</p>
             </div>
           </div>
 
           <div className="watchlist-summary-card">
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Average Sentiment</h3>
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{summary.avgSentiment}</p>
+              <p className="text-xl md:text-2xl font-bold">{summary.avgSentiment}</p>
               <AiTag
                 tag={{
                   sentiment:
@@ -143,7 +143,7 @@ const WatchlistSummarySection = () => {
           <div className="watchlist-summary-card">
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Biggest Gainer</h3>
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{summary.biggestGainer?.symbol}</p>
+              <p className="text-xl md:text-2xl font-bold">{summary.biggestGainer?.symbol}</p>
               <AiTag
                 tag={{
                   sentiment:
@@ -163,7 +163,7 @@ const WatchlistSummarySection = () => {
           <div className="watchlist-summary-card">
             <h3 className="text-sm text-(--secondary-text-color) font-bold">Biggest Loser</h3>
             <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{summary.biggestLoser?.symbol}</p>
+              <p className="text-xl md:text-2xl font-bold">{summary.biggestLoser?.symbol}</p>
               <AiTag
                 tag={{
                   sentiment:

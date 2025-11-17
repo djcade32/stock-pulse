@@ -82,7 +82,7 @@ const StockNextEarningsSection = ({ symbol }: StockNextEarningsSectionProps) => 
         <FaMicrophoneAlt className="text-(--accent-color)" />
       </div>
       <div>
-        <h2 className="font-bold text-2xl mt-2">
+        <h2 className="font-bold text-xl md:text-2xl mt-2">
           {nextEarningsDate
             ? format(new Date(nextEarningsDate.date).toDateString(), "MMM dd, yyyy")
             : "N/A"}

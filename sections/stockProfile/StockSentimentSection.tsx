@@ -36,10 +36,12 @@ const StockSentimentSection = ({ symbol }: StockSentimentSectionProps) => {
       <div className="w-full flex flex-col flex-1 min-h-0">
         <div>
           <div className="flex items-center justify-between">
-            <p className="text-(--secondary-text-color) font-bold ">Sentiment Score</p>
+            <p className="text-(--secondary-text-color) font-bold text-sm md:text-base">
+              Sentiment Score
+            </p>
             <p
               className={cn(
-                "text-(--warning-color) font-medium",
+                "text-(--warning-color) font-medium text-sm md:text-base",
                 getSentiment(sentimentScore) === "Bullish" && "text-(--success-color)",
                 getSentiment(sentimentScore) === "Bearish" && "text-(--danger-color)"
               )}
@@ -63,13 +65,17 @@ const StockSentimentSection = ({ symbol }: StockSentimentSectionProps) => {
           </div>
         </div>
 
-        <div className="flex items-center mt-4 gap-1 flex-wrap">
+        <div className="flex items-center mt-4 gap-2 md:gap-1 flex-wrap">
           {aiTags.length > 0 &&
-            aiTags.map((tag, index) => <AiTag key={index} tag={tag} className="text-sm" />)}
+            aiTags.map((tag, index) => (
+              <AiTag key={index} tag={tag} className="text-xs md:text-sm" />
+            ))}
         </div>
 
         <div className="flex-1 min-h-0 mt-2">
-          <p className="text-(--secondary-text-color)">{sentimentSummary}</p>
+          <p className="text-(--secondary-text-color) text-sm md:text-base leading-6">
+            {sentimentSummary}
+          </p>
         </div>
       </div>
     </LoaderComponent>

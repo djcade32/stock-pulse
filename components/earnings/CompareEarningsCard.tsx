@@ -8,6 +8,7 @@ import CompareEarningsCardRow from "./CompareEarningsCardRow";
 import AiTag from "../AiTag";
 import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
 import LoaderComponent from "../general/LoaderComponent";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CompareEarningsCardProps {
   stock: string;
@@ -31,6 +32,7 @@ const CompareEarningsCard = ({
     enabled: !!ticker,
     marketRefetchMs: 60_000,
   });
+  const isMobile = useIsMobile();
 
   const quote = ticker ? quotesBySymbol[ticker] : undefined;
 
@@ -79,10 +81,10 @@ const CompareEarningsCard = ({
 
   return (
     <LoaderComponent
-      className="bg-(--secondary-color) p-4 rounded-lg flex-1 flex flex-col"
+      className="bg-(--secondary-color) p-4 rounded-lg flex-1 flex flex-col h-full"
       loading={isLoading || isFetching}
       height="424px"
-      width="50%"
+      width={"100%"}
       rounded="lg"
     >
       <div className="flex justify-between items-center mb-3">
@@ -130,7 +132,7 @@ const CompareEarningsCard = ({
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 justify-between gap-4">
+      <div className="flex flex-col flex-1 justify-between gap-6 md:gap-4">
         <CompareEarningsCardRow
           title="Revenue Performance"
           content={revenuePerformance}

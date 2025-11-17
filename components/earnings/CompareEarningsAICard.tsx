@@ -20,13 +20,19 @@ const CompareEarningsAICard = ({ currentReportA, currentReportB }: CompareEarnin
     <>
       {!!compareData ? (
         <LoaderComponent
+          id="compare-earnings-ai-card"
           className="bg-(--secondary-color) p-4 rounded-lg"
           loading={isLoadingCompare || isFetchingCompare}
           height="auto"
           width="100%"
           rounded="lg"
         >
-          <h2 className="font-bold text-xl mb-4">{`${compareData?.comparisonTitle} - Comparison Analysis`}</h2>
+          <h2 className="font-bold text-xl mb-4 hidden md:block">{`${compareData?.comparisonTitle} - Comparison Analysis`}</h2>
+          <div className="flex items-center font-bold flex-col md:hidden text-center text-lg">
+            <h2>{compareData?.comparisonTitle.split(" vs ")[0]}</h2>
+            <h2>vs</h2>
+            <h2 className="mb-4">{compareData?.comparisonTitle.split(" vs ")[1]}</h2>
+          </div>
           <div className="min-h-[200px]">
             {compareData ? (
               <div className="flex flex-col gap-4">
@@ -35,7 +41,7 @@ const CompareEarningsAICard = ({ currentReportA, currentReportB }: CompareEarnin
                     <TrendingUp color="var(--accent-color)" />
                     <h3 className="font-bold text-lg">Growth Momentum</h3>
                   </div>
-                  <p className="text-(--secondary-text-color)">
+                  <p className="text-(--secondary-text-color) leading-8">
                     {compareData.aiVerdict.growthEdge}
                   </p>
                 </div>
@@ -44,7 +50,7 @@ const CompareEarningsAICard = ({ currentReportA, currentReportB }: CompareEarnin
                     <Shield color="var(--danger-color)" />
                     <h3 className="font-bold text-lg ">Risk & Consistency</h3>
                   </div>
-                  <p className="text-(--secondary-text-color)">
+                  <p className="text-(--secondary-text-color) leading-8">
                     {compareData.aiVerdict.stabilityEdge}
                   </p>
                 </div>
@@ -53,7 +59,7 @@ const CompareEarningsAICard = ({ currentReportA, currentReportB }: CompareEarnin
                     <Lightbulb color="yellow" />
                     <h3 className="font-bold text-lg ">Analysis Verdict</h3>
                   </div>
-                  <p className="text-(--secondary-text-color)">
+                  <p className="text-(--secondary-text-color) leading-8">
                     {compareData.aiVerdict.overallOutlook}
                   </p>
                 </div>
@@ -62,7 +68,7 @@ const CompareEarningsAICard = ({ currentReportA, currentReportB }: CompareEarnin
                     <Sprout color="var(--success-color)" />
                     <h3 className="font-bold text-lg ">For Growth Investors</h3>
                   </div>
-                  <p className="text-(--secondary-text-color)">
+                  <p className="text-(--secondary-text-color) leading-8">
                     {compareData.aiVerdict.investmentSummary.momentumInvestors}
                   </p>
                 </div>
@@ -71,7 +77,7 @@ const CompareEarningsAICard = ({ currentReportA, currentReportB }: CompareEarnin
                     <TriangleAlert color="var(--warning-color)" />
                     <h3 className="font-bold text-lg">For Conservative Investors</h3>
                   </div>
-                  <p className="text-(--secondary-text-color)">
+                  <p className="text-(--secondary-text-color) leading-8">
                     {compareData.aiVerdict.investmentSummary.riskAverseInvestors}
                   </p>
                 </div>
