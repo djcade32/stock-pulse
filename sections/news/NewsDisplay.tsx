@@ -103,7 +103,7 @@ const NewsDisplay = ({
   return (
     <div className={className}>
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
-        <h2 className="text-xl font-semibold">{header}</h2>
+        <h2 className="text-lg md:text-xl font-semibold">{header}</h2>
         <div className="flex items-center gap-4">
           {!!companyOptions?.length && companyFilter && (
             <Select

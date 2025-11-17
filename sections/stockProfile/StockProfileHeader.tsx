@@ -106,7 +106,7 @@ const StockProfileHeader = ({ symbol }: StockProfileHeaderProps) => {
             <img
               src={logoUrl.data}
               alt={`${symbol} logo`}
-              className="!w-15 h-15 rounded-lg bg-white bg-cover"
+              className="!w-10 h-10 md:!w-15 md:h-15 rounded-lg bg-white bg-cover"
             />
           ) : (
             <div className="w-15 h-15 rounded-lg bg-(--secondary-text-color) text-foreground font-bold flex items-center justify-center">
@@ -116,7 +116,7 @@ const StockProfileHeader = ({ symbol }: StockProfileHeaderProps) => {
         </div>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold">{symbol}</h1>
+            <h1 className="text-xl md:text-3xl font-bold">{symbol}</h1>
             {percentChange && (
               <div
                 className={cn(
@@ -141,7 +141,7 @@ const StockProfileHeader = ({ symbol }: StockProfileHeaderProps) => {
             rounded="sm"
             loadingClassName="bg-(--secondary-color)"
           >
-            <p className="text-(--secondary-text-color)">
+            <p className="text-(--secondary-text-color) text-sm md:text-base">
               {data?.name || "N/A"} • {data?.exchange || "N/A"}
             </p>
           </LoaderComponent>
@@ -154,9 +154,9 @@ const StockProfileHeader = ({ symbol }: StockProfileHeaderProps) => {
             loadingClassName="bg-(--secondary-color)"
           >
             <div className="flex items-end gap-2">
-              <h1 className="text-3xl font-bold">${Number(quote?.c.toFixed(2))}</h1>
+              <h1 className="text-xl md:text-3xl font-bold">${Number(quote?.c.toFixed(2))}</h1>
               <p
-                className={`${
+                className={`text-sm md:text-base ${
                   dollarChange
                     ? dollarChange > 0
                       ? "text-(--success-color)"
@@ -174,7 +174,7 @@ const StockProfileHeader = ({ symbol }: StockProfileHeaderProps) => {
         </div>
       </div>
       {!isPending && (
-        <div>
+        <div className="hidden md:flex">
           {existInWatchlist(symbol) ? (
             <Button
               className="flex-1/2 font-bold"
