@@ -107,7 +107,7 @@ body {
   }
 
   .auth-card {
-    @apply bg-(--secondary-color) rounded-lg shadow-lg p-6 w-[400px];
+    @apply bg-(--secondary-color) rounded-lg shadow-lg p-3 md:p-6 w-[min(400px,90vw)];
   }
 
   .sign-in-socials {
