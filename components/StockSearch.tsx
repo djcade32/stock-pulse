@@ -186,7 +186,7 @@ export default function StockSearch({
           id={listboxId}
           role="listbox"
           className={cn(
-            "absolute mt-2 w-[min(300px,90vw)] max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50",
+            "absolute mt-2 w-[300px] md:w-[400px] max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50",
             isMobile && "flex flex-col gap-2"
           )}
         >
