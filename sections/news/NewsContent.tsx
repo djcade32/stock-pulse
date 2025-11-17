@@ -14,6 +14,7 @@ import Button from "@/components/general/Button";
 import { RefreshCcw } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { track } from "@/lib/analytics";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const selectItems = [
   { label: "All News", value: "all" },
@@ -25,6 +26,7 @@ const NewsContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const stock = searchParams?.get("q")?.toLocaleUpperCase();
+  const isMobile = useIsMobile();
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState(stock ? "watchlist" : "all");
@@ -72,6 +74,12 @@ const NewsContent = () => {
     track("opened_news_page");
   }, []);
 
+  useEffect(() => {
+    if (isMobile) {
+      setSelectedFilter(stock ? "watchlist" : "market");
+    }
+  }, [isMobile]);
+
   const handleSelectChange = (value: string) => {
     setSelectedFilter(value);
     router.replace(
@@ -102,7 +110,7 @@ const NewsContent = () => {
           <Select
             value={selectedFilter}
             onValueChange={handleSelectChange}
-            items={selectItems}
+            items={isMobile ? selectItems.filter((option) => option.value !== "all") : selectItems}
             className="w-[150px] min-w-0"
           />
           <div className="flex items-center gap-4">
