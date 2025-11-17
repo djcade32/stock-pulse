@@ -122,7 +122,7 @@ const Form = ({
 
   return (
     <form
-      className={cn("flex flex-col gap-4", className)}
+      className={cn("flex flex-col gap-2 md:gap-4", className)}
       onSubmit={handleSubmit}
       autoComplete="off"
       autoFocus
