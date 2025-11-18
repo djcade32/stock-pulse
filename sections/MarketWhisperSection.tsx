@@ -76,8 +76,7 @@ const MarketWhisperSection = () => {
             "The Market Whisper provides daily insights into market sentiment, helping you stay ahead with concise summaries and analysis."}
         </p>
       </LoaderComponent>
-      <div className="flex items-center justify-between md:mt-4">
-        {/* <div className={cn("mt-4", isMobile && "flex justify-between items-center")}> */}
+      <div className="flex items-center justify-between md:mt-4 mt-2">
         <p className="text-xs md:text-sm font-normal text-(--secondary-text-color) ">
           {dayjs(today).format("MMMM DD, YYYY")}
         </p>

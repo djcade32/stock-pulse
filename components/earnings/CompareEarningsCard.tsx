@@ -8,7 +8,6 @@ import CompareEarningsCardRow from "./CompareEarningsCardRow";
 import AiTag from "../AiTag";
 import { useReportsFeedInfinite } from "@/lib/client/queries/reports";
 import LoaderComponent from "../general/LoaderComponent";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface CompareEarningsCardProps {
   stock: string;
@@ -32,7 +31,6 @@ const CompareEarningsCard = ({
     enabled: !!ticker,
     marketRefetchMs: 60_000,
   });
-  const isMobile = useIsMobile();
 
   const quote = ticker ? quotesBySymbol[ticker] : undefined;
 

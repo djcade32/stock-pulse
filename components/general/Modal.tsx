@@ -3,7 +3,6 @@ import { X } from "lucide-react";
 import { ModalActionButtons } from "@/types";
 import Button from "./Button";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ModalProps {
   open: boolean;
@@ -15,8 +14,6 @@ interface ModalProps {
 }
 
 const Modal = ({ children, header, actionButtons, open, setOpen, hideFooter }: ModalProps) => {
-  const isMobile = useIsMobile();
-
   if (!children) {
     return null; // Don't render the modal if there are no children
   }

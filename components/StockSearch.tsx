@@ -185,10 +185,7 @@ export default function StockSearch({
         <div
           id={listboxId}
           role="listbox"
-          className={cn(
-            "absolute mt-2 w-[300px] md:w-[450px] max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50",
-            isMobile && "flex flex-col gap-2"
-          )}
+          className="absolute mt-2 w-[300px] md:w-[450px] flex md:block flex-col gap-2 max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50"
         >
           {loading && (
             <div className="px-3 py-2 text-sm text-(--secondary-text-color)">Searching…</div>
@@ -235,8 +232,8 @@ export default function StockSearch({
                       </span>
                       <span className="text-(--secondary-text-color) text-sm">{h.description}</span>
                     </div>
-                    {h.type && !isMobile && (
-                      <span className="text-xs text-(--secondary-text-color) shrink-0">
+                    {h.type && (
+                      <span className="text-xs text-(--secondary-text-color) shrink-0 hidden md:block">
                         {h.type}
                       </span>
                     )}
