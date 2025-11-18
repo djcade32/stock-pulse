@@ -5,7 +5,6 @@ import Input from "@/components/general/Input";
 import LoaderComponent from "@/components/general/LoaderComponent";
 import ProfileSettingRow from "@/components/profile/ProfileSettingRow";
 import { auth, db } from "@/firebase/client";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useUid } from "@/hooks/useUid";
 import { cn } from "@/lib/utils";
 import ChangePasswordModal from "@/modals/profile/ChangePasswordModal";
@@ -20,7 +19,6 @@ import { toast } from "sonner";
 const PasswordAndEmailSection = () => {
   const { loading } = useUid();
   const inputRef = useRef<HTMLInputElement>(null);
-  const isMobile = useIsMobile();
 
   // ✅ Keep user in React state instead of reading a snapshot once
   const [user, setUser] = useState(() => auth.currentUser);
@@ -122,10 +120,7 @@ const PasswordAndEmailSection = () => {
           width="100%"
           loading={loading}
           rounded="lg"
-          className={cn(
-            "bg-(--secondary-color) p-6 rounded-lg flex flex-col gap-4",
-            isMobile ? "p-4" : "p-6"
-          )}
+          className="bg-(--secondary-color) rounded-lg flex flex-col gap-4 md:p-6 p-4"
           loadingClassName="bg-(--secondary-color)"
         >
           <h2 className="text-lg md:text-xl font-bold">Password & Email Management</h2>
@@ -136,12 +131,7 @@ const PasswordAndEmailSection = () => {
             description="Update your account password"
             icon={FaLock}
           />
-          <div
-            className={cn(
-              "bg-(--background) p-4 rounded-lg flex items-center justify-between gap-2",
-              isMobile && "flex-col w-full gap-4"
-            )}
-          >
+          <div className="bg-(--background) p-4 rounded-lg flex items-center justify-between md:flex-row flex-col md:gap-2 gap-4 w-full">
             <div className="flex items-center gap-3 w-full">
               <div className="flex items-center justify-center bg-[#FF9800]/20 p-2 rounded-lg w-10 h-10">
                 <MdEmail className="text-[#FF9800]" />
@@ -165,10 +155,7 @@ const PasswordAndEmailSection = () => {
             </div>
             <Button
               onClick={handleChangeClick}
-              className={cn(
-                "bg-(--secondary-color) border-(--gray-accent-color) border",
-                isMobile && "w-full"
-              )}
+              className="bg-(--secondary-color) border-(--gray-accent-color) border w-full md:w-fit"
             >
               <p>{isEditing ? "Save" : "Change Email"}</p>
             </Button>

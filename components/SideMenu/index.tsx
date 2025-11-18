@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import { NavMain } from "./NavMain";
 import Image from "next/image";
-import { useIsMobile } from "@/hooks/use-mobile";
 import BetaBadge from "../BetaBadge";
 
 const data = {
@@ -66,9 +65,7 @@ const data = {
 };
 
 export const SideMenu = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
-  const [hideLogo, setHideLogo] = React.useState(false);
   // const menuOpened = useSidebar().state === "expanded";
-  const isMobile = useIsMobile();
 
   // React.useEffect(() => {
   //   if (menuOpened && hideLogo) {

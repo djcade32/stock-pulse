@@ -172,9 +172,9 @@ export default function StockSearch({
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
           placeholder={isMobile ? placeholderForMobile : placeholder}
-          preIcon={<Search color="var(--secondary-text-color)" size={18} />}
+          preIcon={<Search color="var(--secondary-text-color)" size={isMobile ? 16 : 18} />}
           className={cn(
-            "bg-(--secondary-color) w-full border-(--gray-accent-color) py-2",
+            "bg-(--secondary-color) w-full border-(--gray-accent-color) py-2 text-sm md:text-base",
             inputClassName
           )}
         />
@@ -185,10 +185,7 @@ export default function StockSearch({
         <div
           id={listboxId}
           role="listbox"
-          className={cn(
-            "absolute mt-2 w-[300px] md:w-[400px] max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50",
-            isMobile && "flex flex-col gap-2"
-          )}
+          className="absolute mt-2 w-[300px] md:w-[450px] flex md:block flex-col gap-2 max-h-72 overflow-auto rounded-lg border border-(--gray-accent-color) bg-(--background) shadow-xl z-50"
         >
           {loading && (
             <div className="px-3 py-2 text-sm text-(--secondary-text-color)">Searching…</div>
@@ -228,13 +225,17 @@ export default function StockSearch({
                       : "hover:bg-(--color-sidebar-accent)",
                   ].join(" ")}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold tracking-tight">{h.symbol}</span>
+                  <div className="flex items-center justify-between md:gap-3">
+                    <div className="flex md:items-center md:gap-2 md:flex-row flex-col">
+                      <span className="font-semibold tracking-tight text-sm md:tex-base">
+                        {h.symbol}
+                      </span>
                       <span className="text-(--secondary-text-color) text-sm">{h.description}</span>
                     </div>
-                    {h.type && !isMobile && (
-                      <span className="text-xs text-(--secondary-text-color)">{h.type}</span>
+                    {h.type && (
+                      <span className="text-xs text-(--secondary-text-color) shrink-0 hidden md:block">
+                        {h.type}
+                      </span>
                     )}
                   </div>
                 </div>

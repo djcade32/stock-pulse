@@ -71,13 +71,13 @@ const MarketWhisperSection = () => {
         </div>
       </div>
       <LoaderComponent height="100px" width="100%" rounded="lg" loading={loading} className="mt-4">
-        <p className="leading-7">
+        <p className="leading-7 text-sm md:text-base">
           {data?.summary ||
             "The Market Whisper provides daily insights into market sentiment, helping you stay ahead with concise summaries and analysis."}
         </p>
       </LoaderComponent>
-      <div className={cn("mt-4", isMobile && "flex justify-between items-center")}>
-        <p className="text-sm font-normal text-(--secondary-text-color) ">
+      <div className="flex items-center justify-between md:mt-4 mt-2">
+        <p className="text-xs md:text-sm font-normal text-(--secondary-text-color) ">
           {dayjs(today).format("MMMM DD, YYYY")}
         </p>
         <Button

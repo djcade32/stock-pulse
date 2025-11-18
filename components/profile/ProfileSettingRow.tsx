@@ -2,7 +2,6 @@ import React, { ReactNode } from "react";
 import Button from "../general/Button";
 import { IconType } from "react-icons";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProfileSettingRowProps {
   title: string;
@@ -35,8 +34,6 @@ const ProfileSettingRow = ({
   actionButtonVariant = "default",
   actionButtonClassName,
 }: ProfileSettingRowProps) => {
-  const isMobile = useIsMobile();
-
   const iconsVariants = {
     default: "bg-(--accent-color)/30 text-(--accent-color)",
     danger: "bg-(--danger-color)/30 text-(--danger-color)",
@@ -48,12 +45,11 @@ const ProfileSettingRow = ({
   return (
     <div
       className={cn(
-        "bg-(--background) p-4 rounded-lg flex items-center justify-between",
-        rowClassName,
-        isMobile ? "flex-col gap-4 w-full" : ""
+        "bg-(--background) p-4 rounded-lg flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0 w-full",
+        rowClassName
       )}
     >
-      <div className={cn("flex items-center gap-3", isMobile && "w-full")}>
+      <div className="flex items-center gap-3 w-full">
         <div className={`flex items-center justify-center p-2 rounded-lg w-10 h-10 ${iconColor}`}>
           {icon && React.createElement(icon)}
         </div>
@@ -75,7 +71,7 @@ const ProfileSettingRow = ({
       <Button
         onClick={onActionClick}
         variant={actionButtonVariant}
-        className={cn(isMobile && "w-full", actionButtonClassName)}
+        className={cn("w-full md:w-fit", actionButtonClassName)}
       >
         <p>{actionText}</p>
       </Button>

@@ -10,7 +10,6 @@ import { auth } from "@/firebase/client";
 import LoaderComponent from "./general/LoaderComponent";
 import useWatchlistStore from "@/stores/watchlist-store";
 import { resetAnalytics } from "@/lib/analytics";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 async function postJSON<T = any>(url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -32,7 +31,6 @@ const HeaderDropdownMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { clearWatchlist } = useWatchlistStore();
-  const isMobile = useIsMobile();
 
   const DROPDOWN_ITEMS = [
     { label: "Profile", icon: <CircleUser size={16} />, onClick: () => router.push("/profile") },
@@ -75,17 +73,15 @@ const HeaderDropdownMenu = () => {
               color={cn(isHovered ? "var(--foreground)" : "var(--secondary-text-color)")}
               className="cursor-pointer"
             />
-            {!isMobile && (
-              <>
-                <p>{user?.displayName}</p>
-                <ChevronDown
-                  color="var(--secondary-text-color)"
-                  className={`cursor-pointer ${
-                    isOpen && "rotate-180 transition-transform duration-200"
-                  }`}
-                />
-              </>
-            )}
+            <div className="hidden md:flex items-center gap-1">
+              <p className="truncate min-w-[100px]">{user?.displayName}</p>
+              <ChevronDown
+                color="var(--secondary-text-color)"
+                className={`cursor-pointer ${
+                  isOpen && "rotate-180 transition-transform duration-200"
+                }`}
+              />
+            </div>
           </div>
         }
         isOpen={isOpen}
