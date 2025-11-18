@@ -48,7 +48,7 @@ const NewsRow = ({ news, isNewsPage }: NewsRowProps) => {
             <p className="text-xs text-(--secondary-text-color) font-bold">{timeElapsed}</p>
           </div>
         </div>
-        <p className="text-sm text-(--secondary-text-color) leading-7 line-clamp-3">{summary}</p>
+        <p className="text-sm text-(--secondary-text-color) leading-6 line-clamp-3">{summary}</p>
         <div className="flex items-center gap-4">
           <p className="text-xs text-(--secondary-text-color) font-bold">{`Source: ${source}`}</p>
           <AiTag

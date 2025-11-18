@@ -36,7 +36,7 @@ const NewsSection = () => {
       </div>
 
       <div
-        className={`bg-(--secondary-color) rounded-lg p-4 flex flex-col gap-4 ${
+        className={`bg-(--secondary-color) rounded-lg p-4 flex flex-col gap-6 md:gap-4 ${
           isLoading && "animate-pulse"
         }`}
       >

@@ -6,7 +6,6 @@ import useQuickChartStore from "@/stores/quick-chart-store";
 import { FaBookmark } from "react-icons/fa6";
 import { ChartLine } from "lucide-react";
 import { WatchlistStock } from "@/types";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SearchStockRowProps {
   stock: { symbol: string; name: string; type: string };
@@ -28,21 +27,21 @@ const SearchStockRow = ({ stock, onSelect, isSelected }: SearchStockRowProps) =>
       type: stock.type,
     });
   };
-  const isMobile = useIsMobile();
 
   return (
     <Button
       onClick={toggleSelected}
       key={stock.symbol}
       className={cn(
-        "group px-3 py-6 hover:bg-(--color-sidebar-accent) rounded-lg cursor-pointer flex items-center justify-between w-full smooth-animation",
-        selected && "bg-(--color-sidebar-accent)",
-        isMobile && "py-8"
+        "group px-3 md:py-6 py-8 hover:bg-(--color-sidebar-accent) rounded-lg cursor-pointer flex items-center justify-between w-full smooth-animation",
+        selected && "bg-(--color-sidebar-accent)"
       )}
     >
-      <p className={cn("font-semibold text-left text-wrap", isMobile && "flex flex-col")}>
+      <p className="font-semibold text-left text-wrap md:block flex flex-col text-sm md:text-base">
         {stock.symbol}{" "}
-        <span className="font-normal text-(--secondary-text-color)">{stock.name}</span>
+        <span className="font-normal text-(--secondary-text-color) text-sm md:text-base">
+          {stock.name}
+        </span>
       </p>
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1">

@@ -103,7 +103,7 @@ body {
   }
 
   .page-subheader-text {
-    @apply text-xl font-bold;
+    @apply text-lg md:text-xl font-bold;
   }
 
   .auth-card {

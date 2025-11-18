@@ -11,7 +11,6 @@ import { useUid } from "@/hooks/useUid";
 import LoaderComponent from "@/components/general/LoaderComponent";
 import { toast } from "sonner";
 import { doc, setDoc } from "firebase/firestore";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const UserInfoSection = () => {
   const { loading } = useUid();
@@ -22,8 +21,6 @@ const UserInfoSection = () => {
   const [displayName, setDisplayName] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [inputHasError, setInputHasError] = useState(false);
-
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (user && user.displayName) {
@@ -85,10 +82,7 @@ const UserInfoSection = () => {
       width="100%"
       loading={loading}
       rounded="lg"
-      className={cn(
-        "bg-(--secondary-color) rounded-lg flex items-center justify-between",
-        isMobile ? "flex-col gap-4 p-4" : "p-6"
-      )}
+      className="bg-(--secondary-color) rounded-lg flex items-center justify-between flex-col gap-4 p-4 md:p-6 md:flex-row md:gap-0"
       loadingClassName="bg-(--secondary-color)"
     >
       <div className="flex items-center gap-4">
@@ -110,7 +104,7 @@ const UserInfoSection = () => {
             )}
           />
           {createdAt && (
-            <p className={cn("text-(--secondary-text-color)", isMobile && "text-sm")}>
+            <p className="text-(--secondary-text-color) text-sm md:text-base">
               Member since
               {` ${new Date(createdAt).toLocaleString("default", { month: "long" })} ${new Date(
                 createdAt
@@ -119,14 +113,11 @@ const UserInfoSection = () => {
           )}
         </div>
       </div>
-      <div className={cn(isMobile ? "w-full" : "")}>
+      <div className="w-full md:w-fit">
         <Button
           onClick={handleEditClick}
           variant={isEditing ? "default" : "outline"}
-          className={cn(
-            isEditing ? "" : "bg-transparent border-(--gray-accent-color)",
-            isMobile && "w-full"
-          )}
+          className={cn(isEditing ? "" : "bg-transparent border-(--gray-accent-color)", "w-full")}
         >
           {isEditing ? <Save size={16} /> : <SquarePen size={16} />}
           {isEditing ? "Save" : "Edit"}
