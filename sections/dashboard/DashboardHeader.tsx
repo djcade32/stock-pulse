@@ -14,7 +14,10 @@ const DashboardHeader = () => {
           <h1 className="page-header-text">Dashboard</h1>
         </div>
         <div>
-          <Button className="flex-1/2 font-bold" onClick={() => setIsAddStockModalOpen(true)}>
+          <Button
+            className="flex-1/2 font-bold text-sm md:text-base"
+            onClick={() => setIsAddStockModalOpen(true)}
+          >
             <FaPlus />
             Add Stock
           </Button>

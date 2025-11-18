@@ -19,7 +19,7 @@ const StockNewsSection = ({ symbol }: StockNewsSectionProps) => {
         height="13rem"
         width="100%"
         loading={isLoading}
-        className="bg-(--secondary-color) px-6 py-4 rounded-lg flex flex-col gap-4"
+        className="bg-(--secondary-color) px-6 py-4 rounded-lg flex flex-col gap-6 md:gap-4"
         rounded="lg"
         loadingClassName="bg-(--secondary-color)"
       >

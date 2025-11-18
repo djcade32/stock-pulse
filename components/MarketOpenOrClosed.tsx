@@ -6,7 +6,7 @@ import React from "react";
 const MarketOpenOrClosed = () => {
   const { data, isLoading, isError } = useMarketStatus();
 
-  const className = "text-sm text-(--secondary-text-color) justify-end flex";
+  const className = "text-xs md:text-sm text-(--secondary-text-color) justify-end flex";
   if (isLoading) return <span className={className}>Checking market…</span>;
   if (isError || !data) return <span className={className}>Market status unavailable</span>;
 

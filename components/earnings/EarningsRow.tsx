@@ -71,7 +71,7 @@ const EarningsRow = ({ earnings }: EarningsRowProps) => {
       </div>
 
       <div className="">
-        <p className="leading-7 text-sm line-clamp-3">{insights}</p>
+        <p className="leading-6 text-sm line-clamp-3">{insights}</p>
       </div>
 
       <div className="flex justify-between items-end flex-col gap-3 md:flex-row">

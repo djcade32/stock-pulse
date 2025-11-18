@@ -168,10 +168,7 @@ const QuickChart = ({ stock, deletable = true, series }: QuickChartProps) => {
       </div>
 
       <div className="flex-1 flex items-center justify-center h-full">
-        <ChartContainer
-          config={chartConfig}
-          className={cn("max-h-full w-full", isMobile && "flex items-center")}
-        >
+        <ChartContainer config={chartConfig} className="w-full max-h-full flex items-center">
           <ComposedChart
             data={chartData}
             margin={isMobile ? { top: 35, right: 0, bottom: 35, left: 10 } : { left: 10 }}
