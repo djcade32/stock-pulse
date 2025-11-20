@@ -87,7 +87,7 @@ Strict rules:
   return null;
 }
 
-export async function GET(req: NextRequest, { params }: { params: { symbol: string } }) {
+export async function GET(req: NextRequest, context: any) {
   const apiKey = process.env.FINNHUB_KEY;
 
   if (!apiKey) {
@@ -95,7 +95,10 @@ export async function GET(req: NextRequest, { params }: { params: { symbol: stri
   }
 
   const { searchParams } = new URL(req.url);
-  const symbol = params.symbol.toUpperCase();
+  const symbol = context.params?.symbol?.toUpperCase();
+  if (!symbol || symbol.length === 0) {
+    return NextResponse.json({ error: "Symbol is required" }, { status: 400 });
+  }
 
   const fromParam = searchParams.get("from");
   const toParam = searchParams.get("to");
