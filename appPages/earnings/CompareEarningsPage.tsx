@@ -12,6 +12,7 @@ import { FileSearch } from "lucide-react";
 import CompareEarningsCard from "@/components/earnings/CompareEarningsCard";
 import { useCompareFilings } from "@/lib/client/queries/compareFilings";
 import CompareEarningsAICard from "@/components/earnings/CompareEarningsAICard";
+import { track } from "@/lib/analytics";
 
 const CompareEarningsPage = () => {
   const router = useRouter();
@@ -54,6 +55,11 @@ const CompareEarningsPage = () => {
     currentReportB,
     false
   );
+
+  // Track page open
+  useEffect(() => {
+    track("opened_compare_earnings_page");
+  }, []);
 
   useEffect(() => {
     if (!!stockARows.length) {

@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic"; // no ISR caching for this route
 export async function GET() {
   const token = process.env.FINNHUB_KEY;
   if (!token) {
-    return NextResponse.json({ error: "Missing FINNHUB_API_KEY" }, { status: 500 });
+    return NextResponse.json({ error: "Missing FINNHUB_KEY" }, { status: 500 });
   }
 
   const url = new URL("https://finnhub.io/api/v1/stock/market-status");

@@ -4,6 +4,7 @@ import { useFetchCompanyNews } from "@/lib/client/hooks/useFetchCompanyNews";
 import React from "react";
 import { Button as RootButton } from "@/components/ui/button";
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface StockNewsSectionProps {
   symbol: string;
@@ -11,10 +12,10 @@ interface StockNewsSectionProps {
 
 const StockNewsSection = ({ symbol }: StockNewsSectionProps) => {
   const { data, isLoading } = useFetchCompanyNews(symbol);
+  const isMobile = useIsMobile();
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-2">Recent News</h2>
       <LoaderComponent
         height="13rem"
         width="100%"
@@ -23,9 +24,10 @@ const StockNewsSection = ({ symbol }: StockNewsSectionProps) => {
         rounded="lg"
         loadingClassName="bg-(--secondary-color)"
       >
+        <h2 className="text-lg md:text-xl font-bold">Recent News</h2>
         {data && data.length > 0 ? (
           data
-            .slice(0, 4)
+            .slice(0, isMobile ? 4 : 8)
             .map((newsItem, index) => <NewsRow key={index} news={newsItem} isNewsPage />)
         ) : (
           <p className="text-(--secondary-text-color) text-center">
