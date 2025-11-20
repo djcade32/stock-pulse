@@ -10,7 +10,7 @@ const AiTag = ({ tag, className }: AiTagProps) => {
   return (
     <span
       className={cn(
-        "inline-block text-xs px-2 py-1 rounded-full text-center font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis",
+        "inline-block h-fit text-xs px-2 py-1 rounded-full text-center font-bold tracking-tight overflow-hidden whitespace-nowrap text-ellipsis",
         tag.sentiment.toLocaleLowerCase() == "positive" &&
           "bg-(--success-color)/30 text-(--success-color)",
         tag.sentiment.toLocaleLowerCase() == "negative" &&

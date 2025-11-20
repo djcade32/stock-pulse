@@ -11,6 +11,7 @@ import Button from "@/components/general/Button";
 import { ExternalLink, FileSearch } from "lucide-react";
 
 import EarningsFinancialMetricsCard from "@/components/earnings/EarningsFinancialMetricsCard";
+import { track } from "@/lib/analytics";
 
 const FullEarningsAnalysisPage = () => {
   const router = useRouter();
@@ -27,6 +28,11 @@ const FullEarningsAnalysisPage = () => {
   const [quarterFilter, setQuarterFilter] = useState("");
   const [currentReport, setCurrentReport] = useState<ReportRowDTO | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Track page open
+  useEffect(() => {
+    track("opened_stock_earnings_page", { symbol });
+  }, []);
 
   useEffect(() => {
     const validDate = date && !isNaN(new Date(date).getTime());

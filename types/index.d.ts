@@ -271,3 +271,68 @@ export type WhisperDoc = {
     watchlistSentiment: Record<string, "Bullish" | "Neutral" | "Bearish" | "Unknown">;
   };
 };
+
+export type FinnhubInsiderTransaction = {
+  symbol: string;
+  name: string;
+  share: number;
+  change: number;
+  filingDate: string;
+  transactionDate: string;
+  transactionCode: string;
+  transactionPrice: number;
+  isDerivative: boolean;
+  currency: string;
+  id: string;
+  source: string;
+};
+
+export type FinnhubInsiderResponse = {
+  symbol: string;
+  data: FinnhubInsiderTransaction[];
+};
+
+export type InsiderSummaryRow = {
+  name: string;
+  netShares: number;
+  totalBuys: number;
+  totalSells: number;
+  lastTradeDate: string | null;
+  lastTradeCode: string | null;
+  lastTradePrice: number | null;
+};
+
+/**
+ * Finnhub insider sentiment point:
+ *  - change: net insider share change for that month
+ *  - mspr: "monthly share purchase ratio" (sentiment metric)
+ */
+export type FinnhubInsiderSentimentPoint = {
+  symbol: string;
+  year: number;
+  month: number;
+  change: number;
+  mspr: number;
+};
+
+export type FinnhubInsiderSentimentResponse = {
+  symbol: string;
+  data: FinnhubInsiderSentimentPoint[];
+};
+
+export type InsiderSentimentSummary = {
+  latestMspr: number | null;
+  latestChange: number | null;
+  latestYear: number | null;
+  latestMonth: number | null;
+};
+
+export type InsidersApiResponse = {
+  symbol: string;
+  from: string;
+  to: string;
+  count: number;
+  summary: InsiderSummaryRow[];
+  data: FinnhubInsiderTransaction[];
+  sentiment?: string | null;
+};
