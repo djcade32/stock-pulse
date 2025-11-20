@@ -35,7 +35,7 @@ const NewsRow = ({ news, isNewsPage }: NewsRowProps) => {
       )}
 
       <div className="flex-1 flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-start justify-between gap-4">
           <Link
             href={url}
             className="hover:brightness-75 transition-all duration-200"

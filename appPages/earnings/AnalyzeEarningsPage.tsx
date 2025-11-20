@@ -18,6 +18,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useRouter } from "next/navigation";
+import { track } from "@/lib/analytics";
 
 // 👇 prevent build-time prerender; render at request time (client)
 // (alternatively: export const revalidate = 0)
@@ -34,6 +35,11 @@ const AnalyzeEarningsPage = () => {
   const { data, isLoading, isError, error } = useReportsFeed();
 
   const mountedRef = useRef(false);
+
+  // Track page open
+  useEffect(() => {
+    track("opened_analyze_earnings_page");
+  }, []);
 
   useEffect(() => {
     if (!mountedRef.current) {

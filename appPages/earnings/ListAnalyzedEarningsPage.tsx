@@ -15,6 +15,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
+import { track } from "@/lib/analytics";
 
 const quarterFilterOptions = [
   { label: "Q1", value: "Q1" },
@@ -37,6 +38,11 @@ const ListAnalyzedEarningsPage = () => {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, refetch, isFetching } =
     useReportsFeedInfinite(30, selectedStock, yearFilter, quarterFilter, !!selectedStock);
   const rows = (data?.pages ?? []).flatMap((p) => p.rows);
+
+  // Track page open
+  useEffect(() => {
+    track("opened_earnings_list_page");
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

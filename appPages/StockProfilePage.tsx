@@ -10,6 +10,7 @@ import StockNextEarningsSection from "@/sections/stockProfile/StockNextEarningsS
 import StockAnalystRatingsSection from "@/sections/stockProfile/StockAnalystRatingsSection";
 import StockNewsSection from "@/sections/stockProfile/StockNewsSection";
 import { track } from "@/lib/analytics";
+import { StockInsiderActivitySection } from "@/sections/stockProfile/StockInsiderActivitySection";
 
 // prevent build-time prerender so hooks run in a client context
 export const dynamic = "force-dynamic";
@@ -40,6 +41,11 @@ const StockProfilePage = () => {
 
   if (!symbol || isRedirecting) return null;
 
+  const dateSixMonthsAgo = new Date();
+  dateSixMonthsAgo.setMonth(dateSixMonthsAgo.getMonth() - 6);
+  const fromDate = dateSixMonthsAgo.toISOString().slice(0, 10);
+  const toDate = new Date().toISOString().slice(0, 10);
+
   return (
     <div className="page">
       <StockProfileHeader symbol={symbol} />
@@ -49,7 +55,10 @@ const StockProfilePage = () => {
         <StockNextEarningsSection symbol={symbol} />
         <StockAnalystRatingsSection symbol={symbol} />
       </div>
-      <StockNewsSection symbol={symbol} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <StockNewsSection symbol={symbol} />
+        <StockInsiderActivitySection symbol={symbol} from={fromDate} to={toDate} />
+      </div>
     </div>
   );
 };

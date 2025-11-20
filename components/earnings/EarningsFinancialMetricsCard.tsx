@@ -10,7 +10,6 @@ const FinancialMetricsCard = ({ kpi }: FinancialMetricsCardProps) => {
   const { name, value, unit, yoyDelta, qoqDelta } = kpi;
   // Remove $ and parenthesis from value if present
   const cleanValue = value.replace(/[\$,()]/g, "");
-
   return (
     <div className="bg-(--background) rounded-lg p-2 flex flex-col gap-1 justify-between">
       <h3 className="font-bold text-xs md:text-base">{name}</h3>
