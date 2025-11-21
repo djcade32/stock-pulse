@@ -63,7 +63,7 @@ export async function fetchSymbolsUS() {
 export async function fetchLogo(ticker: string) {
   if (!LOGO_DEV_API_KEY) throw new Error("LOGO_DEV_API_KEY not set");
   const r = await fetch(
-    `https://img.logo.dev/ticker/${ticker}.com?token=${LOGO_DEV_API_KEY}&format=png`,
+    `https://img.logo.dev/ticker/${ticker}?token=${LOGO_DEV_API_KEY}&format=png`,
     { cache: "force-cache" }
   );
   if (!r.ok) throw new Error(`logo ${ticker}: ${r.status}`);
